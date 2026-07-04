@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ironcross - Reloj</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0a0a0a;
+    overflow: hidden;
+  }
+  #wrap {
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+  }
+  #inner {
+    width: 100%;
+    text-align: center;
+  }
+  #time {
+    font-family: "Arial Black", Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: #f2f2f0;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+    font-size: 20vmin;
+  }
+  #time .colon {
+    color: #b7410e;
+  }
+  #date {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 3.2vmin;
+    color: #b7410e;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 2.5vmin;
+  }
+  #rule {
+    width: 25%;
+    height: 3px;
+    background-color: #3a3a38;
+    margin: 2.5vmin auto 2.5vmin auto;
+  }
+  #brand {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 1.8vmin;
+    color: #5a5a58;
+    letter-spacing: 0.3em;
+    margin-top: 1.5vmin;
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="inner">
+    <div id="time">--:--:--</div>
+    <div id="rule"></div>
+    <div id="date">-</div>
+    <div id="brand">IRONCROSS CALISTENIA</div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var diasSemana = ["DOMINGO","LUNES","MARTES","MIERCOLES","JUEVES","VIERNES","SABADO"];
+  var meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+
+  function pad(n) {
+    n = n + "";
+    if (n.length < 2) {
+      n = "0" + n;
+    }
+    return n;
+  }
+
+  function ajustarTamano() {
+    var timeEl = document.getElementById("time");
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+
+    var pruebaSize = 300;
+    timeEl.style.fontSize = pruebaSize + "px";
+    var anchoMedido = timeEl.offsetWidth;
+
+    if (anchoMedido > 0) {
+      var anchoDisponible = vw * 0.96;
+      var sizePorAncho = pruebaSize * (anchoDisponible / anchoMedido);
+
+      var altoDisponible = vh * 0.62;
+      var sizePorAlto = altoDisponible / 0.72;
+
+      var sizeFinal = Math.min(sizePorAncho, sizePorAlto);
+      timeEl.style.fontSize = sizeFinal + "px";
+    }
+  }
+
+  function actualizarReloj() {
+    var ahora = new Date();
+    var horas = pad(ahora.getHours());
+    var minutos = pad(ahora.getMinutes());
+    var segundos = pad(ahora.getSeconds());
+
+    var timeEl = document.getElementById("time");
+    timeEl.innerHTML = horas + "<span class='colon'>:</span>" + minutos + "<span class='colon'>:</span>" + segundos;
+
+    var dateEl = document.getElementById("date");
+    var diaTexto = diasSemana[ahora.getDay()];
+    var diaNum = ahora.getDate();
+    var mesTexto = meses[ahora.getMonth()];
+    dateEl.innerHTML = diaTexto + " " + diaNum + " DE " + mesTexto;
+  }
+
+  actualizarReloj();
+  setInterval(actualizarReloj, 1000);
+
+  window.onload = ajustarTamano;
+  window.addEventListener("resize", ajustarTamano, false);
+  window.addEventListener("orientationchange", function() {
+    setTimeout(ajustarTamano, 300);
+  }, false);
+
+  // Evita que el iPad muestre menu contextual al mantener tocado
+  document.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+  }, false);
+</script>
+</body>
+</html>
