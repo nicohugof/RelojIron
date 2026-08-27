@@ -28,7 +28,7 @@
     right: 0;
     bottom: 70px;
   }
-  #clockView, #stopwatchView, #rutinaView {
+  #clockView, #stopwatchView, #rutinaView, #gymView {
     position: absolute;
     top: 0;
     left: 0;
@@ -87,8 +87,8 @@
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 19px;
-    letter-spacing: 2px;
+    font-size: 14px;
+    letter-spacing: 1px;
     background: #141412;
     border-left: 1px solid #222;
   }
@@ -185,6 +185,84 @@
     font-family: Helvetica, Arial, sans-serif;
     font-size: 12px;
     letter-spacing: 1px;
+  }
+
+
+  /* gym / oficina view */
+  #gymView {
+    display: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #0A0A09;
+  }
+  #gymHeader {
+    padding: 14px 16px 8px 16px;
+  }
+  #gymTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 3px;
+  }
+  #gymCounts {
+    padding: 0 16px 10px 16px;
+  }
+  .gymCount {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: #141412;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .gymCount b {
+    display: block;
+    font-size: 22px;
+    color: #EDE9DF;
+  }
+  .gymCount span {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #7A7568;
+  }
+  .gymCount.vencido b { color: #C23B22; }
+  .gymCount.porvencer b { color: #C29A22; }
+  #gymList {
+    padding: 0 16px 20px 16px;
+  }
+  .gymRow {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    padding: 10px 0;
+    border-top: 1px solid #222;
+  }
+  .gymName {
+    display: table-cell;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  .gymMeta {
+    display: table-cell;
+    width: 110px;
+    text-align: right;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  .gymRow.V .gymMeta { color: #C23B22; }
+  .gymRow.P .gymMeta { color: #C29A22; }
+  #gymStatus {
+    padding: 20px 16px;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
   }
 
   /* stopwatch view */
@@ -319,6 +397,15 @@
     <div id="swList"><div id="swGrid"></div></div>
   </div>
 
+
+  <div id="gymView" style="display:none;">
+    <div id="gymHeader">
+      <div id="gymTitle">OFICINA</div>
+    </div>
+    <div id="gymCounts"></div>
+    <div id="gymList"></div>
+    <div id="gymStatus">&nbsp;</div>
+  </div>
   <div id="rutinaView" style="display:none;">
     <div id="rutinaHeader">
       <div id="rutinaTitle">RUTINAS</div>
@@ -338,6 +425,7 @@
   <div id="tabClock" class="tab active">RELOJ</div>
   <div id="tabStopwatch" class="tab">CRONOMETROS</div>
   <div id="tabRutina" class="tab">RUTINA</div>
+  <div id="tabGym" class="tab">GYM</div>
 </div>
 
 <script type="text/javascript">
@@ -389,14 +477,18 @@
   var tabClock = document.getElementById('tabClock');
   var tabStopwatch = document.getElementById('tabStopwatch');
   var tabRutina = document.getElementById('tabRutina');
+  var gymView = document.getElementById('gymView');
+  var tabGym = document.getElementById('tabGym');
 
   function hideAllViews() {
     clockView.style.display = 'none';
     stopwatchView.style.display = 'none';
     rutinaView.style.display = 'none';
+    gymView.style.display = 'none';
     tabClock.className = 'tab';
     tabStopwatch.className = 'tab';
     tabRutina.className = 'tab';
+    tabGym.className = 'tab';
   }
 
   function showClock() {
@@ -420,9 +512,85 @@
     cargarDias();
   }
 
+  function showGym() {
+    hideAllViews();
+    gymView.style.display = 'block';
+    tabGym.className = 'tab active';
+    cargarOficina();
+  }
+
   tabClock.addEventListener('click', showClock, false);
   tabStopwatch.addEventListener('click', showStopwatch, false);
   tabRutina.addEventListener('click', showRutina, false);
+  tabGym.addEventListener('click', showGym, false);
+
+
+  /* ---------- oficina / gym ---------- */
+  var gymCounts = document.getElementById('gymCounts');
+  var gymList = document.getElementById('gymList');
+  var gymStatus = document.getElementById('gymStatus');
+
+  function fmtMonto(n) {
+    if (!n) { return ''; }
+    var s = String(n);
+    var out = '';
+    while (s.length > 3) {
+      out = '.' + s.slice(-3) + out;
+      s = s.slice(0, -3);
+    }
+    return '$' + s + out;
+  }
+
+  function cargarOficina() {
+    gymStatus.innerHTML = 'Cargando...';
+    gymCounts.innerHTML = '';
+    gymList.innerHTML = '';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/oficina', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status !== 200) {
+        gymStatus.innerHTML = 'No se pudo cargar';
+        return;
+      }
+      gymStatus.innerHTML = '&nbsp;';
+      var lines = xhr.responseText.split('\n');
+      var counts = { activos: '0', vencidos: '0', por_vencer: '0', sin_plan: '0' };
+      var i;
+      for (i = 0; i < lines.length; i++) {
+        var parts = lines[i].split('|');
+        if (parts[0] === 'C' && parts.length >= 3) {
+          counts[parts[1]] = parts[2];
+        } else if (parts[0] === 'R' && parts.length >= 3) {
+          var row = document.createElement('div');
+          row.className = 'gymRow ' + parts[1];
+          var name = document.createElement('div');
+          name.className = 'gymName';
+          name.innerHTML = parts[2];
+          var meta = document.createElement('div');
+          meta.className = 'gymMeta';
+          var bits = [];
+          if (parts[3]) { bits.push(fmtMonto(parts[3])); }
+          if (parts[4]) { bits.push(parts[4]); }
+          meta.innerHTML = bits.join(' · ');
+          row.appendChild(name);
+          row.appendChild(meta);
+          gymList.appendChild(row);
+        }
+      }
+      function countBox(cls, label, val) {
+        var d = document.createElement('div');
+        d.className = 'gymCount ' + cls;
+        d.innerHTML = '<b>' + val + '</b><span>' + label + '</span>';
+        gymCounts.appendChild(d);
+      }
+      countBox('vencido', 'VENCIDOS', counts.vencidos);
+      countBox('porvencer', 'POR VENCER', counts.por_vencer);
+      countBox('', 'ACTIVOS', counts.activos);
+      countBox('', 'SIN PLAN', counts.sin_plan);
+    };
+    xhr.send(null);
+  }
 
   /* ---------- rutina ---------- */
   var rutinaText = document.getElementById('rutinaText');
