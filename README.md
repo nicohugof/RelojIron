@@ -1,6 +1,8 @@
 # RelojIron
 
-Reloj de pared del gimnasio **Ironcross Calistenia** (Nicolas Farias / nicohugof). Corre en un iPad 1 (iOS 5.1.1, Safari viejo) colgado en el piso.
+Sistema de entrenamiento con el que el **profesor** da la clase en un iPad, en el piso de **Ironcross Calistenia** (Nicolas Farias / nicohugof). El iPad lo usa el profesor durante la clase.
+
+Corre en un **iPad 1** (iOS 5.1.1, Safari viejo).
 
 ## Cómo se sirve
 
@@ -12,8 +14,6 @@ http://146.181.44.106:8090
 
 El servidor en el Oracle es Python (`SimpleHTTP` + handlers de rutina). `SimpleHTTP` sirve `index.html` en `/`. El iPad 1 no tiene `fetch` ni flexbox: el HTML usa ES5, `XMLHttpRequest` y `display:table` / `table-cell`. No modernizar el JS/CSS.
 
-Este repo es la copia de la versión que corre hoy en la pared (bajada el 2026-08-27; `Last-Modified` del archivo vivo: 2026-08-12). Reemplaza a `ironcross-reloj.html` (el HTML de 3 KB del 4 de julio, que ya no se sirve en `:8090`).
-
 ## Pestañas (`index.html`)
 
 1. **RELOJ** — hora a pantalla completa.
@@ -22,7 +22,7 @@ Este repo es la copia de la versión que corre hoy en la pared (bajada el 2026-0
 
 ## Rutas de API (mismo host `:8090`)
 
-El HTML vivo llama a:
+El HTML llama a:
 
 | Método | Ruta | Qué hace |
 |--------|------|----------|
