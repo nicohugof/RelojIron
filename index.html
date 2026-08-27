@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Ironcross</title>
+<style type="text/css">
+  * {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #0A0A09;
+    overflow: hidden;
+    -webkit-user-select: none;
+  }
+  #views {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 70px;
+  }
+  #clockView, #stopwatchView, #rutinaView {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  #clockView {
+    display: table;
+    width: 100%;
+    height: 100%;
+  }
+  #wrap {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+  }
+  #clock {
+    display: inline-block;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 150px;
+    line-height: 1;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+  #clock .sec {
+    color: #C23B22;
+  }
+  #brand {
+    color: #C23B22;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 34px;
+    letter-spacing: 14px;
+    margin-top: 30px;
+    text-transform: uppercase;
+  }
+
+  /* tab bar */
+  #tabBar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 70px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    -webkit-box-shadow: 0 -1px 0 #222;
+  }
+  .tab {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 19px;
+    letter-spacing: 2px;
+    background: #141412;
+    border-left: 1px solid #222;
+  }
+  #tabClock { border-left: none; }
+  .tab.active {
+    color: #EDE9DF;
+    background: #1E1D19;
+    -webkit-box-shadow: inset 0 3px 0 #C23B22;
+  }
+
+  /* rutina view */
+  #rutinaHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 84px;
+    padding: 10px 16px 0 16px;
+  }
+  #rutinaTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  #rutinaDays {
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dayPill {
+    display: inline-block;
+    padding: 0 14px;
+    height: 38px;
+    line-height: 38px;
+    margin-right: 8px;
+    background: #141412;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .dayPill.active {
+    background: #C23B22;
+    color: #EDE9DF;
+  }
+  #rutinaBody {
+    position: absolute;
+    top: 84px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  #rutinaText {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    right: 16px;
+    bottom: 74px;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 18px;
+    line-height: 1.3;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 10px;
+  }
+  #rutinaSaveBtn {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 10px;
+    height: 44px;
+    background: #C23B22;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    line-height: 44px;
+    text-align: center;
+  }
+  #rutinaStatus {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 56px;
+    height: 16px;
+    text-align: center;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  /* stopwatch view */
+  #swHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 148px;
+    padding: 14px 20px;
+  }
+  #swTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+  #addRow {
+    margin-top: 12px;
+  }
+  .addBtn {
+    display: inline-block;
+    width: 48%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  #addSwBtn { background: #C23B22; margin-right: 2%; }
+  #addTimerBtn { background: #C29A22; }
+  #swEmpty {
+    position: absolute;
+    top: 148px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    color: #4A473F;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    line-height: 1.4;
+    padding-top: 40px;
+  }
+  #swList {
+    position: absolute;
+    top: 148px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #swGrid {
+    position: relative;
+  }
+  .swRow {
+    position: absolute;
+    background: #141412;
+    border-top: 6px solid #C23B22;
+    padding: 12px 10px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .swRow.swTimer {
+    border-top-color: #C29A22;
+  }
+  .swLabel {
+    display: inline-block;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px dashed #4A473F;
+    padding-bottom: 2px;
+  }
+  .swTime {
+    display: inline-block;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 56px;
+    line-height: 1;
+    margin-top: 8px;
+    white-space: nowrap;
+  }
+  .swBtns {
+    margin-top: 8px;
+  }
+  .swBtn {
+    display: inline-block;
+    height: 40px;
+    padding: 0 10px;
+    margin: 2px;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 40px;
+    text-align: center;
+  }
+  .swStart { background: #2E6B3E; }
+  .swPause { background: #C29A22; }
+  .swReset { background: #2A2A26; }
+  .swRemove { background: #5A1E14; width: 40px; padding: 0; }
+</style>
+</head>
+<body>
+
+<div id="views">
+  <div id="clockView">
+    <div id="wrap">
+      <div id="clock">--:--:--</div>
+      <div id="brand">IRONCROSS</div>
+    </div>
+  </div>
+
+  <div id="stopwatchView" style="display:none;">
+    <div id="swHeader">
+      <div id="swTitle">CRONOMETROS Y TEMPORIZADORES</div>
+      <div id="addRow">
+        <div id="addSwBtn" class="addBtn">+ CRONOMETRO</div>
+        <div id="addTimerBtn" class="addBtn">+ TEMPORIZADOR</div>
+      </div>
+    </div>
+    <div id="swEmpty">Toca "+ CRONOMETRO" para tomar un tiempo,<br>o "+ TEMPORIZADOR" para una cuenta regresiva</div>
+    <div id="swList"><div id="swGrid"></div></div>
+  </div>
+
+  <div id="rutinaView" style="display:none;">
+    <div id="rutinaHeader">
+      <div id="rutinaTitle">RUTINAS</div>
+      <div id="rutinaDays"></div>
+    </div>
+    <div id="rutinaBody">
+      <textarea id="rutinaText"></textarea>
+      <div id="rutinaSaveBtn">GUARDAR</div>
+      <div id="rutinaStatus">&nbsp;</div>
+    </div>
+  </div>
+</div>
+
+<audio id="beepSound" preload="auto" src="data:audio/wav;base64,UklGRmQLAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUALAAAAAJwA4gGGAmkBhf4k+1b5v/p2/6QFOgpsClAFqfxa9KzwG/TW/cUJQhK+EiwK3ftA7gHoxewl+/IM4hljG/IPJ/zp6G3f0uRo9x8PASFDJJEWiP1n5AzXV9yn8kEQiSdDLfsdAADL4PjOa9Pr7FAQYy1JNh0mjgMm3knHJspA5kcPezI7P+IuLgiD3BjAocC03iENvDb/Rzc42Q3u232597ba1qAJ+zelTCE+GRNO34O6nrXd0tIEkjQxTNdAuxe747S8kbQNzwAA8zBvS0xDRRxF6Cm/z7Nuyy77Iy1iSn1FsiDn7N/BW7MFyGD2JikJSWdH/ySd8dTENLPUxJ3x/yRnRwlJJilg9gXIW7PfwefssiB9RWJKIy0u+27Lz7Mpv0XoRRxMQ29L8zAAAA3PkbS0vLvjuxfXQDFMkjTSBN3SnrWDuk7fGRMhPqVM+zegCdrW97aZuAHbYw4sO8xMLDtjDgHbmbj3ttrWoAn7N6VMIT4ZE07fg7qetd3S0gSSNDFM10C7F7vjtLyRtA3PAADzMG9LTENFHEXoKb/Ps27LLvsjLWJKfUWyIOfs38FbswXIYPYmKQlJZ0f/JJ3x1MQ0s9TEnfH/JGdHCUkmKWD2Bchbs9/B5+yyIH1FYkojLS77bsvPsym/RehFHExDb0vzMAAADc+RtLS8u+O7F9dAMUySNNIE3dKetYO6Tt8ZEyE+pUz7N6AJ2tb3tpm4AdtjDiw7zEwsO2MOAduZuPe22tagCfs3pUwhPhkTTt+Dup613dLSBJI0MUzXQLsXu+O0vJG0Dc8AAPMwb0tMQ0UcRegpv8+zbssu+yMtYkp9RbIg5+zfwVuzBchg9iYpCUlnR/8knfHUxDSz1MSd8f8kZ0cJSSYpYPYFyFuz38Hn7LIgfUViSiMtLvtuy8+zKb9F6EUcTENvS/MwAAANz5G0tLy747sX10AxTJI00gTd0p61g7pO3xkTIT6lTPs3oAna1ve2mbgB22MOLDvMTCw7Yw4B25m497ba1qAJ+zelTCE+GRNO34O6nrXd0tIEkjQxTNdAuxe747S8kbQNzwAA8zBvS0xDRRxF6Cm/z7Nuyy77Iy1iSn1FsiDn7N/BW7MFyGD2JikJSWdH/ySd8dTENLPUxJ3x/yRnRwlJJilg9gXIW7PfwefssiB9RWJKIy0u+27Lz7Mpv0XoRRxMQ29L8zAAAA3PkbS0vLvjuxfXQDFMkjTSBN3SjLZAvIjgJBI/OuVGFTOpCHvbGMBqwo7gDQzRMGU+Vi9VC1Tjjsk5yafh+gbjJ6Y1tirkDFfq1tKV0Mrj9AKKH8MsSCVZDXTw1Ntm2OrmAADdF9UjIB+4DJ/1cuST4PnqIv7tEPYaUhgJC8v5luwC6ejvW/3NCkIS9RBTCPL8K/Sa8ab1qv2MBdEJIQmhBAr/GvtB+h78DP85AbwB7gA=" style="display:none;"></audio>
+
+<div id="tabBar">
+  <div id="tabClock" class="tab active">RELOJ</div>
+  <div id="tabStopwatch" class="tab">CRONOMETROS</div>
+  <div id="tabRutina" class="tab">RUTINA</div>
+</div>
+
+<script type="text/javascript">
+(function () {
+
+  function pad(n) {
+    return (n < 10 ? '0' : '') + n;
+  }
+
+  /* ---------- reloj ---------- */
+  var clock = document.getElementById('clock');
+
+  function tick() {
+    var d = new Date();
+    var h = pad(d.getHours());
+    var m = pad(d.getMinutes());
+    var s = pad(d.getSeconds());
+    clock.innerHTML = h + ':' + m + ':<span class="sec">' + s + '</span>';
+  }
+
+  function fitClock() {
+    clock.style.fontSize = '100px';
+    var w = clock.offsetWidth;
+    if (!w) { return; }
+    var target = window.innerWidth * 0.92;
+    var newSize = Math.floor(100 * target / w);
+    if (newSize < 40) { newSize = 40; }
+    clock.style.fontSize = newSize + 'px';
+  }
+
+  tick();
+  fitClock();
+  setInterval(tick, 1000);
+  window.addEventListener('resize', function () {
+    fitClock();
+    reflowGrid();
+  }, false);
+  window.addEventListener('orientationchange', function () {
+    setTimeout(function () {
+      fitClock();
+      reflowGrid();
+    }, 300);
+  }, false);
+
+  /* ---------- tabs ---------- */
+  var clockView = document.getElementById('clockView');
+  var stopwatchView = document.getElementById('stopwatchView');
+  var rutinaView = document.getElementById('rutinaView');
+  var tabClock = document.getElementById('tabClock');
+  var tabStopwatch = document.getElementById('tabStopwatch');
+  var tabRutina = document.getElementById('tabRutina');
+
+  function hideAllViews() {
+    clockView.style.display = 'none';
+    stopwatchView.style.display = 'none';
+    rutinaView.style.display = 'none';
+    tabClock.className = 'tab';
+    tabStopwatch.className = 'tab';
+    tabRutina.className = 'tab';
+  }
+
+  function showClock() {
+    hideAllViews();
+    clockView.style.display = 'table';
+    tabClock.className = 'tab active';
+    fitClock();
+  }
+
+  function showStopwatch() {
+    hideAllViews();
+    stopwatchView.style.display = 'block';
+    tabStopwatch.className = 'tab active';
+    reflowGrid();
+  }
+
+  function showRutina() {
+    hideAllViews();
+    rutinaView.style.display = 'block';
+    tabRutina.className = 'tab active';
+    cargarDias();
+  }
+
+  tabClock.addEventListener('click', showClock, false);
+  tabStopwatch.addEventListener('click', showStopwatch, false);
+  tabRutina.addEventListener('click', showRutina, false);
+
+  /* ---------- rutina ---------- */
+  var rutinaText = document.getElementById('rutinaText');
+  var rutinaSaveBtn = document.getElementById('rutinaSaveBtn');
+  var rutinaStatus = document.getElementById('rutinaStatus');
+  var rutinaDays = document.getElementById('rutinaDays');
+  var fechaSeleccionada = null;
+  var diasCache = [];
+  var hoyGlobal = null;
+  var manianaGlobal = null;
+
+  function pillLabel(fecha) {
+    if (fecha === hoyGlobal) { return 'HOY'; }
+    if (fecha === manianaGlobal) { return 'MAÑANA'; }
+    var partes = fecha.split('-');
+    return partes[2] + '/' + partes[1];
+  }
+
+  function pintarPills() {
+    rutinaDays.innerHTML = '';
+    for (var i = 0; i < diasCache.length; i++) {
+      (function (fecha) {
+        var pill = document.createElement('div');
+        pill.className = 'dayPill' + (fecha === fechaSeleccionada ? ' active' : '');
+        pill.innerHTML = pillLabel(fecha);
+        pill.addEventListener('click', function () { seleccionarDia(fecha); }, false);
+        rutinaDays.appendChild(pill);
+      })(diasCache[i]);
+    }
+  }
+
+  function fitRutinaText() {
+    var size = 18;
+    rutinaText.style.fontSize = size + 'px';
+    while (rutinaText.scrollHeight > rutinaText.clientHeight && size > 15) {
+      size -= 1;
+      rutinaText.style.fontSize = size + 'px';
+    }
+  }
+
+  function cargarRutinaFecha(fecha) {
+    rutinaStatus.innerHTML = 'Cargando...';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/rutina?fecha=' + encodeURIComponent(fecha), true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          rutinaText.value = xhr.responseText;
+          rutinaStatus.innerHTML = '&nbsp;';
+          fitRutinaText();
+        } else {
+          rutinaStatus.innerHTML = 'No se pudo cargar la rutina';
+        }
+      }
+    };
+    xhr.send(null);
+  }
+
+  function seleccionarDia(fecha) {
+    fechaSeleccionada = fecha;
+    pintarPills();
+    cargarRutinaFecha(fecha);
+  }
+
+  function cargarDias() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/rutina/dias', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var lineas = xhr.responseText.split('\n');
+        hoyGlobal = lineas[0].split(':')[1];
+        manianaGlobal = lineas[1].split(':')[1];
+        diasCache = lineas[2].substring('DIAS:'.length).split(',');
+        if (fechaSeleccionada === null || diasCache.indexOf(fechaSeleccionada) === -1) {
+          fechaSeleccionada = hoyGlobal;
+          pintarPills();
+          cargarRutinaFecha(fechaSeleccionada);
+        } else {
+          pintarPills();
+        }
+      }
+    };
+    xhr.send(null);
+  }
+
+  function guardarRutina() {
+    rutinaStatus.innerHTML = 'Guardando...';
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/guardar', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          rutinaStatus.innerHTML = 'Guardado';
+          cargarDias();
+        } else {
+          rutinaStatus.innerHTML = 'No se pudo guardar';
+        }
+      }
+    };
+    xhr.send('fecha=' + encodeURIComponent(fechaSeleccionada) + '&rutina=' + encodeURIComponent(rutinaText.value));
+  }
+
+  rutinaSaveBtn.addEventListener('click', guardarRutina, false);
+
+  /* ---------- cronometros y temporizadores ---------- */
+  var swList = document.getElementById('swList');
+  var swGrid = document.getElementById('swGrid');
+  var swEmpty = document.getElementById('swEmpty');
+  var addSwBtn = document.getElementById('addSwBtn');
+  var addTimerBtn = document.getElementById('addTimerBtn');
+  var stopwatches = [];
+  var nextId = 1;
+  var COLOR_BG = '#141412';
+  var COLOR_DONE = '#C23B22';
+  var GRID_GAP = 10;
+  var GRID_PAD = 10;
+
+  /* ---------- sonido ---------- */
+  var beepSound = document.getElementById('beepSound');
+  var audioUnlocked = false;
+
+  function unlockAudio() {
+    if (audioUnlocked) { return; }
+    audioUnlocked = true;
+    try {
+      beepSound.play();
+      beepSound.pause();
+      beepSound.currentTime = 0;
+    } catch (e) {}
+  }
+
+  document.body.addEventListener('touchstart', unlockAudio, false);
+  document.body.addEventListener('click', unlockAudio, false);
+
+  function playBeep() {
+    try {
+      beepSound.currentTime = 0;
+      beepSound.play();
+    } catch (e) {}
+  }
+
+  function fitSwTimeSize(tileW) {
+    if (stopwatches.length === 0) { return; }
+    var probe = stopwatches[0].timeEl;
+    probe.style.fontSize = '56px';
+    var w = probe.offsetWidth;
+    if (!w) { return; }
+    var available = (tileW - 20) * 0.92;
+    var size = Math.floor(56 * available / w);
+    if (size < 26) { size = 26; }
+    if (size > 56) { size = 56; }
+    for (var j = 0; j < stopwatches.length; j++) {
+      stopwatches[j].timeEl.style.fontSize = size + 'px';
+    }
+  }
+
+  function reflowGrid() {
+    var containerW = swList.clientWidth;
+    var containerH = swList.clientHeight;
+    if (!containerW || !containerH) { return; }
+
+    var landscape = containerW > containerH;
+    var cols = landscape ? 4 : 2;
+    var rows = landscape ? 2 : 4;
+
+    var tileW = Math.floor((containerW - GRID_PAD * 2 - GRID_GAP * (cols - 1)) / cols);
+    var tileH = Math.floor((containerH - GRID_PAD * 2 - GRID_GAP * (rows - 1)) / rows);
+
+    fitSwTimeSize(tileW);
+
+    for (var i = 0; i < stopwatches.length; i++) {
+      var col = i % cols;
+      var row = Math.floor(i / cols);
+      var el = stopwatches[i].rowEl;
+      el.style.width = tileW + 'px';
+      el.style.height = tileH + 'px';
+      el.style.left = (GRID_PAD + col * (tileW + GRID_GAP)) + 'px';
+      el.style.top = (GRID_PAD + row * (tileH + GRID_GAP)) + 'px';
+    }
+
+    var totalRows = Math.max(rows, Math.ceil(stopwatches.length / cols));
+    var gridHeight = GRID_PAD * 2 + totalRows * tileH + (totalRows - 1) * GRID_GAP;
+    swGrid.style.height = gridHeight + 'px';
+  }
+
+  function fmt(ms) {
+    if (ms < 0) { ms = 0; }
+    var totalTenths = Math.floor(ms / 100);
+    var tenths = totalTenths % 10;
+    var totalSec = Math.floor(totalTenths / 10);
+    var sec = totalSec % 60;
+    var min = Math.floor(totalSec / 60);
+    return pad(min) + ':' + pad(sec) + '.' + tenths;
+  }
+
+  function updateEmptyState() {
+    swEmpty.style.display = stopwatches.length ? 'none' : 'block';
+  }
+
+  function getElapsed(sw) {
+    var e = sw.elapsedMs;
+    if (sw.running) {
+      e += (Date.now() - sw.startTs);
+    }
+    return e;
+  }
+
+  function redrawRow(sw) {
+    var elapsed = getElapsed(sw);
+
+    if (sw.type === 'timer') {
+      var remaining = sw.totalMs - elapsed;
+      if (remaining <= 0) {
+        remaining = 0;
+        if (sw.running) {
+          sw.running = false;
+          sw.elapsedMs = sw.totalMs;
+          sw.done = true;
+        }
+      }
+      if (sw.done && !sw.beeped) {
+        sw.beeped = true;
+        playBeep();
+        setTimeout(playBeep, 400);
+        setTimeout(playBeep, 800);
+      }
+      sw.timeEl.innerHTML = fmt(remaining);
+    } else {
+      sw.timeEl.innerHTML = fmt(elapsed);
+    }
+
+    if (sw.running) {
+      sw.startBtn.innerHTML = 'PAUSAR';
+      sw.startBtn.className = 'swBtn swPause';
+    } else {
+      sw.startBtn.innerHTML = 'INICIAR';
+      sw.startBtn.className = 'swBtn swStart';
+    }
+
+    if (sw.done) {
+      sw.blinkTick = (sw.blinkTick || 0) + 1;
+      sw.rowEl.style.background = (Math.floor(sw.blinkTick / 5) % 2 === 0) ? COLOR_DONE : COLOR_BG;
+    }
+  }
+
+  function toggleRun(sw) {
+    if (sw.running) {
+      sw.elapsedMs = getElapsed(sw);
+      sw.running = false;
+    } else {
+      if (sw.done) {
+        sw.done = false;
+        sw.beeped = false;
+        sw.rowEl.style.background = COLOR_BG;
+        if (sw.type === 'timer') { sw.elapsedMs = 0; }
+      }
+      sw.startTs = Date.now();
+      sw.running = true;
+    }
+    redrawRow(sw);
+  }
+
+  function resetRow(sw) {
+    sw.running = false;
+    sw.elapsedMs = 0;
+    sw.startTs = Date.now();
+    sw.done = false;
+    sw.beeped = false;
+    sw.blinkTick = 0;
+    sw.rowEl.style.background = COLOR_BG;
+    redrawRow(sw);
+  }
+
+  function removeRow(sw) {
+    var idx = -1;
+    for (var i = 0; i < stopwatches.length; i++) {
+      if (stopwatches[i].id === sw.id) { idx = i; break; }
+    }
+    if (idx > -1) { stopwatches.splice(idx, 1); }
+    swGrid.removeChild(sw.rowEl);
+    updateEmptyState();
+    reflowGrid();
+  }
+
+  function addTile(type, totalMs) {
+    var id = nextId++;
+    var row = document.createElement('div');
+    row.className = (type === 'timer') ? 'swRow swTimer' : 'swRow';
+
+    var label = document.createElement('div');
+    label.className = 'swLabel';
+    label.innerHTML = (type === 'timer' ? 'TEMPORIZADOR ' : 'CRONOMETRO ') + id;
+    row.appendChild(label);
+
+    label.addEventListener('click', function () {
+      var name = prompt('Nombre:', '');
+      if (name !== null) {
+        name = name.replace(/^\s+|\s+$/g, '');
+        if (name.length) { label.textContent = name; }
+      }
+    }, false);
+
+    var timeEl = document.createElement('div');
+    timeEl.className = 'swTime';
+    timeEl.innerHTML = '00:00.0';
+    row.appendChild(timeEl);
+
+    var btns = document.createElement('div');
+    btns.className = 'swBtns';
+
+    var startBtn = document.createElement('div');
+    startBtn.className = 'swBtn swPause';
+    startBtn.innerHTML = 'PAUSAR';
+    btns.appendChild(startBtn);
+
+    var resetBtn = document.createElement('div');
+    resetBtn.className = 'swBtn swReset';
+    resetBtn.innerHTML = 'REINICIAR';
+    btns.appendChild(resetBtn);
+
+    var removeBtn = document.createElement('div');
+    removeBtn.className = 'swBtn swRemove';
+    removeBtn.innerHTML = 'X';
+    btns.appendChild(removeBtn);
+
+    row.appendChild(btns);
+    swGrid.appendChild(row);
+
+    var sw = {
+      id: id,
+      type: type,
+      totalMs: totalMs || 0,
+      elapsedMs: 0,
+      running: true,
+      done: false,
+      beeped: false,
+      blinkTick: 0,
+      startTs: Date.now(),
+      rowEl: row,
+      timeEl: timeEl,
+      startBtn: startBtn
+    };
+    stopwatches.push(sw);
+
+    startBtn.addEventListener('click', function () { toggleRun(sw); }, false);
+    resetBtn.addEventListener('click', function () { resetRow(sw); }, false);
+    removeBtn.addEventListener('click', function () { removeRow(sw); }, false);
+
+    updateEmptyState();
+    reflowGrid();
+  }
+
+  function addStopwatch() {
+    addTile('sw', 0);
+  }
+
+  function addTimer() {
+    var input = prompt('Duracion en segundos:', '30');
+    if (input === null) { return; }
+    var seconds = parseInt(input, 10);
+    if (isNaN(seconds) || seconds <= 0) { seconds = 30; }
+    addTile('timer', seconds * 1000);
+  }
+
+  addSwBtn.addEventListener('click', addStopwatch, false);
+  addTimerBtn.addEventListener('click', addTimer, false);
+
+  setInterval(function () {
+    for (var i = 0; i < stopwatches.length; i++) {
+      if (stopwatches[i].running || stopwatches[i].done) { redrawRow(stopwatches[i]); }
+    }
+  }, 100);
+
+  updateEmptyState();
+
+})();
+</script>
+</body>
+</html>
