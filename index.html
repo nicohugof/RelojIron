@@ -631,6 +631,8 @@
     }
   }
 
+  var PLANTILLA_RUTINA = 'PREPARACION\n\nCALENTAMIENTO\n\nPIERNAS\n\nELONGACION\n\nCORE\n\nPOSTURAS\n\nSUPER SET\n\nELONGACION\n';
+
   function cargarRutinaFecha(fecha) {
     rutinaStatus.innerHTML = 'Cargando...';
     var xhr = new XMLHttpRequest();
@@ -638,7 +640,9 @@
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          rutinaText.value = xhr.responseText;
+          var t = xhr.responseText;
+          if (!t || !String(t).replace(/^\s+|\s+$/g, '')) { t = PLANTILLA_RUTINA; }
+          rutinaText.value = t;
           rutinaStatus.innerHTML = '&nbsp;';
           fitRutinaText();
         } else {
