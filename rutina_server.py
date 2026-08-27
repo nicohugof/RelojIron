@@ -84,11 +84,16 @@ def psql_query(sql, variables):
     return result.stdout
 
 
+PLANTILLA_RUTINA = 'PREPARACION\n\nCALENTAMIENTO\n\nPIERNAS\n\nELONGACION\n\nCORE\n\nPOSTURAS\n\nSUPER SET\n\nELONGACION\n'
+
+
 def leer_rutina(fecha):
     sql = "SELECT contenido FROM rutinas WHERE fecha = :'fecha';"
     out = psql_query(sql, {'fecha': fecha})
     if out.endswith('\n'):
         out = out[:-1]
+    if not out.strip():
+        return PLANTILLA_RUTINA
     return out
 
 
