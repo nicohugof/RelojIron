@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Ironcross - Rutina</title>
+<style>
+  * { margin:0; padding:0; -webkit-box-sizing:border-box; box-sizing:border-box; }
+  html, body { width:100%; height:100%; background:#0A0A09; }
+  body { font-family: Helvetica, Arial, sans-serif; }
+  #topbar { padding:16px 20px; }
+  #back { color:#7A7568; text-decoration:none; font-size:16px; letter-spacing:2px; }
+  #brand { color:#C23B22; font-weight:bold; font-size:22px; letter-spacing:6px; margin-top:8px; text-transform:uppercase; }
+  form { position:absolute; top:90px; left:0; right:0; bottom:0; padding:0 20px 20px 20px; }
+  textarea {
+    width:100%;
+    height:78%;
+    background:#141412;
+    color:#EDE9DF;
+    border:1px solid #2A2A26;
+    font-size:22px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding:14px;
+  }
+  button {
+    margin-top:14px;
+    width:100%;
+    height:64px;
+    background:#C23B22;
+    color:#EDE9DF;
+    font-weight:bold;
+    font-size:22px;
+    letter-spacing:3px;
+    border:0;
+  }
+</style>
+</head>
+<body>
+  <div id="topbar">
+    <a id="back" href="/">&larr; RELOJ</a>
+    <div id="brand">Rutina de 2026-08-27</div>
+  </div>
+  <form method="POST" action="/guardar">
+    <input type="hidden" name="fecha" value="2026-08-27">
+    <textarea name="rutina"></textarea>
+    <button type="submit">GUARDAR</button>
+  </form>
+</body>
+</html>
