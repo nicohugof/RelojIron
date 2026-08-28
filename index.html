@@ -295,7 +295,7 @@
   }
 
   #gymPlanes {
-    padding: 4px 16px 70px 16px;
+    padding: 4px 16px 20px 16px;
   }
   .gymPlanGrupo {
     color: #7A7568;
@@ -307,14 +307,14 @@
     margin-bottom: 2px;
   }
   .gymPlanRow {
+    padding: 10px 0 12px 0;
+    border-top: 1px solid #222;
+  }
+  .gymPlanHead {
     display: table;
     width: 100%;
     table-layout: fixed;
-    padding: 10px 0;
-    border-top: 1px solid #222;
-  }
-  .gymPlanRow.sel {
-    background: #1E1D19;
+    margin-bottom: 6px;
   }
   .gymPlanName {
     display: table-cell;
@@ -333,24 +333,15 @@
     font-size: 14px;
     vertical-align: middle;
   }
-  #gymPlanCopy {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 8px 16px 12px 16px;
-    background: #0A0A09;
-    -webkit-box-shadow: 0 -1px 0 #222;
-  }
-  #gymPlanUrlBox {
+  .gymPlanUrl {
     display: block;
     width: 100%;
     background: #141412;
     color: #EDE9DF;
     border: 1px solid #2A2A26;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    padding: 10px 8px;
+    font-size: 12px;
+    padding: 8px;
     -webkit-user-select: text;
     user-select: text;
   }
@@ -500,9 +491,6 @@
     </div>
     <div id="gymPlanesPane" style="display:none;">
       <div id="gymPlanes"></div>
-      <div id="gymPlanCopy">
-        <input id="gymPlanUrlBox" type="text" readonly="readonly" value="Toca un plan para copiar el link">
-      </div>
     </div>
   </div>
   <div id="rutinaView" style="display:none;">
@@ -661,8 +649,6 @@
   var gymPlanesPane = document.getElementById('gymPlanesPane');
   var gymSubOficina = document.getElementById('gymSubOficina');
   var gymSubPlanes = document.getElementById('gymSubPlanes');
-  var gymPlanUrlBox = document.getElementById('gymPlanUrlBox');
-  var gymPlanRows = [];
 
   function showGymOficina() {
     gymOficinaPane.style.display = 'block';
@@ -682,57 +668,53 @@
   gymSubOficina.addEventListener('click', showGymOficina, false);
   gymSubPlanes.addEventListener('click', showGymPlanes, false);
 
-  function seleccionarPlan(row, url) {
-    var i;
-    for (i = 0; i < gymPlanRows.length; i++) {
-      gymPlanRows[i].className = 'gymPlanRow';
-    }
-    row.className = 'gymPlanRow sel';
-    gymPlanUrlBox.value = url;
-    gymPlanUrlBox.focus();
-    gymPlanUrlBox.select();
-  }
-
   function renderPlanes() {
     var wrap = document.getElementById('gymPlanes');
     if (!wrap) { return; }
     while (wrap.firstChild) { wrap.removeChild(wrap.firstChild); }
-    gymPlanRows = [];
     var lastGrupo = '';
     var i;
     for (i = 0; i < PLANES_PAGO.length; i++) {
-      (function (p) {
-        if (p.grupo !== lastGrupo) {
-          lastGrupo = p.grupo;
-          var g = document.createElement('div');
-          g.className = 'gymPlanGrupo';
-          g.appendChild(document.createTextNode(p.grupo));
-          wrap.appendChild(g);
-        }
-        var row = document.createElement('div');
-        row.className = 'gymPlanRow';
+      var p = PLANES_PAGO[i];
+      if (p.grupo !== lastGrupo) {
+        lastGrupo = p.grupo;
+        var g = document.createElement('div');
+        g.className = 'gymPlanGrupo';
+        g.appendChild(document.createTextNode(p.grupo));
+        wrap.appendChild(g);
+      }
+      var row = document.createElement('div');
+      row.className = 'gymPlanRow';
 
-        var name = document.createElement('div');
-        name.className = 'gymPlanName';
-        name.appendChild(document.createTextNode(p.nombre));
+      var head = document.createElement('div');
+      head.className = 'gymPlanHead';
 
-        var price = document.createElement('div');
-        price.className = 'gymPlanPrice';
-        price.appendChild(document.createTextNode(fmtMonto(p.precio)));
+      var name = document.createElement('div');
+      name.className = 'gymPlanName';
+      name.appendChild(document.createTextNode(p.nombre));
 
-        row.appendChild(name);
-        row.appendChild(price);
-        row.addEventListener('click', function () {
-          seleccionarPlan(row, p.url);
-        }, false);
-        wrap.appendChild(row);
-        gymPlanRows.push(row);
-      })(PLANES_PAGO[i]);
+      var price = document.createElement('div');
+      price.className = 'gymPlanPrice';
+      price.appendChild(document.createTextNode(fmtMonto(p.precio)));
+
+      head.appendChild(name);
+      head.appendChild(price);
+
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'gymPlanUrl';
+      inp.value = p.url;
+      inp.readOnly = true;
+      inp.setAttribute('readonly', 'readonly');
+      inp.onfocus = function () { this.select(); };
+      inp.onclick = function () { this.select(); };
+
+      row.appendChild(head);
+      row.appendChild(inp);
+      wrap.appendChild(row);
     }
   }
 
-  gymPlanUrlBox.onfocus = function () { this.select(); };
-  gymPlanUrlBox.onclick = function () { this.select(); };
   renderPlanes();
 
   function cargarOficina() {
