@@ -193,22 +193,49 @@
   /* gym / oficina view */
   #gymView {
     display: none;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     background: #0A0A09;
   }
-  #gymHeader {
-    padding: 14px 16px 8px 16px;
+  #gymSubBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    padding: 8px 16px 0 16px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
   }
-  #gymTitle {
+  .gymSub {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 36px;
+    background: #141412;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
+  }
+  #gymSubOficina { border-right: 1px solid #222; }
+  .gymSub.active {
+    color: #EDE9DF;
+    background: #1E1D19;
+    -webkit-box-shadow: inset 0 3px 0 #C23B22;
+  }
+  #gymOficinaPane, #gymPlanesPane {
+    position: absolute;
+    top: 52px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   #gymCounts {
-    padding: 0 16px 10px 16px;
+    padding: 8px 16px 10px 16px;
   }
   .gymCount {
     display: inline-block;
@@ -268,15 +295,7 @@
   }
 
   #gymPlanes {
-    padding: 8px 16px 10px 16px;
-  }
-  #gymPlanesTitle {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
+    padding: 4px 16px 70px 16px;
   }
   .gymPlanGrupo {
     color: #7A7568;
@@ -284,18 +303,18 @@
     font-weight: bold;
     font-size: 11px;
     letter-spacing: 2px;
-    margin-top: 14px;
-    margin-bottom: 4px;
+    margin-top: 16px;
+    margin-bottom: 2px;
   }
   .gymPlanRow {
-    padding: 8px 0 10px 0;
-    border-top: 1px solid #222;
-  }
-  .gymPlanHead {
     display: table;
     width: 100%;
     table-layout: fixed;
-    margin-bottom: 6px;
+    padding: 10px 0;
+    border-top: 1px solid #222;
+  }
+  .gymPlanRow.sel {
+    background: #1E1D19;
   }
   .gymPlanName {
     display: table-cell;
@@ -314,15 +333,24 @@
     font-size: 14px;
     vertical-align: middle;
   }
-  .gymPlanUrl {
+  #gymPlanCopy {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 8px 16px 12px 16px;
+    background: #0A0A09;
+    -webkit-box-shadow: 0 -1px 0 #222;
+  }
+  #gymPlanUrlBox {
     display: block;
     width: 100%;
     background: #141412;
     color: #EDE9DF;
     border: 1px solid #2A2A26;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    padding: 8px;
+    font-size: 13px;
+    padding: 10px 8px;
     -webkit-user-select: text;
     user-select: text;
   }
@@ -461,15 +489,21 @@
 
 
   <div id="gymView" style="display:none;">
-    <div id="gymHeader">
-      <div id="gymTitle">OFICINA</div>
+    <div id="gymSubBar">
+      <div id="gymSubOficina" class="gymSub active">OFICINA</div>
+      <div id="gymSubPlanes" class="gymSub">PLANES</div>
     </div>
-    <div id="gymPlanes">
-      <div id="gymPlanesTitle">PLANES</div>
+    <div id="gymOficinaPane">
+      <div id="gymCounts"></div>
+      <div id="gymList"></div>
+      <div id="gymStatus">&nbsp;</div>
     </div>
-    <div id="gymCounts"></div>
-    <div id="gymList"></div>
-    <div id="gymStatus">&nbsp;</div>
+    <div id="gymPlanesPane" style="display:none;">
+      <div id="gymPlanes"></div>
+      <div id="gymPlanCopy">
+        <input id="gymPlanUrlBox" type="text" readonly="readonly" value="Toca un plan para copiar el link">
+      </div>
+    </div>
   </div>
   <div id="rutinaView" style="display:none;">
     <div id="rutinaHeader">
@@ -581,7 +615,7 @@
     hideAllViews();
     gymView.style.display = 'block';
     tabGym.className = 'tab active';
-    cargarOficina();
+    showGymOficina();
   }
 
   tabClock.addEventListener('click', showClock, false);
@@ -623,52 +657,82 @@
     { grupo: 'ANUAL', nombre: 'Élite', precio: 849900, url: 'https://pages.virtualpos.cl/ironcross/48326a7944e45c650' }
   ];
 
+  var gymOficinaPane = document.getElementById('gymOficinaPane');
+  var gymPlanesPane = document.getElementById('gymPlanesPane');
+  var gymSubOficina = document.getElementById('gymSubOficina');
+  var gymSubPlanes = document.getElementById('gymSubPlanes');
+  var gymPlanUrlBox = document.getElementById('gymPlanUrlBox');
+  var gymPlanRows = [];
+
+  function showGymOficina() {
+    gymOficinaPane.style.display = 'block';
+    gymPlanesPane.style.display = 'none';
+    gymSubOficina.className = 'gymSub active';
+    gymSubPlanes.className = 'gymSub';
+    cargarOficina();
+  }
+
+  function showGymPlanes() {
+    gymOficinaPane.style.display = 'none';
+    gymPlanesPane.style.display = 'block';
+    gymSubOficina.className = 'gymSub';
+    gymSubPlanes.className = 'gymSub active';
+  }
+
+  gymSubOficina.addEventListener('click', showGymOficina, false);
+  gymSubPlanes.addEventListener('click', showGymPlanes, false);
+
+  function seleccionarPlan(row, url) {
+    var i;
+    for (i = 0; i < gymPlanRows.length; i++) {
+      gymPlanRows[i].className = 'gymPlanRow';
+    }
+    row.className = 'gymPlanRow sel';
+    gymPlanUrlBox.value = url;
+    gymPlanUrlBox.focus();
+    gymPlanUrlBox.select();
+  }
+
   function renderPlanes() {
     var wrap = document.getElementById('gymPlanes');
     if (!wrap) { return; }
+    while (wrap.firstChild) { wrap.removeChild(wrap.firstChild); }
+    gymPlanRows = [];
     var lastGrupo = '';
     var i;
     for (i = 0; i < PLANES_PAGO.length; i++) {
-      var p = PLANES_PAGO[i];
-      if (p.grupo !== lastGrupo) {
-        lastGrupo = p.grupo;
-        var g = document.createElement('div');
-        g.className = 'gymPlanGrupo';
-        g.appendChild(document.createTextNode(p.grupo));
-        wrap.appendChild(g);
-      }
-      var row = document.createElement('div');
-      row.className = 'gymPlanRow';
+      (function (p) {
+        if (p.grupo !== lastGrupo) {
+          lastGrupo = p.grupo;
+          var g = document.createElement('div');
+          g.className = 'gymPlanGrupo';
+          g.appendChild(document.createTextNode(p.grupo));
+          wrap.appendChild(g);
+        }
+        var row = document.createElement('div');
+        row.className = 'gymPlanRow';
 
-      var head = document.createElement('div');
-      head.className = 'gymPlanHead';
+        var name = document.createElement('div');
+        name.className = 'gymPlanName';
+        name.appendChild(document.createTextNode(p.nombre));
 
-      var name = document.createElement('div');
-      name.className = 'gymPlanName';
-      name.appendChild(document.createTextNode(p.nombre));
+        var price = document.createElement('div');
+        price.className = 'gymPlanPrice';
+        price.appendChild(document.createTextNode(fmtMonto(p.precio)));
 
-      var price = document.createElement('div');
-      price.className = 'gymPlanPrice';
-      price.appendChild(document.createTextNode(fmtMonto(p.precio)));
-
-      head.appendChild(name);
-      head.appendChild(price);
-
-      var inp = document.createElement('input');
-      inp.type = 'text';
-      inp.className = 'gymPlanUrl';
-      inp.value = p.url;
-      inp.readOnly = true;
-      inp.setAttribute('readonly', 'readonly');
-      inp.onfocus = function () { this.select(); };
-      inp.onclick = function () { this.select(); };
-
-      row.appendChild(head);
-      row.appendChild(inp);
-      wrap.appendChild(row);
+        row.appendChild(name);
+        row.appendChild(price);
+        row.addEventListener('click', function () {
+          seleccionarPlan(row, p.url);
+        }, false);
+        wrap.appendChild(row);
+        gymPlanRows.push(row);
+      })(PLANES_PAGO[i]);
     }
   }
 
+  gymPlanUrlBox.onfocus = function () { this.select(); };
+  gymPlanUrlBox.onclick = function () { this.select(); };
   renderPlanes();
 
   function cargarOficina() {
