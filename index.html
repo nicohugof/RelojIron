@@ -265,6 +265,66 @@
     font-size: 14px;
   }
 
+  #gymPlanes {
+    padding: 8px 16px 10px 16px;
+  }
+  #gymPlanesTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  .gymPlanGrupo {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+  }
+  .gymPlanRow {
+    padding: 8px 0 10px 0;
+    border-top: 1px solid #222;
+  }
+  .gymPlanHead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 6px;
+  }
+  .gymPlanName {
+    display: table-cell;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  .gymPlanPrice {
+    display: table-cell;
+    width: 110px;
+    text-align: right;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  .gymPlanUrl {
+    display: block;
+    width: 100%;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    padding: 8px;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
   /* stopwatch view */
   #swHeader {
     position: absolute;
@@ -404,6 +464,9 @@
     </div>
     <div id="gymCounts"></div>
     <div id="gymList"></div>
+    <div id="gymPlanes">
+      <div id="gymPlanesTitle">PLANES</div>
+    </div>
     <div id="gymStatus">&nbsp;</div>
   </div>
   <div id="rutinaView" style="display:none;">
@@ -540,6 +603,71 @@
     }
     return '$' + s + out;
   }
+
+  /* ---------- planes VirtualPos (estatico; no toca cargarOficina) ---------- */
+  var PLANES_PAGO = [
+    { grupo: 'EVALUACIÓN', nombre: 'Clase de Evaluación', precio: 20000, url: 'https://pages.virtualpos.cl/ironcross/48326a79412722f95' },
+    { grupo: 'MENSUAL', nombre: 'Base', precio: 59900, url: 'https://pages.virtualpos.cl/ironcross/48326a7941a5581fb' },
+    { grupo: 'MENSUAL', nombre: 'Progreso', precio: 75900, url: 'https://pages.virtualpos.cl/ironcross/48326a7941fe7e0b2' },
+    { grupo: 'MENSUAL', nombre: 'Élite', precio: 92900, url: 'https://pages.virtualpos.cl/ironcross/48326a794240e4d79' },
+    { grupo: 'TRIMESTRAL', nombre: 'Base', precio: 159900, url: 'https://pages.virtualpos.cl/ironcross/48326a79429750103' },
+    { grupo: 'TRIMESTRAL', nombre: 'Progreso', precio: 204900, url: 'https://pages.virtualpos.cl/ironcross/48326a7942d63ba79' },
+    { grupo: 'TRIMESTRAL', nombre: 'Élite', precio: 249900, url: 'https://pages.virtualpos.cl/ironcross/48326a794343cddb6' },
+    { grupo: 'SEMESTRAL', nombre: 'Base', precio: 289900, url: 'https://pages.virtualpos.cl/ironcross/48326a79439481cc0' },
+    { grupo: 'SEMESTRAL', nombre: 'Progreso', precio: 369900, url: 'https://pages.virtualpos.cl/ironcross/48326a7943ccaf5fa' },
+    { grupo: 'SEMESTRAL', nombre: 'Élite', precio: 449900, url: 'https://pages.virtualpos.cl/ironcross/48326a7944177b27f' },
+    { grupo: 'ANUAL', nombre: 'Base', precio: 549900, url: 'https://pages.virtualpos.cl/ironcross/48326a794474465e7' },
+    { grupo: 'ANUAL', nombre: 'Progreso', precio: 699900, url: 'https://pages.virtualpos.cl/ironcross/48326a7944ad43557' },
+    { grupo: 'ANUAL', nombre: 'Élite', precio: 849900, url: 'https://pages.virtualpos.cl/ironcross/48326a7944e45c650' }
+  ];
+
+  function renderPlanes() {
+    var wrap = document.getElementById('gymPlanes');
+    if (!wrap) { return; }
+    var lastGrupo = '';
+    var i;
+    for (i = 0; i < PLANES_PAGO.length; i++) {
+      var p = PLANES_PAGO[i];
+      if (p.grupo !== lastGrupo) {
+        lastGrupo = p.grupo;
+        var g = document.createElement('div');
+        g.className = 'gymPlanGrupo';
+        g.appendChild(document.createTextNode(p.grupo));
+        wrap.appendChild(g);
+      }
+      var row = document.createElement('div');
+      row.className = 'gymPlanRow';
+
+      var head = document.createElement('div');
+      head.className = 'gymPlanHead';
+
+      var name = document.createElement('div');
+      name.className = 'gymPlanName';
+      name.appendChild(document.createTextNode(p.nombre));
+
+      var price = document.createElement('div');
+      price.className = 'gymPlanPrice';
+      price.appendChild(document.createTextNode(fmtMonto(p.precio)));
+
+      head.appendChild(name);
+      head.appendChild(price);
+
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'gymPlanUrl';
+      inp.value = p.url;
+      inp.readOnly = true;
+      inp.setAttribute('readonly', 'readonly');
+      inp.onfocus = function () { this.select(); };
+      inp.onclick = function () { this.select(); };
+
+      row.appendChild(head);
+      row.appendChild(inp);
+      wrap.appendChild(row);
+    }
+  }
+
+  renderPlanes();
 
   function cargarOficina() {
     gymStatus.innerHTML = 'Cargando...';
