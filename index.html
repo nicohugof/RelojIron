@@ -93,6 +93,10 @@
     letter-spacing: 1px;
     background: #141412;
     border-left: 1px solid #222;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 4px;
   }
   #tabClock { border-left: none; }
   .tab.active {
@@ -161,21 +165,27 @@
     font-family: Helvetica, Arial, sans-serif;
     padding: 10px;
   }
-  #rutinaSaveBtn {
+  #rutinaBtnRow {
     position: absolute;
     left: 16px;
     right: 16px;
     bottom: 10px;
     height: 44px;
-    background: #C23B22;
+  }
+  .rutinaBtn {
+    display: inline-block;
+    width: 48%;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 16px;
     letter-spacing: 2px;
-    line-height: 44px;
-    text-align: center;
   }
+  #rutinaCopyBtn { background: #2A2A26; margin-right: 2%; }
+  #rutinaSaveBtn { background: #C23B22; }
   #rutinaStatus {
     position: absolute;
     left: 16px;
@@ -345,6 +355,19 @@
     -webkit-user-select: text;
     user-select: text;
   }
+  .gymPlanCopyBtn {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 0 14px;
+    height: 32px;
+    line-height: 32px;
+    background: #2A2A26;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
 
   /* stopwatch view */
   #swHeader {
@@ -352,7 +375,6 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 148px;
     padding: 14px 20px;
   }
   #swTitle {
@@ -376,12 +398,16 @@
     font-weight: bold;
     font-size: 18px;
     letter-spacing: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 6px;
   }
   #addSwBtn { background: #C23B22; margin-right: 2%; }
   #addTimerBtn { background: #C29A22; }
   #swEmpty {
     position: absolute;
-    top: 148px;
+    top: 148px; /* fallback; ajustado por JS segun alto real de #swHeader */
     left: 0;
     right: 0;
     bottom: 0;
@@ -394,7 +420,7 @@
   }
   #swList {
     position: absolute;
-    top: 148px;
+    top: 148px; /* fallback; ajustado por JS segun alto real de #swHeader */
     left: 0;
     right: 0;
     bottom: 0;
@@ -461,7 +487,6 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 64px;
     padding: 14px 20px;
   }
   #calcTitle {
@@ -473,7 +498,7 @@
   }
   #calcBody {
     position: absolute;
-    top: 64px;
+    top: 64px; /* fallback; ajustado por JS segun alto real de #calcHeader */
     left: 0;
     right: 0;
     bottom: 0;
@@ -599,7 +624,10 @@
     </div>
     <div id="rutinaBody">
       <textarea id="rutinaText"></textarea>
-      <div id="rutinaSaveBtn">GUARDAR</div>
+      <div id="rutinaBtnRow">
+        <div id="rutinaCopyBtn" class="rutinaBtn">COPIAR</div>
+        <div id="rutinaSaveBtn" class="rutinaBtn">GUARDAR</div>
+      </div>
       <div id="rutinaStatus">&nbsp;</div>
     </div>
   </div>
@@ -659,6 +687,22 @@
     return (n < 10 ? '0' : '') + n;
   }
 
+  /* ---------- copiar al portapapeles ----------
+     Selecciona el texto y usa document.execCommand('copy') (funciona en
+     Safari moderno / iPhone). En el iPad 1 (Safari muy viejo) execCommand
+     no existe: el texto queda seleccionado igual y se puede copiar con el
+     menu nativo de seleccion, que si funciona ahi. */
+  function copiarDesdeCampo(campo) {
+    var ok = false;
+    try {
+      campo.focus();
+      if (campo.select) { campo.select(); }
+      if (campo.setSelectionRange) { campo.setSelectionRange(0, String(campo.value).length); }
+      ok = !!(document.execCommand && document.execCommand('copy'));
+    } catch (e) {}
+    return ok;
+  }
+
   /* ---------- reloj ---------- */
   var clock = document.getElementById('clock');
 
@@ -685,12 +729,16 @@
   setInterval(tick, 1000);
   window.addEventListener('resize', function () {
     fitClock();
+    positionSwBody();
     reflowGrid();
+    positionCalcBody();
   }, false);
   window.addEventListener('orientationchange', function () {
     setTimeout(function () {
       fitClock();
+      positionSwBody();
       reflowGrid();
+      positionCalcBody();
     }, 300);
   }, false);
 
@@ -730,6 +778,7 @@
     hideAllViews();
     stopwatchView.style.display = 'block';
     tabStopwatch.className = 'tab active';
+    positionSwBody();
     reflowGrid();
   }
 
@@ -751,6 +800,7 @@
     hideAllViews();
     calcView.style.display = 'block';
     tabCalc.className = 'tab active';
+    positionCalcBody();
   }
 
   tabClock.addEventListener('click', showClock, false);
@@ -857,8 +907,21 @@
       inp.onfocus = function () { this.select(); };
       inp.onclick = function () { this.select(); };
 
+      var copyBtn = document.createElement('div');
+      copyBtn.className = 'gymPlanCopyBtn';
+      copyBtn.appendChild(document.createTextNode('COPIAR LINK'));
+
+      (function (campo, boton) {
+        boton.addEventListener('click', function () {
+          var ok = copiarDesdeCampo(campo);
+          boton.innerHTML = ok ? 'COPIADO' : 'SELECCIONADO';
+          setTimeout(function () { boton.innerHTML = 'COPIAR LINK'; }, 1200);
+        }, false);
+      })(inp, copyBtn);
+
       row.appendChild(head);
       row.appendChild(inp);
+      row.appendChild(copyBtn);
       wrap.appendChild(row);
     }
   }
@@ -919,6 +982,7 @@
   /* ---------- rutina ---------- */
   var rutinaText = document.getElementById('rutinaText');
   var rutinaSaveBtn = document.getElementById('rutinaSaveBtn');
+  var rutinaCopyBtn = document.getElementById('rutinaCopyBtn');
   var rutinaStatus = document.getElementById('rutinaStatus');
   var rutinaDays = document.getElementById('rutinaDays');
   var fechaSeleccionada = null;
@@ -1025,7 +1089,15 @@
 
   rutinaSaveBtn.addEventListener('click', guardarRutina, false);
 
+  function copiarRutina() {
+    var ok = copiarDesdeCampo(rutinaText);
+    rutinaStatus.innerHTML = ok ? 'Copiado' : 'Texto seleccionado: usa Copiar del menu';
+  }
+
+  rutinaCopyBtn.addEventListener('click', copiarRutina, false);
+
   /* ---------- cronometros y temporizadores ---------- */
+  var swHeader = document.getElementById('swHeader');
   var swList = document.getElementById('swList');
   var swGrid = document.getElementById('swGrid');
   var swEmpty = document.getElementById('swEmpty');
@@ -1037,6 +1109,13 @@
   var COLOR_DONE = '#C23B22';
   var GRID_GAP = 10;
   var GRID_PAD = 10;
+
+  function positionSwBody() {
+    var h = swHeader.offsetHeight;
+    if (!h) { return; }
+    swEmpty.style.top = h + 'px';
+    swList.style.top = h + 'px';
+  }
 
   /* ---------- sonido ---------- */
   var beepSound = document.getElementById('beepSound');
@@ -1298,12 +1377,20 @@
   updateEmptyState();
 
   /* ---------- calculadora de series ---------- */
+  var calcHeader = document.getElementById('calcHeader');
+  var calcBody = document.getElementById('calcBody');
   var calcTotalReps = document.getElementById('calcTotalReps');
   var calcNumSeries = document.getElementById('calcNumSeries');
   var calcResultSeries = document.getElementById('calcResultSeries');
   var calcRepsPorSerie = document.getElementById('calcRepsPorSerie');
   var calcNumSeries2 = document.getElementById('calcNumSeries2');
   var calcResultTotal = document.getElementById('calcResultTotal');
+
+  function positionCalcBody() {
+    var h = calcHeader.offsetHeight;
+    if (!h) { return; }
+    calcBody.style.top = h + 'px';
+  }
 
   function limpiar(el) {
     while (el.firstChild) { el.removeChild(el.firstChild); }
