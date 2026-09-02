@@ -30,7 +30,7 @@
     right: 0;
     bottom: 70px;
   }
-  #clockView, #stopwatchView, #rutinaView, #gymView {
+  #clockView, #stopwatchView, #rutinaView, #gymView, #calcView {
     position: absolute;
     top: 0;
     left: 0;
@@ -454,6 +454,105 @@
   .swPause { background: #C29A22; }
   .swReset { background: #2A2A26; }
   .swRemove { background: #5A1E14; width: 40px; padding: 0; }
+
+  /* calculadora view */
+  #calcHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    padding: 14px 20px;
+  }
+  #calcTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+  #calcBody {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 20px 16px;
+  }
+  .calcCard {
+    background: #141412;
+    border: 1px solid #2A2A26;
+    padding: 14px;
+    margin-top: 14px;
+  }
+  .calcCardTitle {
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .calcRow {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .calcField {
+    display: table-cell;
+    padding-right: 10px;
+  }
+  .calcField.calcFieldLast {
+    padding-right: 0;
+    padding-left: 10px;
+  }
+  .calcLabel {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .calcInput {
+    width: 100%;
+    height: 54px;
+    background: #0A0A09;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 26px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0 12px;
+    -webkit-appearance: none;
+  }
+  .calcResult {
+    margin-top: 14px;
+  }
+  .calcChip {
+    display: inline-block;
+    background: #0A0A09;
+    border: 1px solid #2A2A26;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 12px;
+    margin: 0 6px 6px 0;
+  }
+  .calcTotalLabel {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .calcTotal {
+    color: #C23B22;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 42px;
+  }
 </style>
 </head>
 <body>
@@ -504,6 +603,43 @@
       <div id="rutinaStatus">&nbsp;</div>
     </div>
   </div>
+
+  <div id="calcView" style="display:none;">
+    <div id="calcHeader">
+      <div id="calcTitle">CALCULADORA</div>
+    </div>
+    <div id="calcBody">
+      <div class="calcCard">
+        <div class="calcCardTitle">REPARTIR REPETICIONES EN SERIES</div>
+        <div class="calcRow">
+          <div class="calcField">
+            <div class="calcLabel">TOTAL REPETICIONES</div>
+            <input type="number" id="calcTotalReps" class="calcInput" value="">
+          </div>
+          <div class="calcField calcFieldLast">
+            <div class="calcLabel">N&deg; DE SERIES</div>
+            <input type="number" id="calcNumSeries" class="calcInput" value="">
+          </div>
+        </div>
+        <div id="calcResultSeries" class="calcResult"></div>
+      </div>
+
+      <div class="calcCard">
+        <div class="calcCardTitle">CALCULAR TOTAL</div>
+        <div class="calcRow">
+          <div class="calcField">
+            <div class="calcLabel">REPS POR SERIE</div>
+            <input type="number" id="calcRepsPorSerie" class="calcInput" value="">
+          </div>
+          <div class="calcField calcFieldLast">
+            <div class="calcLabel">N&deg; DE SERIES</div>
+            <input type="number" id="calcNumSeries2" class="calcInput" value="">
+          </div>
+        </div>
+        <div id="calcResultTotal" class="calcResult"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <audio id="beepSound" preload="auto" src="data:audio/wav;base64,UklGRmQLAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUALAAAAAJwA4gGGAmkBhf4k+1b5v/p2/6QFOgpsClAFqfxa9KzwG/TW/cUJQhK+EiwK3ftA7gHoxewl+/IM4hljG/IPJ/zp6G3f0uRo9x8PASFDJJEWiP1n5AzXV9yn8kEQiSdDLfsdAADL4PjOa9Pr7FAQYy1JNh0mjgMm3knHJspA5kcPezI7P+IuLgiD3BjAocC03iENvDb/Rzc42Q3u232597ba1qAJ+zelTCE+GRNO34O6nrXd0tIEkjQxTNdAuxe747S8kbQNzwAA8zBvS0xDRRxF6Cm/z7Nuyy77Iy1iSn1FsiDn7N/BW7MFyGD2JikJSWdH/ySd8dTENLPUxJ3x/yRnRwlJJilg9gXIW7PfwefssiB9RWJKIy0u+27Lz7Mpv0XoRRxMQ29L8zAAAA3PkbS0vLvjuxfXQDFMkjTSBN3SnrWDuk7fGRMhPqVM+zegCdrW97aZuAHbYw4sO8xMLDtjDgHbmbj3ttrWoAn7N6VMIT4ZE07fg7qetd3S0gSSNDFM10C7F7vjtLyRtA3PAADzMG9LTENFHEXoKb/Ps27LLvsjLWJKfUWyIOfs38FbswXIYPYmKQlJZ0f/JJ3x1MQ0s9TEnfH/JGdHCUkmKWD2Bchbs9/B5+yyIH1FYkojLS77bsvPsym/RehFHExDb0vzMAAADc+RtLS8u+O7F9dAMUySNNIE3dKetYO6Tt8ZEyE+pUz7N6AJ2tb3tpm4AdtjDiw7zEwsO2MOAduZuPe22tagCfs3pUwhPhkTTt+Dup613dLSBJI0MUzXQLsXu+O0vJG0Dc8AAPMwb0tMQ0UcRegpv8+zbssu+yMtYkp9RbIg5+zfwVuzBchg9iYpCUlnR/8knfHUxDSz1MSd8f8kZ0cJSSYpYPYFyFuz38Hn7LIgfUViSiMtLvtuy8+zKb9F6EUcTENvS/MwAAANz5G0tLy747sX10AxTJI00gTd0p61g7pO3xkTIT6lTPs3oAna1ve2mbgB22MOLDvMTCw7Yw4B25m497ba1qAJ+zelTCE+GRNO34O6nrXd0tIEkjQxTNdAuxe747S8kbQNzwAA8zBvS0xDRRxF6Cm/z7Nuyy77Iy1iSn1FsiDn7N/BW7MFyGD2JikJSWdH/ySd8dTENLPUxJ3x/yRnRwlJJilg9gXIW7PfwefssiB9RWJKIy0u+27Lz7Mpv0XoRRxMQ29L8zAAAA3PkbS0vLvjuxfXQDFMkjTSBN3SjLZAvIjgJBI/OuVGFTOpCHvbGMBqwo7gDQzRMGU+Vi9VC1Tjjsk5yafh+gbjJ6Y1tirkDFfq1tKV0Mrj9AKKH8MsSCVZDXTw1Ntm2OrmAADdF9UjIB+4DJ/1cuST4PnqIv7tEPYaUhgJC8v5luwC6ejvW/3NCkIS9RBTCPL8K/Sa8ab1qv2MBdEJIQmhBAr/GvtB+h78DP85AbwB7gA=" style="display:none;"></audio>
@@ -513,6 +649,7 @@
   <div id="tabStopwatch" class="tab">CRONOMETROS</div>
   <div id="tabRutina" class="tab">RUTINA</div>
   <div id="tabGym" class="tab">GYM</div>
+  <div id="tabCalc" class="tab">CALC</div>
 </div>
 
 <script type="text/javascript">
@@ -566,16 +703,20 @@
   var tabRutina = document.getElementById('tabRutina');
   var gymView = document.getElementById('gymView');
   var tabGym = document.getElementById('tabGym');
+  var calcView = document.getElementById('calcView');
+  var tabCalc = document.getElementById('tabCalc');
 
   function hideAllViews() {
     clockView.style.display = 'none';
     stopwatchView.style.display = 'none';
     rutinaView.style.display = 'none';
     gymView.style.display = 'none';
+    calcView.style.display = 'none';
     tabClock.className = 'tab';
     tabStopwatch.className = 'tab';
     tabRutina.className = 'tab';
     tabGym.className = 'tab';
+    tabCalc.className = 'tab';
   }
 
   function showClock() {
@@ -606,10 +747,17 @@
     showGymOficina();
   }
 
+  function showCalc() {
+    hideAllViews();
+    calcView.style.display = 'block';
+    tabCalc.className = 'tab active';
+  }
+
   tabClock.addEventListener('click', showClock, false);
   tabStopwatch.addEventListener('click', showStopwatch, false);
   tabRutina.addEventListener('click', showRutina, false);
   tabGym.addEventListener('click', showGym, false);
+  tabCalc.addEventListener('click', showCalc, false);
 
 
   /* ---------- oficina / gym ---------- */
@@ -914,7 +1062,7 @@
     } catch (e) {}
   }
 
-  function fitSwTimeSize(tileW) {
+  function fitSwTimeSize(tileW, tileH) {
     if (stopwatches.length === 0) { return; }
     var probe = stopwatches[0].timeEl;
     probe.style.fontSize = '56px';
@@ -922,8 +1070,9 @@
     if (!w) { return; }
     var available = (tileW - 20) * 0.92;
     var size = Math.floor(56 * available / w);
+    var cap = Math.max(26, Math.min(220, Math.floor(tileH * 0.5)));
     if (size < 26) { size = 26; }
-    if (size > 56) { size = 56; }
+    if (size > cap) { size = cap; }
     for (var j = 0; j < stopwatches.length; j++) {
       stopwatches[j].timeEl.style.fontSize = size + 'px';
     }
@@ -935,13 +1084,13 @@
     if (!containerW || !containerH) { return; }
 
     var landscape = containerW > containerH;
-    var cols = landscape ? 4 : 2;
-    var rows = landscape ? 2 : 4;
+    var cols = landscape ? 2 : 1;
+    var rows = landscape ? 1 : 2;
 
     var tileW = Math.floor((containerW - GRID_PAD * 2 - GRID_GAP * (cols - 1)) / cols);
     var tileH = Math.floor((containerH - GRID_PAD * 2 - GRID_GAP * (rows - 1)) / rows);
 
-    fitSwTimeSize(tileW);
+    fitSwTimeSize(tileW, tileH);
 
     for (var i = 0; i < stopwatches.length; i++) {
       var col = i % cols;
@@ -1147,6 +1296,59 @@
   }, 100);
 
   updateEmptyState();
+
+  /* ---------- calculadora de series ---------- */
+  var calcTotalReps = document.getElementById('calcTotalReps');
+  var calcNumSeries = document.getElementById('calcNumSeries');
+  var calcResultSeries = document.getElementById('calcResultSeries');
+  var calcRepsPorSerie = document.getElementById('calcRepsPorSerie');
+  var calcNumSeries2 = document.getElementById('calcNumSeries2');
+  var calcResultTotal = document.getElementById('calcResultTotal');
+
+  function limpiar(el) {
+    while (el.firstChild) { el.removeChild(el.firstChild); }
+  }
+
+  function calcularDistribucion() {
+    limpiar(calcResultSeries);
+    var total = parseInt(calcTotalReps.value, 10);
+    var series = parseInt(calcNumSeries.value, 10);
+    if (!total || !series || total <= 0 || series <= 0) { return; }
+    var base = Math.floor(total / series);
+    var resto = total % series;
+    var i;
+    for (i = 0; i < series; i++) {
+      var cantidad = base + (i < resto ? 1 : 0);
+      var chip = document.createElement('div');
+      chip.className = 'calcChip';
+      chip.appendChild(document.createTextNode('Serie ' + (i + 1) + ': ' + cantidad));
+      calcResultSeries.appendChild(chip);
+    }
+  }
+
+  function calcularTotal() {
+    limpiar(calcResultTotal);
+    var reps = parseInt(calcRepsPorSerie.value, 10);
+    var series = parseInt(calcNumSeries2.value, 10);
+    if (!reps || !series || reps <= 0 || series <= 0) { return; }
+    var label = document.createElement('div');
+    label.className = 'calcTotalLabel';
+    label.appendChild(document.createTextNode('TOTAL DE REPETICIONES'));
+    var value = document.createElement('div');
+    value.className = 'calcTotal';
+    value.appendChild(document.createTextNode(String(reps * series)));
+    calcResultTotal.appendChild(label);
+    calcResultTotal.appendChild(value);
+  }
+
+  calcTotalReps.addEventListener('input', calcularDistribucion, false);
+  calcTotalReps.addEventListener('keyup', calcularDistribucion, false);
+  calcNumSeries.addEventListener('input', calcularDistribucion, false);
+  calcNumSeries.addEventListener('keyup', calcularDistribucion, false);
+  calcRepsPorSerie.addEventListener('input', calcularTotal, false);
+  calcRepsPorSerie.addEventListener('keyup', calcularTotal, false);
+  calcNumSeries2.addEventListener('input', calcularTotal, false);
+  calcNumSeries2.addEventListener('keyup', calcularTotal, false);
 
 })();
 </script>
