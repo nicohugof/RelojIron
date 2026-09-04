@@ -1,8 +1,8 @@
 # rutinas
 
-Rutinas en texto plano, una por dia (`YYYY-MM-DD.txt`), con las secciones de la
-plantilla de clase: PREPARACION, CALENTAMIENTO, PIERNAS, ELONGACION, CORE,
-POSTURAS, SUPER SET, ELONGACION.
+Rutinas en texto plano, una por dia (`YYYY-MM-DD.txt`), en el formato que usa
+el profesor: PREPA, CALENTAMIENTO x5 (duplas), PIERNAS x5, ELONGACIÓN 1 min,
+CORE x1 (3x50), POSTURAS 20 (isometricos), SÚPER SET (escalera), ELONGACIÓN.
 
 Estas son copias para versionar. La rutina que ve el iPad vive en la base del
 Oracle. Para cargar una:
