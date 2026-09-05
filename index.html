@@ -481,6 +481,59 @@
   .swReset { background: #2A2A26; }
   .swRemove { background: #5A1E14; width: 40px; padding: 0; }
 
+  /* selector de tiempo del temporizador (un toque, sin escribir) */
+  #presetOverlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 20;
+  }
+  #presetCard {
+    position: absolute;
+    top: 40px; left: 16px; right: 16px; bottom: 40px;
+    background: #141412;
+    border: 1px solid #2A2A26;
+    padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #presetTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+  .presetBtn {
+    display: inline-block;
+    width: 31%;
+    margin: 0 2% 12px 0;
+    height: 64px;
+    line-height: 64px;
+    text-align: center;
+    background: #0A0A09;
+    border: 1px solid #2A2A26;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .presetBtnOther { background: #2A2A26; }
+  #presetCancelBtn {
+    display: block;
+    margin-top: 8px;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    background: #5A1E14;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
   /* calculadora view */
   #calcHeader {
     position: absolute;
@@ -600,6 +653,14 @@
     </div>
     <div id="swEmpty">Toca "+ CRONOMETRO" para tomar un tiempo,<br>o "+ TEMPORIZADOR" para una cuenta regresiva</div>
     <div id="swList"><div id="swGrid"></div></div>
+
+    <div id="presetOverlay" style="display:none;">
+      <div id="presetCard">
+        <div id="presetTitle">ELEGIR TIEMPO</div>
+        <div id="presetGrid"></div>
+        <div id="presetCancelBtn">CANCELAR</div>
+      </div>
+    </div>
   </div>
 
 
@@ -1357,12 +1418,54 @@
     addTile('sw', 0);
   }
 
-  function addTimer() {
-    var input = prompt('Duracion en segundos:', '30');
-    if (input === null) { return; }
-    var seconds = parseInt(input, 10);
-    if (isNaN(seconds) || seconds <= 0) { seconds = 30; }
+  /* ---------- selector de tiempo del temporizador (un toque) ---------- */
+  var TIMER_PRESETS = [10, 15, 20, 30, 45, 60, 90, 120, 180, 300];
+  var presetOverlay = document.getElementById('presetOverlay');
+  var presetGrid = document.getElementById('presetGrid');
+  var presetCancelBtn = document.getElementById('presetCancelBtn');
+
+  function fmtPreset(seconds) {
+    if (seconds < 60) { return seconds + 'S'; }
+    var m = Math.floor(seconds / 60);
+    var s = seconds % 60;
+    return s ? (m + ':' + (s < 10 ? '0' : '') + s) : (m + 'MIN');
+  }
+
+  function crearTemporizador(seconds) {
     addTile('timer', seconds * 1000);
+    presetOverlay.style.display = 'none';
+  }
+
+  (function buildPresetGrid() {
+    var i;
+    for (i = 0; i < TIMER_PRESETS.length; i++) {
+      (function (seconds) {
+        var btn = document.createElement('div');
+        btn.className = 'presetBtn';
+        btn.appendChild(document.createTextNode(fmtPreset(seconds)));
+        btn.addEventListener('click', function () { crearTemporizador(seconds); }, false);
+        presetGrid.appendChild(btn);
+      })(TIMER_PRESETS[i]);
+    }
+    var otherBtn = document.createElement('div');
+    otherBtn.className = 'presetBtn presetBtnOther';
+    otherBtn.appendChild(document.createTextNode('OTRO'));
+    otherBtn.addEventListener('click', function () {
+      var input = prompt('Duracion en segundos:', '30');
+      if (input === null) { return; }
+      var seconds = parseInt(input, 10);
+      if (isNaN(seconds) || seconds <= 0) { seconds = 30; }
+      crearTemporizador(seconds);
+    }, false);
+    presetGrid.appendChild(otherBtn);
+  })();
+
+  presetCancelBtn.addEventListener('click', function () {
+    presetOverlay.style.display = 'none';
+  }, false);
+
+  function addTimer() {
+    presetOverlay.style.display = 'block';
   }
 
   addSwBtn.addEventListener('click', addStopwatch, false);
