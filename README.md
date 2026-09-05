@@ -45,11 +45,31 @@ También existe **GET `/rutina`** (y `/rutina.html`): un HTML aparte (~1.5 KB, t
 
 ## Backend Python
 
-El proceso que corre hoy en el Oracle (`:8090`) es Python 3.12.3, banner `SimpleHTTP/0.6`. En esa máquina el archivo es `/home/ubuntu/rutina_server.py` (incluye `def leer_oficina` y la ruta `/api/oficina`).
+El proceso que corre en el Oracle (`:8090`) es `rutina_server.py` (versionado en este repo), Python 3.12.3, banner `SimpleHTTP/0.6`. En esa máquina el archivo vive en `/home/ubuntu/rutina_server.py`.
 
-**Este repo no versiona `rutina_server.py`.** Se intentó copiar el archivo que corre hoy y no se pudo:
+**Ya no habla con Postgres.** Hasta el PR que agrega la API del panel (`nicohugof/ironcross-dashboard`), este servidor hacía `docker exec -i n8n-postgres-1 psql ...` directo contra la base para leer/guardar rutinas y armar la pestaña GYM — un segundo camino de acceso a la misma DB, en paralelo al panel. Ahora es un proxy delgado: cada ruta llama a la API del panel y devuelve la misma respuesta de siempre (el HTML/JS del iPad no cambió).
 
-- SSH a `ubuntu@146.181.44.106` y `opc@146.181.44.106`: `Permission denied (publickey)` (este entorno no tiene llave).
-- HTTP `:8090` no sirve el `.py` (`GET /rutina_server.py` → 404). No hay listado de directorio.
+Variables de entorno que necesita el proceso en el Oracle:
 
-No se reconstruyó ni inventó un Python a partir de la API. Si alguien con acceso al Oracle pega aquí el `rutina_server.py` vivo, se puede versionar en un PR siguiente.
+| Variable | Qué es |
+|---|---|
+| `PANEL_API_URL` | Base de la API del panel. Default `https://panel.ironcross.cl` |
+| `IPAD_API_TOKEN` | Mismo token que `IPAD_API_TOKEN` en el panel (`ironcross-dashboard`). Sin él, todo responde 500/502. |
+
+Si el panel no responde, `/api/oficina`, `/api/rutina` y `/guardar` devuelven `502` (antes hubieran colgado la conexión); `/api/rutina/dias` degrada a mostrar solo HOY/MAÑANA en vez de romper la pestaña RUTINA.
+
+## Deploy
+
+El servidor en el Oracle es un `git clone` de este repo en `/home/ubuntu/RelojIron` (no una copia a mano). `rutina_server.py` sirve `index.html`/`rutina.html` desde su propia carpeta (`DIRECTORY` = donde vive el script), así que un `git pull` alcanza para actualizar todo.
+
+Para desplegar un cambio ya mergeado a `main`, desde `/home/ubuntu/RelojIron` en el servidor:
+
+```
+./deploy.sh
+```
+
+Hace `git fetch` + fast-forward, valida que `rutina_server.py` compile, reinicia el proceso y comprueba `GET /api/oficina` antes de darlo por bueno. Si algo falla, vuelve solo al commit anterior y reinicia con ese. Si el checkout tiene cambios sin commitear, aborta sin tocar nada — evita repetir el problema de ediciones hechas directo en el servidor que nunca vuelven a GitHub. `./deploy.sh --force` reinicia igual aunque no haya commits nuevos (útil después de tocar `RelojIron.env`).
+
+Un cron en el servidor corre `./deploy.sh` cada pocos minutos, así que normalmente no hace falta correrlo a mano — mergear a `main` alcanza.
+
+**Secretos:** `PANEL_API_URL` e `IPAD_API_TOKEN` viven en `/home/ubuntu/RelojIron.env`, fuera de este repo. Para rotar `IPAD_API_TOKEN`: generar uno nuevo, actualizarlo ahí y en `IPAD_API_TOKEN` del `docker-compose.yml` del panel (mismo valor en los dos lados), y `./deploy.sh --force`.

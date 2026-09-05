@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 import http.server
 import socketserver
+import json
 import os
 import html
-import subprocess
+import urllib.error
 import urllib.parse
+import urllib.request
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 PORT = 8090
-DIRECTORY = '/home/ubuntu/reloj'
+# Sirve index.html/rutina.html desde donde esté este script (el checkout git
+# en el servidor), no de una carpeta separada — así "git pull" alcanza.
+DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 TZ = ZoneInfo('America/Santiago')
-PSQL = ['docker', 'exec', '-i', 'n8n-postgres-1', 'psql', '-U', 'ironcross', '-d', 'ironcross',
-        '-v', 'ON_ERROR_STOP=1', '-t', '-A']
+
+# El panel (ironcross-dashboard) es la fuente de verdad sobre Postgres.
+# Este servidor ya no toca la base: todo pasa por su API.
+PANEL_API_URL = os.environ.get('PANEL_API_URL', 'https://panel.ironcross.cl').rstrip('/')
+IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
 
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html>
@@ -74,107 +81,71 @@ def maniana():
     return (datetime.now(TZ).date() + timedelta(days=1)).isoformat()
 
 
-def psql_query(sql, variables):
-    args = list(PSQL)
-    for k, v in variables.items():
-        args += ['-v', '{}={}'.format(k, v)]
-    result = subprocess.run(args, input=sql, capture_output=True, text=True, timeout=10)
-    if result.returncode != 0:
-        raise RuntimeError(result.stderr)
-    return result.stdout
+class PanelError(Exception):
+    """La API del panel respondió mal, o no se pudo llegar a ella."""
+
+    def __init__(self, status, detail=''):
+        super().__init__('panel API {}: {}'.format(status, detail))
+        self.status = status
 
 
-PLANTILLA_RUTINA = 'PREPARACION\n\nCALENTAMIENTO\n\nPIERNAS\n\nELONGACION\n\nCORE\n\nPOSTURAS\n\nSUPER SET\n\nELONGACION\n'
+def panel_request(method, path, params=None, json_body=None):
+    """Llama a la API de ironcross-dashboard. Nunca toca Postgres directo."""
+    if not IPAD_API_TOKEN:
+        raise PanelError(500, 'IPAD_API_TOKEN no configurado')
+
+    url = PANEL_API_URL + path
+    if params:
+        url += '?' + urllib.parse.urlencode(params)
+
+    data = None
+    headers = {'Authorization': 'Bearer ' + IPAD_API_TOKEN}
+    if json_body is not None:
+        data = json.dumps(json_body).encode('utf-8')
+        headers['Content-Type'] = 'application/json'
+
+    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.status, resp.read().decode('utf-8')
+    except urllib.error.HTTPError as e:
+        raise PanelError(e.code, e.read().decode('utf-8', 'ignore'))
+    except urllib.error.URLError as e:
+        raise PanelError(502, str(e.reason))
 
 
 def leer_rutina(fecha):
-    sql = "SELECT contenido FROM rutinas WHERE fecha = :'fecha';"
-    out = psql_query(sql, {'fecha': fecha})
-    if out.endswith('\n'):
-        out = out[:-1]
-    if not out.strip():
-        return PLANTILLA_RUTINA
-    return out
+    """Trae la rutina del día desde el panel (ya incluye la plantilla si está vacía)."""
+    _, body = panel_request('GET', '/api/rutina', params={'fecha': fecha})
+    try:
+        data = json.loads(body)
+    except ValueError:
+        raise PanelError(502, 'respuesta no-JSON de /api/rutina')
+    return data.get('contenido', '')
 
 
 def guardar_rutina(fecha, contenido):
-    sql = ("INSERT INTO rutinas (fecha, contenido) VALUES (:'fecha', :'contenido') "
-           "ON CONFLICT (fecha) DO UPDATE SET contenido = EXCLUDED.contenido;")
-    psql_query(sql, {'fecha': fecha, 'contenido': contenido})
+    panel_request('POST', '/api/rutina', json_body={'fecha': fecha, 'contenido': contenido})
 
 
-def listar_dias():
-    sql = "SELECT to_char(fecha, 'YYYY-MM-DD') FROM rutinas ORDER BY fecha DESC LIMIT 30;"
-    out = psql_query(sql, {})
-    return [line for line in out.split('\n') if line.strip()]
-
+def dias_disponibles():
+    """DIAS: hoy + mañana (calculados acá, sin red) + los que ya tienen rutina (del panel)."""
+    dias = set()
+    try:
+        _, body = panel_request('GET', '/api/rutina/dias')
+        data = json.loads(body)
+        dias.update(data.get('dias', []))
+    except (PanelError, ValueError):
+        pass  # degradar a solo hoy/mañana antes que romper la pestaña RUTINA
+    dias.add(hoy())
+    dias.add(maniana())
+    return sorted(dias, reverse=True)
 
 
 def leer_oficina():
-    """Text protocol for the iPad GYM tab. Skip canje (never show those in cobranza)."""
-    sql_counts = """
-WITH ranked AS (
-  SELECT pa.alumno_id, p.estado, p.medio_pago,
-    row_number() OVER (
-      PARTITION BY pa.alumno_id
-      ORDER BY CASE p.estado
-        WHEN 'vencido' THEN 1 WHEN 'por_vencer' THEN 2 WHEN 'perdido' THEN 3 WHEN 'activo' THEN 4 END
-    ) AS rn
-  FROM plan_alumnos pa
-  JOIN planes p ON p.id = pa.plan_id
-  WHERE coalesce(p.medio_pago, '') <> 'canje'
-)
-SELECT
-  (SELECT count(DISTINCT alumno_id) FROM ranked WHERE rn = 1 AND estado IN ('activo','por_vencer')) AS activos,
-  (SELECT count(DISTINCT alumno_id) FROM ranked WHERE rn = 1 AND estado = 'vencido') AS vencidos,
-  (SELECT count(DISTINCT alumno_id) FROM ranked WHERE rn = 1 AND estado = 'por_vencer') AS por_vencer,
-  (SELECT count(*) FROM alumnos a WHERE NOT EXISTS (SELECT 1 FROM plan_alumnos pa WHERE pa.alumno_id = a.id)) AS sin_plan;
-"""
-    sql_rows = """
-WITH ranked AS (
-  SELECT pa.alumno_id, p.estado, p.monto_plan, p.fecha_vencimiento,
-    row_number() OVER (
-      PARTITION BY pa.alumno_id
-      ORDER BY CASE p.estado
-        WHEN 'vencido' THEN 1 WHEN 'por_vencer' THEN 2 WHEN 'perdido' THEN 3 WHEN 'activo' THEN 4 END
-    ) AS rn
-  FROM plan_alumnos pa
-  JOIN planes p ON p.id = pa.plan_id
-  WHERE coalesce(p.medio_pago, '') <> 'canje'
-)
-SELECT a.nombre,
-       r.estado,
-       coalesce(to_char(r.monto_plan, 'FM999999990'), ''),
-       coalesce(to_char(r.fecha_vencimiento, 'DD/MM'), '')
-FROM alumnos a
-JOIN ranked r ON r.alumno_id = a.id AND r.rn = 1
-WHERE r.estado IN ('vencido', 'por_vencer')
-ORDER BY CASE r.estado WHEN 'vencido' THEN 1 ELSE 2 END, a.nombre;
-"""
-    counts_out = psql_query(sql_counts, {}).strip()
-    # activos|vencidos|por_vencer|sin_plan
-    parts = counts_out.split('|') if counts_out else ['0','0','0','0']
-    while len(parts) < 4:
-        parts.append('0')
-    lines = [
-        'C|activos|' + parts[0],
-        'C|vencidos|' + parts[1],
-        'C|por_vencer|' + parts[2],
-        'C|sin_plan|' + parts[3],
-    ]
-    rows_out = psql_query(sql_rows, {}).strip()
-    if rows_out:
-        for line in rows_out.split('\n'):
-            cols = line.split('|')
-            if len(cols) < 2:
-                continue
-            nombre = cols[0]
-            estado = cols[1]
-            monto = cols[2] if len(cols) > 2 else ''
-            vence = cols[3] if len(cols) > 3 else ''
-            tag = 'V' if estado == 'vencido' else 'P'
-            lines.append('R|' + tag + '|' + nombre + '|' + monto + '|' + vence)
-    return '\n'.join(lines)
+    """Texto para la pestaña GYM del iPad. Mismo formato de antes, ahora vía panel."""
+    _, body = panel_request('GET', '/api/oficina')
+    return body
 
 
 def es_fecha_valida(fecha):
@@ -201,10 +172,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             fecha = qs.get('fecha', [hoy()])[0]
             if not es_fecha_valida(fecha):
                 fecha = hoy()
-            body = PAGE_TEMPLATE.format(
-                fecha=fecha,
-                rutina=html.escape(leer_rutina(fecha))
-            ).encode('utf-8')
+            try:
+                rutina = leer_rutina(fecha)
+            except PanelError:
+                self.send_response(502)
+                self.end_headers()
+                return
+            body = PAGE_TEMPLATE.format(fecha=fecha, rutina=html.escape(rutina)).encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'text/html; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
@@ -216,7 +190,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.send_response(400)
                 self.end_headers()
                 return
-            body = leer_rutina(fecha).encode('utf-8')
+            try:
+                body = leer_rutina(fecha).encode('utf-8')
+            except PanelError:
+                self.send_response(502)
+                self.end_headers()
+                return
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
@@ -225,11 +204,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path == '/api/rutina/dias':
             hoy_str = hoy()
             man_str = maniana()
-            dias = set(listar_dias())
-            dias.add(hoy_str)
-            dias.add(man_str)
-            dias = sorted(dias, reverse=True)
-            texto = 'HOY:' + hoy_str + '\n' + 'MANIANA:' + man_str + '\n' + 'DIAS:' + ','.join(dias)
+            texto = 'HOY:' + hoy_str + '\n' + 'MANIANA:' + man_str + '\n' + 'DIAS:' + ','.join(dias_disponibles())
             body = texto.encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain; charset=utf-8')
@@ -239,8 +214,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path == '/api/oficina':
             try:
                 body = leer_oficina().encode('utf-8')
-            except Exception:
-                self.send_response(500)
+            except PanelError:
+                self.send_response(502)
                 self.end_headers()
                 return
             self.send_response(200)
@@ -260,7 +235,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             fecha = data.get('fecha', [hoy()])[0]
             if not es_fecha_valida(fecha):
                 fecha = hoy()
-            guardar_rutina(fecha, rutina)
+            try:
+                guardar_rutina(fecha, rutina)
+            except PanelError:
+                self.send_response(502)
+                if self.headers.get('X-Requested-With') != 'XMLHttpRequest':
+                    self.send_header('Content-Type', 'text/plain; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(b'No se pudo guardar')
+                else:
+                    self.end_headers()
+                return
             if self.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 body = b'ok'
                 self.send_response(200)
@@ -281,6 +266,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 if __name__ == '__main__':
+    if not IPAD_API_TOKEN:
+        print('ADVERTENCIA: IPAD_API_TOKEN no configurado, la API del panel va a rechazar todo con 401/500.')
     with Server(('0.0.0.0', PORT), Handler) as httpd:
         print('Serving on port', PORT)
         httpd.serve_forever()
