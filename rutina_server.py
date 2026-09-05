@@ -11,7 +11,9 @@ from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 PORT = 8090
-DIRECTORY = '/home/ubuntu/reloj'
+# Sirve index.html/rutina.html desde donde esté este script (el checkout git
+# en el servidor), no de una carpeta separada — así "git pull" alcanza.
+DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 TZ = ZoneInfo('America/Santiago')
 
 # El panel (ironcross-dashboard) es la fuente de verdad sobre Postgres.
