@@ -778,9 +778,7 @@
         </div>
         <table class="calcPad">
           <tr>
-            <td class="calcKey calcUtil" id="calcAc">AC</td>
-            <td class="calcKey calcUtil" id="calcSign">±</td>
-            <td class="calcKey calcUtil" id="calcPct">%</td>
+            <td class="calcKey calcUtil" id="calcAc" colspan="3">AC</td>
             <td class="calcKey calcOp" id="calcDiv">÷</td>
           </tr>
           <tr>
@@ -1729,12 +1727,6 @@
   function calcInputDigit(d) {
     if (calcValue === 'Error') { calcClearAll(); }
     if (calcFresh) {
-      if (calcValue === '-0') {
-        setCalcDisplay(d === '.' ? '-0.' : ('-' + d));
-        calcFresh = false;
-        updateCalcAc();
-        return;
-      }
       setCalcDisplay(d === '.' ? '0.' : d);
       calcFresh = false;
       updateCalcAc();
@@ -1748,34 +1740,9 @@
     if (calcDigitCount(calcValue) >= 10) { return; }
     if (calcValue === '0') {
       setCalcDisplay(d);
-    } else if (calcValue === '-0') {
-      setCalcDisplay('-' + d);
     } else {
       setCalcDisplay(calcValue + d);
     }
-  }
-
-  function calcToggleSign() {
-    if (calcValue === 'Error') { return; }
-    if (calcValue.charAt(0) === '-') {
-      setCalcDisplay(calcValue.substring(1));
-    } else {
-      setCalcDisplay('-' + calcValue);
-    }
-  }
-
-  function calcPercent() {
-    if (calcValue === 'Error') { return; }
-    var n = parseFloat(calcValue);
-    if (isNaN(n)) { return; }
-    if (calcOp !== null && calcAcc !== null && (calcOp === '+' || calcOp === '-')) {
-      n = calcAcc * (n / 100);
-    } else {
-      n = n / 100;
-    }
-    setCalcDisplay(formatCalc(n));
-    calcFresh = true;
-    updateCalcAc();
   }
 
   function calcPressOp(op) {
@@ -1834,8 +1801,6 @@
       setCalcDisplay('0');
     }
   });
-  bindCalc('calcSign', calcToggleSign);
-  bindCalc('calcPct', calcPercent);
   bindCalc('calcDiv', function () { calcPressOp('/'); });
   bindCalc('calcMul', function () { calcPressOp('*'); });
   bindCalc('calcSub', function () { calcPressOp('-'); });
