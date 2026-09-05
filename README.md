@@ -45,11 +45,15 @@ También existe **GET `/rutina`** (y `/rutina.html`): un HTML aparte (~1.5 KB, t
 
 ## Backend Python
 
-El proceso que corre hoy en el Oracle (`:8090`) es Python 3.12.3, banner `SimpleHTTP/0.6`. En esa máquina el archivo es `/home/ubuntu/rutina_server.py` (incluye `def leer_oficina` y la ruta `/api/oficina`).
+El proceso que corre en el Oracle (`:8090`) es `rutina_server.py` (versionado en este repo), Python 3.12.3, banner `SimpleHTTP/0.6`. En esa máquina el archivo vive en `/home/ubuntu/rutina_server.py`.
 
-**Este repo no versiona `rutina_server.py`.** Se intentó copiar el archivo que corre hoy y no se pudo:
+**Ya no habla con Postgres.** Hasta el PR que agrega la API del panel (`nicohugof/ironcross-dashboard`), este servidor hacía `docker exec -i n8n-postgres-1 psql ...` directo contra la base para leer/guardar rutinas y armar la pestaña GYM — un segundo camino de acceso a la misma DB, en paralelo al panel. Ahora es un proxy delgado: cada ruta llama a la API del panel y devuelve la misma respuesta de siempre (el HTML/JS del iPad no cambió).
 
-- SSH a `ubuntu@146.181.44.106` y `opc@146.181.44.106`: `Permission denied (publickey)` (este entorno no tiene llave).
-- HTTP `:8090` no sirve el `.py` (`GET /rutina_server.py` → 404). No hay listado de directorio.
+Variables de entorno que necesita el proceso en el Oracle:
 
-No se reconstruyó ni inventó un Python a partir de la API. Si alguien con acceso al Oracle pega aquí el `rutina_server.py` vivo, se puede versionar en un PR siguiente.
+| Variable | Qué es |
+|---|---|
+| `PANEL_API_URL` | Base de la API del panel. Default `https://panel.ironcross.cl` |
+| `IPAD_API_TOKEN` | Mismo token que `IPAD_API_TOKEN` en el panel (`ironcross-dashboard`). Sin él, todo responde 500/502. |
+
+Si el panel no responde, `/api/oficina`, `/api/rutina` y `/guardar` devuelven `502` (antes hubieran colgado la conexión); `/api/rutina/dias` degrada a mostrar solo HOY/MAÑANA en vez de romper la pestaña RUTINA.
