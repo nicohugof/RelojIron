@@ -1729,6 +1729,12 @@
   function calcInputDigit(d) {
     if (calcValue === 'Error') { calcClearAll(); }
     if (calcFresh) {
+      if (calcValue === '-0') {
+        setCalcDisplay(d === '.' ? '-0.' : ('-' + d));
+        calcFresh = false;
+        updateCalcAc();
+        return;
+      }
       setCalcDisplay(d === '.' ? '0.' : d);
       calcFresh = false;
       updateCalcAc();
