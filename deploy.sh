@@ -56,6 +56,9 @@ mkdir -p "$(dirname "$LOG_FILE")"
 [ -f "$ENV_FILE" ] || { echo "ABORTO: falta $ENV_FILE (PANEL_API_URL / IPAD_API_TOKEN)"; exit 1; }
 
 restart_server() {
+  # Mismo path absoluto para arrancar y para matar: si difieren, pkill no
+  # encuentra nada, el puerto sigue ocupado y el proceso nuevo no arranca
+  # (pasó una vez al migrar a este esquema).
   pkill -f "python3 $REPO_DIR/rutina_server.py" 2>/dev/null || true
   for _ in 1 2 3 4 5; do
     ss -tln 2>/dev/null | grep -q ":$PORT " || break
@@ -66,8 +69,7 @@ restart_server() {
     # shellcheck disable=SC1090
     source "$ENV_FILE"
     set +a
-    cd "$REPO_DIR"
-    nohup python3 rutina_server.py >> "$LOG_FILE" 2>&1 &
+    nohup python3 "$REPO_DIR/rutina_server.py" >> "$LOG_FILE" 2>&1 &
     disown
   )
   sleep 2
