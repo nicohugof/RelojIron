@@ -1773,18 +1773,18 @@
       if (res === null) { calcError(); return; }
       calcLastOp = calcOp;
       calcLastRhs = rhs;
-      setCalcDisplay(formatCalc(res));
       calcAcc = null;
       calcOp = null;
       calcFresh = true;
+      setCalcDisplay(formatCalc(res));
       clearCalcOpHighlight();
       return;
     }
     if (calcLastOp !== null && calcLastRhs !== null) {
       var res2 = calcApply(calcLastOp, n, calcLastRhs);
       if (res2 === null) { calcError(); return; }
-      setCalcDisplay(formatCalc(res2));
       calcFresh = true;
+      setCalcDisplay(formatCalc(res2));
     }
   }
 
