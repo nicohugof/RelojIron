@@ -30,7 +30,7 @@
     right: 0;
     bottom: 70px;
   }
-  #clockView, #stopwatchView, #rutinaView, #gymView, #calcView {
+  #clockView, #stopwatchView, #rutinaView, #gymView {
     position: absolute;
     top: 0;
     left: 0;
@@ -144,12 +144,46 @@
     background: #C23B22;
     color: #EDE9DF;
   }
-  #rutinaBody {
+  #rutinaSubBar {
     position: absolute;
     top: 84px;
     left: 0;
     right: 0;
+    height: 52px;
+    padding: 8px 16px 0 16px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .rutinaSub {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 36px;
+    background: #141412;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  #rutinaSubDia { border-right: 1px solid #222; }
+  .rutinaSub.active {
+    color: #EDE9DF;
+    background: #1E1D19;
+    -webkit-box-shadow: inset 0 3px 0 #C23B22;
+  }
+  #rutinaBody, #rutinaCalcPane {
+    position: absolute;
+    top: 136px;
+    left: 0;
+    right: 0;
     bottom: 0;
+  }
+  #rutinaCalcPane {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 20px 16px;
   }
   #rutinaText {
     position: absolute;
@@ -534,31 +568,7 @@
     letter-spacing: 2px;
   }
 
-  /* calculadora view */
-  #calcHeader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 14px 20px;
-  }
-  #calcTitle {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 18px;
-    letter-spacing: 4px;
-  }
-  #calcBody {
-    position: absolute;
-    top: 64px; /* fallback; ajustado por JS segun alto real de #calcHeader */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 16px 20px 16px;
-  }
+  /* calculadora basica (pestaña dentro de Rutina) */
   .calcCard {
     background: #141412;
     border: 1px solid #2A2A26;
@@ -683,6 +693,10 @@
       <div id="rutinaTitle">RUTINAS</div>
       <div id="rutinaDays"></div>
     </div>
+    <div id="rutinaSubBar">
+      <div id="rutinaSubDia" class="rutinaSub active">RUTINA</div>
+      <div id="rutinaSubCalc" class="rutinaSub">CALC</div>
+    </div>
     <div id="rutinaBody">
       <textarea id="rutinaText"></textarea>
       <div id="rutinaBtnRow">
@@ -691,41 +705,20 @@
       </div>
       <div id="rutinaStatus">&nbsp;</div>
     </div>
-  </div>
-
-  <div id="calcView" style="display:none;">
-    <div id="calcHeader">
-      <div id="calcTitle">CALCULADORA</div>
-    </div>
-    <div id="calcBody">
+    <div id="rutinaCalcPane" style="display:none;">
       <div class="calcCard">
-        <div class="calcCardTitle">REPARTIR REPETICIONES EN SERIES</div>
+        <div class="calcCardTitle">CALCULADORA</div>
         <div class="calcRow">
           <div class="calcField">
-            <div class="calcLabel">TOTAL REPETICIONES</div>
-            <input type="number" id="calcTotalReps" class="calcInput" value="">
+            <div class="calcLabel">NUMERO A</div>
+            <input type="number" id="calcA" class="calcInput" value="">
           </div>
           <div class="calcField calcFieldLast">
-            <div class="calcLabel">N&deg; DE SERIES</div>
-            <input type="number" id="calcNumSeries" class="calcInput" value="">
+            <div class="calcLabel">NUMERO B</div>
+            <input type="number" id="calcB" class="calcInput" value="">
           </div>
         </div>
-        <div id="calcResultSeries" class="calcResult"></div>
-      </div>
-
-      <div class="calcCard">
-        <div class="calcCardTitle">CALCULAR TOTAL</div>
-        <div class="calcRow">
-          <div class="calcField">
-            <div class="calcLabel">REPS POR SERIE</div>
-            <input type="number" id="calcRepsPorSerie" class="calcInput" value="">
-          </div>
-          <div class="calcField calcFieldLast">
-            <div class="calcLabel">N&deg; DE SERIES</div>
-            <input type="number" id="calcNumSeries2" class="calcInput" value="">
-          </div>
-        </div>
-        <div id="calcResultTotal" class="calcResult"></div>
+        <div id="calcBasicResult" class="calcResult"></div>
       </div>
     </div>
   </div>
@@ -738,7 +731,6 @@
   <div id="tabStopwatch" class="tab">CRONOMETROS</div>
   <div id="tabRutina" class="tab">RUTINA</div>
   <div id="tabGym" class="tab">GYM</div>
-  <div id="tabCalc" class="tab">CALC</div>
 </div>
 
 <script type="text/javascript">
@@ -792,14 +784,12 @@
     fitClock();
     positionSwBody();
     reflowGrid();
-    positionCalcBody();
   }, false);
   window.addEventListener('orientationchange', function () {
     setTimeout(function () {
       fitClock();
       positionSwBody();
       reflowGrid();
-      positionCalcBody();
     }, 300);
   }, false);
 
@@ -812,20 +802,16 @@
   var tabRutina = document.getElementById('tabRutina');
   var gymView = document.getElementById('gymView');
   var tabGym = document.getElementById('tabGym');
-  var calcView = document.getElementById('calcView');
-  var tabCalc = document.getElementById('tabCalc');
 
   function hideAllViews() {
     clockView.style.display = 'none';
     stopwatchView.style.display = 'none';
     rutinaView.style.display = 'none';
     gymView.style.display = 'none';
-    calcView.style.display = 'none';
     tabClock.className = 'tab';
     tabStopwatch.className = 'tab';
     tabRutina.className = 'tab';
     tabGym.className = 'tab';
-    tabCalc.className = 'tab';
   }
 
   function showClock() {
@@ -847,6 +833,7 @@
     hideAllViews();
     rutinaView.style.display = 'block';
     tabRutina.className = 'tab active';
+    showRutinaSubDia();
     cargarDias();
   }
 
@@ -857,18 +844,10 @@
     showGymOficina();
   }
 
-  function showCalc() {
-    hideAllViews();
-    calcView.style.display = 'block';
-    tabCalc.className = 'tab active';
-    positionCalcBody();
-  }
-
   tabClock.addEventListener('click', showClock, false);
   tabStopwatch.addEventListener('click', showStopwatch, false);
   tabRutina.addEventListener('click', showRutina, false);
   tabGym.addEventListener('click', showGym, false);
-  tabCalc.addEventListener('click', showCalc, false);
 
 
   /* ---------- oficina / gym ---------- */
@@ -1046,6 +1025,28 @@
   var rutinaCopyBtn = document.getElementById('rutinaCopyBtn');
   var rutinaStatus = document.getElementById('rutinaStatus');
   var rutinaDays = document.getElementById('rutinaDays');
+  var rutinaBody = document.getElementById('rutinaBody');
+  var rutinaCalcPane = document.getElementById('rutinaCalcPane');
+  var rutinaSubDia = document.getElementById('rutinaSubDia');
+  var rutinaSubCalc = document.getElementById('rutinaSubCalc');
+
+  function showRutinaSubDia() {
+    rutinaBody.style.display = 'block';
+    rutinaCalcPane.style.display = 'none';
+    rutinaSubDia.className = 'rutinaSub active';
+    rutinaSubCalc.className = 'rutinaSub';
+  }
+
+  function showRutinaSubCalc() {
+    rutinaBody.style.display = 'none';
+    rutinaCalcPane.style.display = 'block';
+    rutinaSubDia.className = 'rutinaSub';
+    rutinaSubCalc.className = 'rutinaSub active';
+  }
+
+  rutinaSubDia.addEventListener('click', showRutinaSubDia, false);
+  rutinaSubCalc.addEventListener('click', showRutinaSubCalc, false);
+
   var fechaSeleccionada = null;
   var diasCache = [];
   var hoyGlobal = null;
@@ -1218,14 +1219,36 @@
     }
   }
 
+  /* Prueba cols de 1 hasta count y se queda con la combinacion cols/rows
+     que deja el lado mas chico de cada cronometro lo mas grande posible,
+     para que entren todos a la vez sin perder legibilidad. Con 1 cronometro
+     da pantalla completa; con 2, 3, 4, 6, etc. se reparte solo. */
+  function computeGrid(count, containerW, containerH) {
+    if (count < 1) { count = 1; }
+    var bestCols = 1;
+    var bestScore = -1;
+    for (var cols = 1; cols <= count; cols++) {
+      var rows = Math.ceil(count / cols);
+      var tileW = (containerW - GRID_PAD * 2 - GRID_GAP * (cols - 1)) / cols;
+      var tileH = (containerH - GRID_PAD * 2 - GRID_GAP * (rows - 1)) / rows;
+      if (tileW <= 0 || tileH <= 0) { continue; }
+      var score = Math.min(tileW, tileH);
+      if (score > bestScore) {
+        bestScore = score;
+        bestCols = cols;
+      }
+    }
+    return { cols: bestCols, rows: Math.ceil(count / bestCols) };
+  }
+
   function reflowGrid() {
     var containerW = swList.clientWidth;
     var containerH = swList.clientHeight;
     if (!containerW || !containerH) { return; }
 
-    var landscape = containerW > containerH;
-    var cols = landscape ? 2 : 1;
-    var rows = landscape ? 1 : 2;
+    var grid = computeGrid(stopwatches.length, containerW, containerH);
+    var cols = grid.cols;
+    var rows = grid.rows;
 
     var tileW = Math.floor((containerW - GRID_PAD * 2 - GRID_GAP * (cols - 1)) / cols);
     var tileH = Math.floor((containerH - GRID_PAD * 2 - GRID_GAP * (rows - 1)) / rows);
@@ -1242,8 +1265,7 @@
       el.style.top = (GRID_PAD + row * (tileH + GRID_GAP)) + 'px';
     }
 
-    var totalRows = Math.max(rows, Math.ceil(stopwatches.length / cols));
-    var gridHeight = GRID_PAD * 2 + totalRows * tileH + (totalRows - 1) * GRID_GAP;
+    var gridHeight = GRID_PAD * 2 + rows * tileH + (rows - 1) * GRID_GAP;
     swGrid.style.height = gridHeight + 'px';
   }
 
@@ -1479,66 +1501,46 @@
 
   updateEmptyState();
 
-  /* ---------- calculadora de series ---------- */
-  var calcHeader = document.getElementById('calcHeader');
-  var calcBody = document.getElementById('calcBody');
-  var calcTotalReps = document.getElementById('calcTotalReps');
-  var calcNumSeries = document.getElementById('calcNumSeries');
-  var calcResultSeries = document.getElementById('calcResultSeries');
-  var calcRepsPorSerie = document.getElementById('calcRepsPorSerie');
-  var calcNumSeries2 = document.getElementById('calcNumSeries2');
-  var calcResultTotal = document.getElementById('calcResultTotal');
-
-  function positionCalcBody() {
-    var h = calcHeader.offsetHeight;
-    if (!h) { return; }
-    calcBody.style.top = h + 'px';
-  }
+  /* ---------- calculadora basica (sumar, restar, multiplicar, dividir) ---------- */
+  var calcA = document.getElementById('calcA');
+  var calcB = document.getElementById('calcB');
+  var calcBasicResult = document.getElementById('calcBasicResult');
 
   function limpiar(el) {
     while (el.firstChild) { el.removeChild(el.firstChild); }
   }
 
-  function calcularDistribucion() {
-    limpiar(calcResultSeries);
-    var total = parseInt(calcTotalReps.value, 10);
-    var series = parseInt(calcNumSeries.value, 10);
-    if (!total || !series || total <= 0 || series <= 0) { return; }
-    var base = Math.floor(total / series);
-    var resto = total % series;
-    var i;
-    for (i = 0; i < series; i++) {
-      var cantidad = base + (i < resto ? 1 : 0);
-      var chip = document.createElement('div');
-      chip.className = 'calcChip';
-      chip.appendChild(document.createTextNode('Serie ' + (i + 1) + ': ' + cantidad));
-      calcResultSeries.appendChild(chip);
-    }
+  function formatearNumero(n) {
+    var r = Math.round(n * 100) / 100;
+    return String(r);
   }
 
-  function calcularTotal() {
-    limpiar(calcResultTotal);
-    var reps = parseInt(calcRepsPorSerie.value, 10);
-    var series = parseInt(calcNumSeries2.value, 10);
-    if (!reps || !series || reps <= 0 || series <= 0) { return; }
-    var label = document.createElement('div');
-    label.className = 'calcTotalLabel';
-    label.appendChild(document.createTextNode('TOTAL DE REPETICIONES'));
-    var value = document.createElement('div');
-    value.className = 'calcTotal';
-    value.appendChild(document.createTextNode(String(reps * series)));
-    calcResultTotal.appendChild(label);
-    calcResultTotal.appendChild(value);
+  function agregarResultado(label, texto) {
+    var lbl = document.createElement('div');
+    lbl.className = 'calcTotalLabel';
+    lbl.appendChild(document.createTextNode(label));
+    var val = document.createElement('div');
+    val.className = 'calcTotal';
+    val.appendChild(document.createTextNode(texto));
+    calcBasicResult.appendChild(lbl);
+    calcBasicResult.appendChild(val);
   }
 
-  calcTotalReps.addEventListener('input', calcularDistribucion, false);
-  calcTotalReps.addEventListener('keyup', calcularDistribucion, false);
-  calcNumSeries.addEventListener('input', calcularDistribucion, false);
-  calcNumSeries.addEventListener('keyup', calcularDistribucion, false);
-  calcRepsPorSerie.addEventListener('input', calcularTotal, false);
-  calcRepsPorSerie.addEventListener('keyup', calcularTotal, false);
-  calcNumSeries2.addEventListener('input', calcularTotal, false);
-  calcNumSeries2.addEventListener('keyup', calcularTotal, false);
+  function calcularBasica() {
+    limpiar(calcBasicResult);
+    var a = parseFloat(calcA.value);
+    var b = parseFloat(calcB.value);
+    if (isNaN(a) || isNaN(b)) { return; }
+    agregarResultado('SUMA', formatearNumero(a + b));
+    agregarResultado('RESTA', formatearNumero(a - b));
+    agregarResultado('MULTIPLICACION', formatearNumero(a * b));
+    agregarResultado('DIVISION', b !== 0 ? formatearNumero(a / b) : 'no se puede dividir por 0');
+  }
+
+  calcA.addEventListener('input', calcularBasica, false);
+  calcA.addEventListener('keyup', calcularBasica, false);
+  calcB.addEventListener('input', calcularBasica, false);
+  calcB.addEventListener('keyup', calcularBasica, false);
 
 })();
 </script>
