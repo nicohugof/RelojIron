@@ -57,3 +57,19 @@ Variables de entorno que necesita el proceso en el Oracle:
 | `IPAD_API_TOKEN` | Mismo token que `IPAD_API_TOKEN` en el panel (`ironcross-dashboard`). Sin él, todo responde 500/502. |
 
 Si el panel no responde, `/api/oficina`, `/api/rutina` y `/guardar` devuelven `502` (antes hubieran colgado la conexión); `/api/rutina/dias` degrada a mostrar solo HOY/MAÑANA en vez de romper la pestaña RUTINA.
+
+## Deploy
+
+El servidor en el Oracle es un `git clone` de este repo en `/home/ubuntu/RelojIron` (no una copia a mano). `rutina_server.py` sirve `index.html`/`rutina.html` desde su propia carpeta (`DIRECTORY` = donde vive el script), así que un `git pull` alcanza para actualizar todo.
+
+Para desplegar un cambio ya mergeado a `main`, desde `/home/ubuntu/RelojIron` en el servidor:
+
+```
+./deploy.sh
+```
+
+Hace `git fetch` + fast-forward, valida que `rutina_server.py` compile, reinicia el proceso y comprueba `GET /api/oficina` antes de darlo por bueno. Si algo falla, vuelve solo al commit anterior y reinicia con ese. Si el checkout tiene cambios sin commitear, aborta sin tocar nada — evita repetir el problema de ediciones hechas directo en el servidor que nunca vuelven a GitHub. `./deploy.sh --force` reinicia igual aunque no haya commits nuevos (útil después de tocar `RelojIron.env`).
+
+Un cron en el servidor corre `./deploy.sh` cada pocos minutos, así que normalmente no hace falta correrlo a mano — mergear a `main` alcanza.
+
+**Secretos:** `PANEL_API_URL` e `IPAD_API_TOKEN` viven en `/home/ubuntu/RelojIron.env`, fuera de este repo. Para rotar `IPAD_API_TOKEN`: generar uno nuevo, actualizarlo ahí y en `IPAD_API_TOKEN` del `docker-compose.yml` del panel (mismo valor en los dos lados), y `./deploy.sh --force`.
