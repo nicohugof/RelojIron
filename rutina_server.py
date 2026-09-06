@@ -28,7 +28,7 @@ IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
 # Auth básica HTTP: el navegador (incluido el del iPad) sabe pedirla sola,
 # sin página de login propia. Parche rápido a propósito, ver Maestro para el
 # diseño definitivo (algo más cómodo para una tablet fija en el gym).
-OFICINA_USER = 'gym'
+OFICINA_USER = 'Admin'
 OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD', '')
 
 PAGE_TEMPLATE = """<!DOCTYPE html>
