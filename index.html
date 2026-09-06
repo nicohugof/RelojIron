@@ -332,6 +332,53 @@
   }
   .gymRow.V .gymMeta { color: #C23B22; }
   .gymRow.P .gymMeta { color: #C29A22; }
+  #gymOficinaLogin {
+    display: none;
+    padding: 50px 24px;
+  }
+  #gymOficinaLoginTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  #gymOficinaPassword {
+    display: block;
+    width: 100%;
+    height: 52px;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 22px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0 14px;
+    text-align: center;
+    letter-spacing: 4px;
+  }
+  #gymOficinaLoginBtn {
+    display: block;
+    width: 100%;
+    height: 52px;
+    line-height: 52px;
+    margin-top: 12px;
+    background: #C23B22;
+    color: #EDE9DF;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  #gymOficinaLoginError {
+    margin-top: 14px;
+    text-align: center;
+    color: #C23B22;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    min-height: 16px;
+  }
   #gymStatus {
     padding: 20px 16px;
     color: #7A7568;
@@ -746,6 +793,12 @@
       <div id="gymSubPlanes" class="gymSub">PLANES</div>
     </div>
     <div id="gymOficinaPane">
+      <div id="gymOficinaLogin">
+        <div id="gymOficinaLoginTitle">OFICINA — INGRESAR CLAVE</div>
+        <input type="password" id="gymOficinaPassword" placeholder="Clave" autocomplete="off">
+        <div id="gymOficinaLoginBtn">ENTRAR</div>
+        <div id="gymOficinaLoginError">&nbsp;</div>
+      </div>
       <div id="gymCounts"></div>
       <div id="gymList"></div>
       <div id="gymStatus">&nbsp;</div>
@@ -940,6 +993,47 @@
   var gymCounts = document.getElementById('gymCounts');
   var gymList = document.getElementById('gymList');
   var gymStatus = document.getElementById('gymStatus');
+  var gymOficinaLogin = document.getElementById('gymOficinaLogin');
+  var gymOficinaPassword = document.getElementById('gymOficinaPassword');
+  var gymOficinaLoginBtn = document.getElementById('gymOficinaLoginBtn');
+  var gymOficinaLoginError = document.getElementById('gymOficinaLoginError');
+
+  function mostrarLoginOficina() {
+    gymStatus.innerHTML = '&nbsp;';
+    gymCounts.innerHTML = '';
+    gymList.innerHTML = '';
+    gymOficinaLoginError.innerHTML = '&nbsp;';
+    gymOficinaPassword.value = '';
+    gymOficinaLogin.style.display = 'block';
+  }
+
+  function ocultarLoginOficina() {
+    gymOficinaLogin.style.display = 'none';
+  }
+
+  function intentarLoginOficina() {
+    var pass = gymOficinaPassword.value;
+    if (!pass) { return; }
+    gymOficinaLoginError.innerHTML = 'Entrando...';
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/oficina-login', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status === 200) {
+        cargarOficina();
+      } else {
+        gymOficinaLoginError.innerHTML = 'Clave incorrecta';
+        gymOficinaPassword.value = '';
+      }
+    };
+    xhr.send('password=' + encodeURIComponent(pass));
+  }
+
+  gymOficinaLoginBtn.addEventListener('click', intentarLoginOficina, false);
+  gymOficinaPassword.addEventListener('keydown', function (e) {
+    if (e.keyCode === 13) { intentarLoginOficina(); }
+  }, false);
 
   function fmtMonto(n) {
     if (!n) { return ''; }
@@ -1055,6 +1149,7 @@
   renderPlanes();
 
   function cargarOficina() {
+    ocultarLoginOficina();
     gymStatus.innerHTML = 'Cargando...';
     gymCounts.innerHTML = '';
     gymList.innerHTML = '';
@@ -1062,6 +1157,10 @@
     xhr.open('GET', '/api/oficina', true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
+      if (xhr.status === 401) {
+        mostrarLoginOficina();
+        return;
+      }
       if (xhr.status !== 200) {
         gymStatus.innerHTML = 'No se pudo cargar';
         return;

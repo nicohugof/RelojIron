@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import base64
+import hashlib
 import hmac
 import http.server
 import socketserver
 import json
 import os
 import html
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -25,11 +26,34 @@ IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
 
 # Candado de la pestaña OFICINA (2026-09-06): esa pestaña mostraba nombres de
 # alumnos, deuda y estado de pago a cualquiera en internet, sin pedir nada.
-# Auth básica HTTP: el navegador (incluido el del iPad) sabe pedirla sola,
-# sin página de login propia. Parche rápido a propósito, ver Maestro para el
-# diseño definitivo (algo más cómodo para una tablet fija en el gym).
-OFICINA_USER = 'Admin'
+# Pantalla propia de una sola clave (sin usuario) + sesión recordada por
+# cookie, para no escribirla varias veces por día en la tablet del gym. La
+# verificación es siempre acá, del lado del servidor — el HTML nunca sabe
+# la clave real.
 OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD', '')
+OFICINA_SESSION_SECRET = os.environ.get('OFICINA_SESSION_SECRET', '')
+OFICINA_COOKIE = 'oficina_session'
+OFICINA_SESION_SEGUNDOS = 60 * 60 * 24 * 180  # 180 dias
+
+
+def crear_token_oficina():
+    expira = int(time.time()) + OFICINA_SESION_SEGUNDOS
+    payload = str(expira)
+    firma = hmac.new(OFICINA_SESSION_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
+    return payload + '.' + firma
+
+
+def token_oficina_valido(token):
+    if not OFICINA_SESSION_SECRET or not token or '.' not in token:
+        return False
+    payload, _, firma = token.rpartition('.')
+    esperada = hmac.new(OFICINA_SESSION_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(firma, esperada):
+        return False
+    try:
+        return time.time() < int(payload)
+    except ValueError:
+        return False
 
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html>
@@ -174,23 +198,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
-    def _oficina_autorizada(self):
-        if not OFICINA_PASSWORD:
-            return False
-        header = self.headers.get('Authorization', '')
-        if not header.startswith('Basic '):
-            return False
-        try:
-            decoded = base64.b64decode(header[6:]).decode('utf-8')
-            user, _, password = decoded.partition(':')
-        except (ValueError, UnicodeDecodeError):
-            return False
-        return hmac.compare_digest(user, OFICINA_USER) and hmac.compare_digest(password, OFICINA_PASSWORD)
-
-    def _pedir_credenciales_oficina(self):
-        self.send_response(401)
-        self.send_header('WWW-Authenticate', 'Basic realm="Oficina Ironcross"')
-        self.end_headers()
+    def _oficina_sesion_valida(self):
+        cookie_header = self.headers.get('Cookie', '')
+        token = None
+        for parte in cookie_header.split(';'):
+            parte = parte.strip()
+            if parte.startswith(OFICINA_COOKIE + '='):
+                token = parte[len(OFICINA_COOKIE) + 1:]
+                break
+        return token_oficina_valido(token)
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -240,8 +256,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
         elif parsed.path == '/api/oficina':
-            if not self._oficina_autorizada():
-                self._pedir_credenciales_oficina()
+            if not self._oficina_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
                 return
             try:
                 body = leer_oficina().encode('utf-8')
@@ -287,6 +304,24 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             else:
                 self.send_response(303)
                 self.send_header('Location', '/rutina.html?fecha=' + fecha)
+                self.end_headers()
+        elif self.path == '/api/oficina-login':
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8')
+            data = urllib.parse.parse_qs(raw)
+            password = data.get('password', [''])[0]
+            if OFICINA_PASSWORD and OFICINA_SESSION_SECRET and hmac.compare_digest(password, OFICINA_PASSWORD):
+                token = crear_token_oficina()
+                self.send_response(200)
+                cookie = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                    OFICINA_COOKIE, token, OFICINA_SESION_SEGUNDOS
+                )
+                self.send_header('Set-Cookie', cookie)
+                self.send_header('Content-Length', '2')
+                self.end_headers()
+                self.wfile.write(b'ok')
+            else:
+                self.send_response(401)
                 self.end_headers()
         else:
             self.send_response(404)
