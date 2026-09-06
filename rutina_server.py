@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import base64
+import hmac
 import http.server
 import socketserver
 import json
@@ -20,6 +22,14 @@ TZ = ZoneInfo('America/Santiago')
 # Este servidor ya no toca la base: todo pasa por su API.
 PANEL_API_URL = os.environ.get('PANEL_API_URL', 'https://panel.ironcross.cl').rstrip('/')
 IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
+
+# Candado de la pestaña OFICINA (2026-09-06): esa pestaña mostraba nombres de
+# alumnos, deuda y estado de pago a cualquiera en internet, sin pedir nada.
+# Auth básica HTTP: el navegador (incluido el del iPad) sabe pedirla sola,
+# sin página de login propia. Parche rápido a propósito, ver Maestro para el
+# diseño definitivo (algo más cómodo para una tablet fija en el gym).
+OFICINA_USER = 'gym'
+OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD', '')
 
 PAGE_TEMPLATE = """<!DOCTYPE html>
 <html>
@@ -164,6 +174,24 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
+    def _oficina_autorizada(self):
+        if not OFICINA_PASSWORD:
+            return False
+        header = self.headers.get('Authorization', '')
+        if not header.startswith('Basic '):
+            return False
+        try:
+            decoded = base64.b64decode(header[6:]).decode('utf-8')
+            user, _, password = decoded.partition(':')
+        except (ValueError, UnicodeDecodeError):
+            return False
+        return hmac.compare_digest(user, OFICINA_USER) and hmac.compare_digest(password, OFICINA_PASSWORD)
+
+    def _pedir_credenciales_oficina(self):
+        self.send_response(401)
+        self.send_header('WWW-Authenticate', 'Basic realm="Oficina Ironcross"')
+        self.end_headers()
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         qs = urllib.parse.parse_qs(parsed.query)
@@ -212,6 +240,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
         elif parsed.path == '/api/oficina':
+            if not self._oficina_autorizada():
+                self._pedir_credenciales_oficina()
+                return
             try:
                 body = leer_oficina().encode('utf-8')
             except PanelError:
