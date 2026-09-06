@@ -78,13 +78,13 @@ restart_server() {
 log "reiniciando rutina_server.py"
 restart_server
 
-CODE=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORT/api/oficina" || echo "000")
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORT/" || echo "000")
 if [ "$CODE" != "200" ]; then
-  log "HEALTH CHECK FALLÓ (api/oficina=$CODE) — ROLLBACK a $ROLLBACK_COMMIT"
+  log "HEALTH CHECK FALLÓ (/=$CODE) — ROLLBACK a $ROLLBACK_COMMIT"
   git reset --hard "$ROLLBACK_COMMIT"
   restart_server
-  CODE2=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORT/api/oficina" || echo "000")
-  log "vuelto a $ROLLBACK_COMMIT, api/oficina ahora responde $CODE2"
+  CODE2=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$PORT/" || echo "000")
+  log "vuelto a $ROLLBACK_COMMIT, / ahora responde $CODE2"
   exit 1
 fi
 
