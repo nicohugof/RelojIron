@@ -121,9 +121,10 @@ class PanelError(Exception):
     def __init__(self, status, detail=''):
         super().__init__('panel API {}: {}'.format(status, detail))
         self.status = status
+        self.detail = detail
 
 
-def panel_request(method, path, params=None, json_body=None):
+def panel_request(method, path, params=None, json_body=None, form_body=None):
     """Llama a la API de ironcross-dashboard. Nunca toca Postgres directo."""
     if not IPAD_API_TOKEN:
         raise PanelError(500, 'IPAD_API_TOKEN no configurado')
@@ -137,6 +138,9 @@ def panel_request(method, path, params=None, json_body=None):
     if json_body is not None:
         data = json.dumps(json_body).encode('utf-8')
         headers['Content-Type'] = 'application/json'
+    elif form_body is not None:
+        data = urllib.parse.urlencode(form_body).encode('utf-8')
+        headers['Content-Type'] = 'application/x-www-form-urlencoded'
 
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
@@ -180,6 +184,38 @@ def leer_oficina():
     """Texto para la pestaña GYM del iPad. Mismo formato de antes, ahora vía panel."""
     _, body = panel_request('GET', '/api/oficina')
     return body
+
+
+def leer_hoy():
+    """Texto para la pestaña HOY del iPad (asistencia del día, vía panel)."""
+    _, body = panel_request('GET', '/api/hoy')
+    return body
+
+
+def escribir_hoy(alumno_id, accion):
+    """Marca si/no/limpiar en HOY. El panel responde OK o ERROR|mensaje."""
+    _, body = panel_request('POST', '/api/hoy', form_body={
+        'alumno_id': alumno_id,
+        'accion': accion,
+    })
+    return body
+
+
+def _responder_texto(handler, status, body_text):
+    body = body_text.encode('utf-8') if isinstance(body_text, str) else body_text
+    handler.send_response(status)
+    handler.send_header('Content-Type', 'text/plain; charset=utf-8')
+    handler.send_header('Content-Length', str(len(body)))
+    handler.end_headers()
+    handler.wfile.write(body)
+
+
+def _hoy_post_invalido(alumno_id, accion):
+    if not alumno_id or not alumno_id.isdigit():
+        return 'ERROR|alumno_id invalido'
+    if accion not in ('si', 'no', 'limpiar'):
+        return 'ERROR|accion invalida'
+    return None
 
 
 def es_fecha_valida(fecha):
@@ -271,11 +307,28 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Content-Length', str(len(body)))
             self.end_headers()
             self.wfile.write(body)
+        elif parsed.path == '/api/hoy':
+            if not self._oficina_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
+                return
+            try:
+                body = leer_hoy().encode('utf-8')
+            except PanelError:
+                self.send_response(502)
+                self.end_headers()
+                return
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
         else:
             super().do_GET()
 
     def do_POST(self):
-        if self.path == '/guardar':
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/guardar':
             length = int(self.headers.get('Content-Length', 0))
             raw = self.rfile.read(length).decode('utf-8')
             data = urllib.parse.parse_qs(raw)
@@ -305,7 +358,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.send_response(303)
                 self.send_header('Location', '/rutina.html?fecha=' + fecha)
                 self.end_headers()
-        elif self.path == '/api/oficina-login':
+        elif parsed.path == '/api/oficina-login':
             length = int(self.headers.get('Content-Length', 0))
             raw = self.rfile.read(length).decode('utf-8')
             data = urllib.parse.parse_qs(raw)
@@ -323,6 +376,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             else:
                 self.send_response(401)
                 self.end_headers()
+        elif parsed.path == '/api/hoy':
+            if not self._oficina_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
+                return
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8')
+            data = urllib.parse.parse_qs(raw)
+            alumno_id = data.get('alumno_id', [''])[0]
+            accion = data.get('accion', [''])[0]
+            invalido = _hoy_post_invalido(alumno_id, accion)
+            if invalido:
+                _responder_texto(self, 200, invalido)
+                return
+            try:
+                body = escribir_hoy(alumno_id, accion)
+            except PanelError as e:
+                if e.detail.startswith('ERROR|'):
+                    _responder_texto(self, 200, e.detail)
+                else:
+                    self.send_response(502)
+                    self.end_headers()
+                return
+            _responder_texto(self, 200, body)
         else:
             self.send_response(404)
             self.end_headers()

@@ -30,7 +30,7 @@
     right: 0;
     bottom: 70px;
   }
-  #clockView, #stopwatchView, #rutinaView, #gymView {
+  #clockView, #stopwatchView, #rutinaView, #gymView, #hoyView {
     position: absolute;
     top: 0;
     left: 0;
@@ -379,11 +379,14 @@
     font-size: 13px;
     min-height: 16px;
   }
-  #gymStatus {
+  #gymStatus, #hoyStatus {
     padding: 20px 16px;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
+  }
+  #hoyStatus.hoyError {
+    color: #C23B22;
   }
 
   #gymPlanes {
@@ -449,6 +452,159 @@
     font-weight: bold;
     font-size: 12px;
     letter-spacing: 1px;
+  }
+
+  /* hoy / asistencia view */
+  #hoyView {
+    display: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #0A0A09;
+  }
+  #hoyTitle {
+    padding: 14px 16px 0 16px;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 3px;
+  }
+  #hoyCounts {
+    padding: 10px 16px 6px 16px;
+  }
+  .hoyCount {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: #141412;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .hoyCount b {
+    display: block;
+    font-size: 22px;
+    color: #EDE9DF;
+  }
+  .hoyCount span {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #7A7568;
+  }
+  .hoyCount.si b { color: #2E6B3E; }
+  .hoyCount.no b { color: #C23B22; }
+  .hoyCount.sin b { color: #C29A22; }
+  #hoyList {
+    padding: 0 16px 20px 16px;
+  }
+  .hoyRow {
+    padding: 12px 0 14px 0;
+    border-top: 1px solid #222;
+  }
+  .hoyHead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 8px;
+  }
+  .hoyName {
+    display: table-cell;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  .hoyMeta {
+    display: table-cell;
+    width: 90px;
+    text-align: right;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    vertical-align: middle;
+  }
+  .hoyRow.si .hoyMeta { color: #2E6B3E; }
+  .hoyRow.no .hoyMeta { color: #C23B22; }
+  .hoyRow.sin .hoyMeta { color: #C29A22; }
+  .hoyOrigen {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .hoyBtns {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 6px 0;
+  }
+  .hoyBtn {
+    display: table-cell;
+    height: 56px;
+    text-align: center;
+    vertical-align: middle;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    background: #2A2A26;
+  }
+  .hoyBtn.si.on { background: #2E6B3E; }
+  .hoyBtn.no.on { background: #C23B22; }
+  .hoyBtn.limpiar { color: #7A7568; letter-spacing: 1px; font-size: 14px; }
+  .hoyRow.ro .hoyName { color: #7A7568; }
+  #hoyLogin {
+    display: none;
+    padding: 50px 24px;
+  }
+  #hoyLoginTitle {
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  #hoyPassword {
+    display: block;
+    width: 100%;
+    height: 52px;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 22px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0 14px;
+    text-align: center;
+    letter-spacing: 4px;
+  }
+  #hoyLoginBtn {
+    display: block;
+    width: 100%;
+    height: 52px;
+    line-height: 52px;
+    margin-top: 12px;
+    background: #C23B22;
+    color: #EDE9DF;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  #hoyLoginError {
+    margin-top: 14px;
+    text-align: center;
+    color: #C23B22;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    min-height: 16px;
   }
 
   /* stopwatch view */
@@ -807,6 +963,18 @@
       <div id="gymPlanes"></div>
     </div>
   </div>
+  <div id="hoyView" style="display:none;">
+    <div id="hoyTitle">HOY — QUIÉN VIENE</div>
+    <div id="hoyLogin">
+      <div id="hoyLoginTitle">HOY — INGRESAR CLAVE</div>
+      <input type="password" id="hoyPassword" placeholder="Clave" autocomplete="off">
+      <div id="hoyLoginBtn">ENTRAR</div>
+      <div id="hoyLoginError">&nbsp;</div>
+    </div>
+    <div id="hoyCounts"></div>
+    <div id="hoyList"></div>
+    <div id="hoyStatus">&nbsp;</div>
+  </div>
   <div id="rutinaView" style="display:none;">
     <div id="rutinaHeader">
       <div id="rutinaTitle">RUTINAS</div>
@@ -870,6 +1038,7 @@
   <div id="tabStopwatch" class="tab">CRONOMETROS</div>
   <div id="tabRutina" class="tab">RUTINA</div>
   <div id="tabGym" class="tab">GYM</div>
+  <div id="tabHoy" class="tab">HOY</div>
 </div>
 
 <script type="text/javascript">
@@ -941,16 +1110,20 @@
   var tabRutina = document.getElementById('tabRutina');
   var gymView = document.getElementById('gymView');
   var tabGym = document.getElementById('tabGym');
+  var hoyView = document.getElementById('hoyView');
+  var tabHoy = document.getElementById('tabHoy');
 
   function hideAllViews() {
     clockView.style.display = 'none';
     stopwatchView.style.display = 'none';
     rutinaView.style.display = 'none';
     gymView.style.display = 'none';
+    hoyView.style.display = 'none';
     tabClock.className = 'tab';
     tabStopwatch.className = 'tab';
     tabRutina.className = 'tab';
     tabGym.className = 'tab';
+    tabHoy.className = 'tab';
   }
 
   function showClock() {
@@ -983,10 +1156,18 @@
     showGymOficina();
   }
 
+  function showHoy() {
+    hideAllViews();
+    hoyView.style.display = 'block';
+    tabHoy.className = 'tab active';
+    cargarHoy();
+  }
+
   tabClock.addEventListener('click', showClock, false);
   tabStopwatch.addEventListener('click', showStopwatch, false);
   tabRutina.addEventListener('click', showRutina, false);
   tabGym.addEventListener('click', showGym, false);
+  tabHoy.addEventListener('click', showHoy, false);
 
 
   /* ---------- oficina / gym ---------- */
@@ -1200,6 +1381,226 @@
       countBox('porvencer', 'POR VENCER', counts.por_vencer);
       countBox('', 'ACTIVOS', counts.activos);
       countBox('', 'SIN PLAN', counts.sin_plan);
+    };
+    xhr.send(null);
+  }
+
+  /* ---------- hoy / asistencia ---------- */
+  var hoyCounts = document.getElementById('hoyCounts');
+  var hoyList = document.getElementById('hoyList');
+  var hoyStatus = document.getElementById('hoyStatus');
+  var hoyLogin = document.getElementById('hoyLogin');
+  var hoyPassword = document.getElementById('hoyPassword');
+  var hoyLoginBtn = document.getElementById('hoyLoginBtn');
+  var hoyLoginError = document.getElementById('hoyLoginError');
+  var hoyBusy = false;
+
+  function hoySetStatus(msg, esError) {
+    hoyStatus.className = esError ? 'hoyError' : '';
+    hoyStatus.innerHTML = msg || '&nbsp;';
+  }
+
+  function mostrarLoginHoy() {
+    hoySetStatus('');
+    hoyCounts.innerHTML = '';
+    hoyList.innerHTML = '';
+    hoyLoginError.innerHTML = '&nbsp;';
+    hoyPassword.value = '';
+    hoyLogin.style.display = 'block';
+  }
+
+  function ocultarLoginHoy() {
+    hoyLogin.style.display = 'none';
+  }
+
+  function intentarLoginHoy() {
+    var pass = hoyPassword.value;
+    if (!pass) { return; }
+    hoyLoginError.innerHTML = 'Entrando...';
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/oficina-login', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status === 200) {
+        cargarHoy();
+      } else {
+        hoyLoginError.innerHTML = 'Clave incorrecta';
+        hoyPassword.value = '';
+      }
+    };
+    xhr.send('password=' + encodeURIComponent(pass));
+  }
+
+  hoyLoginBtn.addEventListener('click', intentarLoginHoy, false);
+  hoyPassword.addEventListener('keydown', function (e) {
+    if (e.keyCode === 13) { intentarLoginHoy(); }
+  }, false);
+
+  function hoyEtiqueta(resp) {
+    if (resp === 'si') { return 'VAN'; }
+    if (resp === 'no') { return 'NO'; }
+    return 'SIN';
+  }
+
+  function hoyClaseResp(resp) {
+    if (resp === 'si' || resp === 'no') { return resp; }
+    return 'sin';
+  }
+
+  function hoyTextoNodo(el, texto) {
+    el.appendChild(document.createTextNode(texto));
+  }
+
+  function hoyOrigenVisible(origen) {
+    if (!origen || origen === '-') { return ''; }
+    return origen;
+  }
+
+  function hoyAccion(alumnoId, accion) {
+    if (hoyBusy) { return; }
+    hoyBusy = true;
+    hoySetStatus('Guardando...');
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/hoy', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      hoyBusy = false;
+      if (xhr.status === 401) {
+        mostrarLoginHoy();
+        return;
+      }
+      var t = xhr.responseText || '';
+      t = String(t).replace(/^\s+|\s+$/g, '');
+      if (xhr.status === 200 && t === 'OK') {
+        cargarHoy();
+        return;
+      }
+      if (t.indexOf('ERROR|') === 0) {
+        hoySetStatus(t.substring(6), true);
+        return;
+      }
+      hoySetStatus('No se pudo guardar', true);
+    };
+    xhr.send('alumno_id=' + encodeURIComponent(alumnoId) + '&accion=' + encodeURIComponent(accion));
+  }
+
+  function hoyBoton(label, cls, on, alumnoId, accion) {
+    var btn = document.createElement('div');
+    btn.className = 'hoyBtn ' + cls + (on ? ' on' : '');
+    hoyTextoNodo(btn, label);
+    btn.addEventListener('click', function () {
+      hoyAccion(alumnoId, accion);
+    }, false);
+    return btn;
+  }
+
+  function hoyPintarFilaR(parts) {
+    var alumnoId = parts[1] || '';
+    var nombre = parts[2] || '';
+    var resp = parts[3] || '';
+    var origen = hoyOrigenVisible(parts[4] || '');
+    var row = document.createElement('div');
+    row.className = 'hoyRow ' + hoyClaseResp(resp);
+
+    var head = document.createElement('div');
+    head.className = 'hoyHead';
+    var name = document.createElement('div');
+    name.className = 'hoyName';
+    hoyTextoNodo(name, nombre);
+    var meta = document.createElement('div');
+    meta.className = 'hoyMeta';
+    hoyTextoNodo(meta, hoyEtiqueta(resp));
+    head.appendChild(name);
+    head.appendChild(meta);
+    row.appendChild(head);
+
+    if (origen) {
+      var orig = document.createElement('div');
+      orig.className = 'hoyOrigen';
+      hoyTextoNodo(orig, origen);
+      row.appendChild(orig);
+    }
+
+    var btns = document.createElement('div');
+    btns.className = 'hoyBtns';
+    btns.appendChild(hoyBoton('SÍ', 'si', resp === 'si', alumnoId, 'si'));
+    btns.appendChild(hoyBoton('NO', 'no', resp === 'no', alumnoId, 'no'));
+    btns.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
+    row.appendChild(btns);
+    hoyList.appendChild(row);
+  }
+
+  function hoyPintarFilaU(parts) {
+    var nombre = parts[1] || '';
+    var resp = parts[2] || '';
+    var origen = hoyOrigenVisible(parts[3] || '');
+    var row = document.createElement('div');
+    row.className = 'hoyRow ro ' + hoyClaseResp(resp);
+
+    var head = document.createElement('div');
+    head.className = 'hoyHead';
+    var name = document.createElement('div');
+    name.className = 'hoyName';
+    hoyTextoNodo(name, nombre);
+    var meta = document.createElement('div');
+    meta.className = 'hoyMeta';
+    hoyTextoNodo(meta, hoyEtiqueta(resp));
+    head.appendChild(name);
+    head.appendChild(meta);
+    row.appendChild(head);
+
+    var orig = document.createElement('div');
+    orig.className = 'hoyOrigen';
+    hoyTextoNodo(orig, origen ? origen : 'solo lectura');
+    row.appendChild(orig);
+    hoyList.appendChild(row);
+  }
+
+  function cargarHoy() {
+    ocultarLoginHoy();
+    hoyBusy = false;
+    hoySetStatus('Cargando...');
+    hoyCounts.innerHTML = '';
+    hoyList.innerHTML = '';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/hoy', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status === 401) {
+        mostrarLoginHoy();
+        return;
+      }
+      if (xhr.status !== 200) {
+        hoySetStatus('No se pudo cargar', true);
+        return;
+      }
+      hoySetStatus('');
+      var lines = xhr.responseText.split('\n');
+      var counts = { si: '0', no: '0', sin: '0' };
+      var i;
+      for (i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (!line) { continue; }
+        var parts = line.split('|');
+        if (parts[0] === 'C' && parts.length >= 3) {
+          counts[parts[1]] = parts[2];
+        } else if (parts[0] === 'R' && parts.length >= 3) {
+          hoyPintarFilaR(parts);
+        } else if (parts[0] === 'U' && parts.length >= 2) {
+          hoyPintarFilaU(parts);
+        }
+      }
+      function countBox(cls, label, val) {
+        var d = document.createElement('div');
+        d.className = 'hoyCount ' + cls;
+        d.innerHTML = '<b>' + val + '</b><span>' + label + '</span>';
+        hoyCounts.appendChild(d);
+      }
+      countBox('si', 'VAN', counts.si);
+      countBox('no', 'NO', counts.no);
+      countBox('sin', 'SIN', counts.sin);
     };
     xhr.send(null);
   }
