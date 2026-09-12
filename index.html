@@ -493,13 +493,17 @@
     right: 0;
     bottom: 0;
   }
-  #hoyAmPm {
+  #hoyAmPmBar {
     position: absolute;
     top: 6px;
     left: 16px;
     right: 16px;
     height: 56px;
+  }
+  #hoyAmPm {
     display: table;
+    width: 100%;
+    height: 56px;
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 6px 0;
@@ -1091,9 +1095,11 @@
       <div id="hoyLoginError">&nbsp;</div>
     </div>
     <div id="hoyPane">
-      <div id="hoyAmPm">
-        <div id="hoyBtnAm" class="hoyAmPmBtn">AM</div>
-        <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
+      <div id="hoyAmPmBar">
+        <div id="hoyAmPm">
+          <div id="hoyBtnAm" class="hoyAmPmBtn">AM</div>
+          <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
+        </div>
       </div>
       <input type="text" id="hoySearch" placeholder="Buscar..." autocomplete="off">
       <div id="hoyCounts"></div>
