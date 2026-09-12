@@ -379,11 +379,24 @@
     font-size: 13px;
     min-height: 16px;
   }
-  #gymStatus, #hoyStatus {
+  #gymStatus {
     padding: 20px 16px;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
+  }
+  #hoyStatus {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 22px;
+    padding: 2px 0 0 0;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
   }
   #hoyStatus.hoyError {
     color: #C23B22;
@@ -457,34 +470,97 @@
   /* hoy / asistencia view */
   #hoyView {
     display: none;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     background: #0A0A09;
   }
   #hoyTitle {
-    padding: 14px 16px 0 16px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    padding: 10px 16px 0 16px;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
     letter-spacing: 3px;
   }
+  #hoyPane {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  #hoyAmPmBar {
+    position: absolute;
+    top: 6px;
+    left: 16px;
+    right: 16px;
+    height: 56px;
+  }
+  #hoyAmPm {
+    display: table;
+    width: 100%;
+    height: 56px;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 6px 0;
+  }
+  .hoyAmPmBtn {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 56px;
+    background: #141412;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    letter-spacing: 3px;
+  }
+  .hoyAmPmBtn.on {
+    background: #C23B22;
+    color: #EDE9DF;
+  }
+  #hoySearch {
+    position: absolute;
+    top: 68px;
+    left: 16px;
+    right: 16px;
+    height: 40px;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 16px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0 12px;
+    -webkit-user-select: text;
+    user-select: text;
+  }
   #hoyCounts {
-    padding: 10px 16px 6px 16px;
+    position: absolute;
+    top: 114px;
+    left: 16px;
+    right: 16px;
+    height: 36px;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .hoyCount {
     display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 8px;
-    padding: 8px 12px;
+    margin-right: 8px;
+    padding: 4px 10px;
     background: #141412;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
   }
   .hoyCount b {
-    display: block;
-    font-size: 22px;
+    display: inline-block;
+    font-size: 18px;
     color: #EDE9DF;
+    margin-right: 6px;
   }
   .hoyCount span {
     font-size: 11px;
@@ -494,73 +570,120 @@
   .hoyCount.si b { color: #2E6B3E; }
   .hoyCount.no b { color: #C23B22; }
   .hoyCount.sin b { color: #C29A22; }
+  #hoyMain {
+    position: absolute;
+    top: 154px;
+    left: 0;
+    right: 0;
+    bottom: 26px;
+  }
+  #hoyListWrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 28px;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   #hoyList {
-    padding: 0 16px 20px 16px;
+    position: relative;
+    padding: 0 8px 16px 16px;
+  }
+  #hoyLetters {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 28px;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #0A0A09;
+  }
+  .hoyLetter {
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    color: #3A3830;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+  }
+  .hoyLetter.on {
+    color: #EDE9DF;
+  }
+  .hoySec {
+    padding: 8px 0 2px 0;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 2px;
   }
   .hoyRow {
-    padding: 12px 0 14px 0;
-    border-top: 1px solid #222;
-  }
-  .hoyHead {
     display: table;
     width: 100%;
     table-layout: fixed;
-    margin-bottom: 8px;
+    padding: 3px 0;
+    border-top: 1px solid #222;
+  }
+  .hoyNameCol {
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 8px;
   }
   .hoyName {
-    display: table-cell;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    vertical-align: middle;
   }
   .hoyMeta {
-    display: table-cell;
-    width: 90px;
-    text-align: right;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: bold;
     letter-spacing: 1px;
-    vertical-align: middle;
   }
   .hoyRow.si .hoyMeta { color: #2E6B3E; }
   .hoyRow.no .hoyMeta { color: #C23B22; }
   .hoyRow.sin .hoyMeta { color: #C29A22; }
-  .hoyOrigen {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
   .hoyBtns {
+    display: table-cell;
+    width: 210px;
+    vertical-align: middle;
+  }
+  .hoyBtnsInner {
     display: table;
     width: 100%;
     table-layout: fixed;
     border-collapse: separate;
-    border-spacing: 6px 0;
+    border-spacing: 4px 0;
   }
   .hoyBtn {
     display: table-cell;
-    height: 56px;
+    height: 44px;
     text-align: center;
     vertical-align: middle;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 2px;
+    font-size: 14px;
+    letter-spacing: 1px;
     background: #2A2A26;
   }
   .hoyBtn.si.on { background: #2E6B3E; }
   .hoyBtn.no.on { background: #C23B22; }
-  .hoyBtn.limpiar { color: #7A7568; letter-spacing: 1px; font-size: 14px; }
+  .hoyBtn.limpiar { color: #7A7568; letter-spacing: 0; font-size: 11px; }
   .hoyRow.ro .hoyName { color: #7A7568; }
+  .hoyRow.ro .hoyBtns { width: 1px; }
   #hoyLogin {
     display: none;
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding: 50px 24px;
   }
   #hoyLoginTitle {
@@ -971,9 +1094,23 @@
       <div id="hoyLoginBtn">ENTRAR</div>
       <div id="hoyLoginError">&nbsp;</div>
     </div>
-    <div id="hoyCounts"></div>
-    <div id="hoyList"></div>
-    <div id="hoyStatus">&nbsp;</div>
+    <div id="hoyPane">
+      <div id="hoyAmPmBar">
+        <div id="hoyAmPm">
+          <div id="hoyBtnAm" class="hoyAmPmBtn">AM</div>
+          <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
+        </div>
+      </div>
+      <input type="text" id="hoySearch" placeholder="Buscar..." autocomplete="off">
+      <div id="hoyCounts"></div>
+      <div id="hoyMain">
+        <div id="hoyListWrap">
+          <div id="hoyList"></div>
+        </div>
+        <div id="hoyLetters"></div>
+      </div>
+      <div id="hoyStatus">&nbsp;</div>
+    </div>
   </div>
   <div id="rutinaView" style="display:none;">
     <div id="rutinaHeader">
@@ -1388,12 +1525,87 @@
   /* ---------- hoy / asistencia ---------- */
   var hoyCounts = document.getElementById('hoyCounts');
   var hoyList = document.getElementById('hoyList');
+  var hoyListWrap = document.getElementById('hoyListWrap');
+  var hoyLetters = document.getElementById('hoyLetters');
   var hoyStatus = document.getElementById('hoyStatus');
   var hoyLogin = document.getElementById('hoyLogin');
+  var hoyPane = document.getElementById('hoyPane');
   var hoyPassword = document.getElementById('hoyPassword');
   var hoyLoginBtn = document.getElementById('hoyLoginBtn');
   var hoyLoginError = document.getElementById('hoyLoginError');
+  var hoyBtnAm = document.getElementById('hoyBtnAm');
+  var hoyBtnPm = document.getElementById('hoyBtnPm');
+  var hoySearch = document.getElementById('hoySearch');
   var hoyBusy = false;
+  var hoyFilas = [];
+  var hoyCountsData = { si: '0', no: '0', sin: '0' };
+  var HOY_HORARIO_COOKIE = 'hoy_horario';
+  var HOY_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var hoyHorario = 'AM';
+
+  function hoyHorarioChile() {
+    var h = new Date().getHours();
+    return h < 12 ? 'AM' : 'PM';
+  }
+
+  function hoyLeerCookieHorario() {
+    var raw = document.cookie ? document.cookie.split(';') : [];
+    var i;
+    for (i = 0; i < raw.length; i++) {
+      var parte = raw[i].replace(/^\s+/, '');
+      if (parte.indexOf(HOY_HORARIO_COOKIE + '=') === 0) {
+        return parte.substring(HOY_HORARIO_COOKIE.length + 1);
+      }
+    }
+    return '';
+  }
+
+  function hoyLeerGuardado() {
+    var v = '';
+    try {
+      if (window.localStorage) {
+        v = localStorage.getItem('hoyHorario') || '';
+      }
+    } catch (e) {
+      v = '';
+    }
+    if (v !== 'AM' && v !== 'PM') {
+      v = hoyLeerCookieHorario();
+    }
+    if (v === 'AM' || v === 'PM') {
+      return v;
+    }
+    return hoyHorarioChile();
+  }
+
+  function hoyGuardarHorario(h) {
+    hoyHorario = h;
+    try {
+      if (window.localStorage) {
+        localStorage.setItem('hoyHorario', h);
+      }
+    } catch (e) {}
+    document.cookie = HOY_HORARIO_COOKIE + '=' + h + '; path=/; max-age=15552000';
+  }
+
+  function hoyPintarToggle() {
+    hoyBtnAm.className = 'hoyAmPmBtn' + (hoyHorario === 'AM' ? ' on' : '');
+    hoyBtnPm.className = 'hoyAmPmBtn' + (hoyHorario === 'PM' ? ' on' : '');
+  }
+
+  function hoyElegirHorario(h) {
+    if (h !== 'AM' && h !== 'PM') { return; }
+    if (h === hoyHorario) { return; }
+    hoyGuardarHorario(h);
+    hoyPintarToggle();
+    cargarHoy();
+  }
+
+  hoyHorario = hoyLeerGuardado();
+  hoyPintarToggle();
+
+  hoyBtnAm.addEventListener('click', function () { hoyElegirHorario('AM'); }, false);
+  hoyBtnPm.addEventListener('click', function () { hoyElegirHorario('PM'); }, false);
 
   function hoySetStatus(msg, esError) {
     hoyStatus.className = esError ? 'hoyError' : '';
@@ -1404,13 +1616,17 @@
     hoySetStatus('');
     hoyCounts.innerHTML = '';
     hoyList.innerHTML = '';
+    hoyLetters.innerHTML = '';
+    hoyFilas = [];
     hoyLoginError.innerHTML = '&nbsp;';
     hoyPassword.value = '';
     hoyLogin.style.display = 'block';
+    hoyPane.style.display = 'none';
   }
 
   function ocultarLoginHoy() {
     hoyLogin.style.display = 'none';
+    hoyPane.style.display = 'block';
   }
 
   function intentarLoginHoy() {
@@ -1457,6 +1673,30 @@
     return origen;
   }
 
+  function hoyDoblar(s) {
+    s = String(s || '').toUpperCase();
+    var from = 'ÁÀÄÂÃÉÈËÊÍÌÏÎÓÒÖÔÕÚÙÜÛÝÑÇ';
+    var to = 'AAAAAEEEEIIIIOOOOOUUUUYNC';
+    var out = '';
+    var i;
+    for (i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      var idx = from.indexOf(ch);
+      out += (idx >= 0 ? to.charAt(idx) : ch);
+    }
+    return out;
+  }
+
+  function hoyLetraDeNombre(nombre) {
+    var s = hoyDoblar(nombre);
+    var i;
+    for (i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      if (ch >= 'A' && ch <= 'Z') { return ch; }
+    }
+    return '#';
+  }
+
   function hoyAccion(alumnoId, accion) {
     if (hoyBusy) { return; }
     hoyBusy = true;
@@ -1483,7 +1723,7 @@
       }
       hoySetStatus('No se pudo guardar', true);
     };
-    xhr.send('alumno_id=' + encodeURIComponent(alumnoId) + '&accion=' + encodeURIComponent(accion));
+    xhr.send('alumno_id=' + encodeURIComponent(alumnoId) + '&accion=' + encodeURIComponent(accion) + '&horario=' + encodeURIComponent(hoyHorario));
   }
 
   function hoyBoton(label, cls, on, alumnoId, accion) {
@@ -1504,30 +1744,26 @@
     var row = document.createElement('div');
     row.className = 'hoyRow ' + hoyClaseResp(resp);
 
-    var head = document.createElement('div');
-    head.className = 'hoyHead';
+    var nameCol = document.createElement('div');
+    nameCol.className = 'hoyNameCol';
     var name = document.createElement('div');
     name.className = 'hoyName';
     hoyTextoNodo(name, nombre);
     var meta = document.createElement('div');
     meta.className = 'hoyMeta';
-    hoyTextoNodo(meta, hoyEtiqueta(resp));
-    head.appendChild(name);
-    head.appendChild(meta);
-    row.appendChild(head);
-
-    if (origen) {
-      var orig = document.createElement('div');
-      orig.className = 'hoyOrigen';
-      hoyTextoNodo(orig, origen);
-      row.appendChild(orig);
-    }
+    hoyTextoNodo(meta, hoyEtiqueta(resp) + (origen ? ' · ' + origen : ''));
+    nameCol.appendChild(name);
+    nameCol.appendChild(meta);
+    row.appendChild(nameCol);
 
     var btns = document.createElement('div');
     btns.className = 'hoyBtns';
-    btns.appendChild(hoyBoton('SÍ', 'si', resp === 'si', alumnoId, 'si'));
-    btns.appendChild(hoyBoton('NO', 'no', resp === 'no', alumnoId, 'no'));
-    btns.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
+    var inner = document.createElement('div');
+    inner.className = 'hoyBtnsInner';
+    inner.appendChild(hoyBoton('SÍ', 'si', resp === 'si', alumnoId, 'si'));
+    inner.appendChild(hoyBoton('NO', 'no', resp === 'no', alumnoId, 'no'));
+    inner.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
+    btns.appendChild(inner);
     row.appendChild(btns);
     hoyList.appendChild(row);
   }
@@ -1539,33 +1775,119 @@
     var row = document.createElement('div');
     row.className = 'hoyRow ro ' + hoyClaseResp(resp);
 
-    var head = document.createElement('div');
-    head.className = 'hoyHead';
+    var nameCol = document.createElement('div');
+    nameCol.className = 'hoyNameCol';
     var name = document.createElement('div');
     name.className = 'hoyName';
     hoyTextoNodo(name, nombre);
     var meta = document.createElement('div');
     meta.className = 'hoyMeta';
-    hoyTextoNodo(meta, hoyEtiqueta(resp));
-    head.appendChild(name);
-    head.appendChild(meta);
-    row.appendChild(head);
-
-    var orig = document.createElement('div');
-    orig.className = 'hoyOrigen';
-    hoyTextoNodo(orig, origen ? origen : 'solo lectura');
-    row.appendChild(orig);
+    hoyTextoNodo(meta, hoyEtiqueta(resp) + ' · ' + (origen ? origen : 'solo lectura'));
+    nameCol.appendChild(name);
+    nameCol.appendChild(meta);
+    row.appendChild(nameCol);
     hoyList.appendChild(row);
   }
+
+  function hoyPintarCounts() {
+    hoyCounts.innerHTML = '';
+    function countBox(cls, label, val) {
+      var d = document.createElement('div');
+      d.className = 'hoyCount ' + cls;
+      d.innerHTML = '<b>' + val + '</b><span>' + label + '</span>';
+      hoyCounts.appendChild(d);
+    }
+    countBox('si', 'VAN', hoyCountsData.si);
+    countBox('no', 'NO', hoyCountsData.no);
+    countBox('sin', 'SIN', hoyCountsData.sin);
+  }
+
+  function hoySaltarLetra(letra) {
+    var el = document.getElementById('hoySec-' + letra);
+    if (!el || !hoyListWrap) { return; }
+    var top = el.offsetTop || 0;
+    var n = el.offsetParent;
+    while (n && n !== hoyListWrap) {
+      top += n.offsetTop || 0;
+      n = n.offsetParent;
+    }
+    hoyListWrap.scrollTop = top;
+  }
+
+  function hoyPintarLetras(activas) {
+    hoyLetters.innerHTML = '';
+    var i;
+    for (i = 0; i < HOY_LETRAS.length; i++) {
+      (function (letra) {
+        var d = document.createElement('div');
+        d.className = 'hoyLetter' + (activas[letra] ? ' on' : '');
+        hoyTextoNodo(d, letra);
+        d.addEventListener('click', function () {
+          hoySaltarLetra(letra);
+        }, false);
+        hoyLetters.appendChild(d);
+      })(HOY_LETRAS.charAt(i));
+    }
+  }
+
+  function hoyPintarLista() {
+    var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
+    hoyList.innerHTML = '';
+    var activas = {};
+    var ultima = '';
+    var i;
+    var vistos = 0;
+    for (i = 0; i < hoyFilas.length; i++) {
+      var fila = hoyFilas[i];
+      if (q && hoyDoblar(fila.nombre).indexOf(q) === -1) { continue; }
+      vistos += 1;
+      if (fila.letra !== ultima) {
+        ultima = fila.letra;
+        if (ultima !== '#') {
+          activas[ultima] = true;
+        }
+        var sec = document.createElement('div');
+        sec.className = 'hoySec';
+        sec.id = 'hoySec-' + ultima;
+        hoyTextoNodo(sec, ultima === '#' ? '#' : ultima);
+        hoyList.appendChild(sec);
+      }
+      if (fila.kind === 'R') {
+        hoyPintarFilaR(fila.parts);
+      } else {
+        hoyPintarFilaU(fila.parts);
+      }
+    }
+    hoyPintarLetras(activas);
+    if (!hoyFilas.length) {
+      return;
+    }
+    if (!vistos) {
+      hoySetStatus('Sin resultados');
+    }
+  }
+
+  function hoyOnFiltro() {
+    if (!hoyFilas.length) { return; }
+    hoySetStatus('');
+    hoyPintarLista();
+  }
+
+  hoySearch.addEventListener('keyup', hoyOnFiltro, false);
+  hoySearch.addEventListener('change', hoyOnFiltro, false);
+  hoySearch.addEventListener('input', hoyOnFiltro, false);
 
   function cargarHoy() {
     ocultarLoginHoy();
     hoyBusy = false;
+    hoyPintarToggle();
     hoySetStatus('Cargando...');
     hoyCounts.innerHTML = '';
     hoyList.innerHTML = '';
+    hoyLetters.innerHTML = '';
+    hoyFilas = [];
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/hoy', true);
+    xhr.open('GET', '/api/hoy?horario=' + encodeURIComponent(hoyHorario), true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
       if (xhr.status === 401) {
@@ -1576,31 +1898,41 @@
         hoySetStatus('No se pudo cargar', true);
         return;
       }
+      var t = xhr.responseText || '';
+      if (t.indexOf('ERROR|') === 0) {
+        hoySetStatus(t.substring(6), true);
+        return;
+      }
       hoySetStatus('');
-      var lines = xhr.responseText.split('\n');
+      var lines = t.split('\n');
       var counts = { si: '0', no: '0', sin: '0' };
+      var filas = [];
       var i;
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (!line) { continue; }
         var parts = line.split('|');
         if (parts[0] === 'C' && parts.length >= 3) {
-          counts[parts[1]] = parts[2];
+          if (parts[1] === 'si' || parts[1] === 'no' || parts[1] === 'sin') {
+            counts[parts[1]] = parts[2];
+          }
         } else if (parts[0] === 'R' && parts.length >= 3) {
-          hoyPintarFilaR(parts);
+          filas.push({ kind: 'R', parts: parts, nombre: parts[2] || '', letra: hoyLetraDeNombre(parts[2] || '') });
         } else if (parts[0] === 'U' && parts.length >= 2) {
-          hoyPintarFilaU(parts);
+          filas.push({ kind: 'U', parts: parts, nombre: parts[1] || '', letra: hoyLetraDeNombre(parts[1] || '') });
         }
       }
-      function countBox(cls, label, val) {
-        var d = document.createElement('div');
-        d.className = 'hoyCount ' + cls;
-        d.innerHTML = '<b>' + val + '</b><span>' + label + '</span>';
-        hoyCounts.appendChild(d);
-      }
-      countBox('si', 'VAN', counts.si);
-      countBox('no', 'NO', counts.no);
-      countBox('sin', 'SIN', counts.sin);
+      filas.sort(function (a, b) {
+        var an = hoyDoblar(a.nombre);
+        var bn = hoyDoblar(b.nombre);
+        if (an < bn) { return -1; }
+        if (an > bn) { return 1; }
+        return 0;
+      });
+      hoyFilas = filas;
+      hoyCountsData = counts;
+      hoyPintarCounts();
+      hoyPintarLista();
     };
     xhr.send(null);
   }

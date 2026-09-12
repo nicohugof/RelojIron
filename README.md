@@ -24,7 +24,7 @@ El iPad 1 no tiene `fetch` ni flexbox: el HTML usa ES5, `XMLHttpRequest` y `disp
 2. **CRONOMETROS** — cronómetros y temporizadores con beep al terminar la cuenta regresiva.
 3. **RUTINA** — rutinas por fecha (carga/guarda contra la API del mismo host).
 4. **GYM** — oficina: quién debe. Contadores **vencidos / por vencer / activos / sin plan** y listado (`tabGym`, `gymView`, `GET /api/oficina`).
-5. **HOY** — quién viene hoy (espejo de `panel.ironcross.cl/hoy`, sin iframe: el iPad 1 no hace TLS moderno). Contadores **van / no / sin** y listado; toques grandes Sí / No / Limpiar en filas `R|` (`tabHoy`, `hoyView`, `GET/POST /api/hoy`). Misma clave/sesión que oficina (muestra nombres). Es pestaña propia, no un sub-tab de GYM, para marcar asistencia en el piso sin pasar por oficina/planes.
+5. **HOY** — quién viene hoy (espejo de `panel.ironcross.cl/hoy`, sin iframe: el iPad 1 no hace TLS moderno). Un horario a la vez (**AM / PM**), búsqueda en la lista cargada, riel **A–Z** (Ñ va con N) y filas densas con Sí / No / Limpiar (~44px). Contadores **van / no / sin**. Filas `R|` (`tabHoy`, `hoyView`, `GET/POST /api/hoy?horario=`). Misma clave/sesión que oficina (muestra nombres). Es pestaña propia, no un sub-tab de GYM, para marcar asistencia en el piso sin pasar por oficina/planes. El AM/PM queda en cookie + `localStorage` (y en una variable JS si `localStorage` falla en iOS 5). Si no hay valor guardado, el default es la hora de Chile (hora < 12 → AM), igual que un reloj de 12h en `America/Santiago`.
 
 ## Rutas de API (mismo host `:8090`)
 
@@ -33,8 +33,8 @@ El HTML llama a:
 | Método | Ruta | Qué hace |
 |--------|------|----------|
 | GET | `/api/oficina` | Texto plano de la oficina (contadores + filas de alumnos) |
-| GET | `/api/hoy` | Texto plano de asistencia de hoy (contadores + filas). Misma cookie que oficina. |
-| POST | `/api/hoy` | Marca asistencia: `alumno_id=12&accion=si` (`si` / `no` / `limpiar`). Respuesta `OK` o `ERROR|mensaje`. |
+| GET | `/api/hoy?horario=AM` | Texto plano de asistencia de **un** horario (`AM` / `PM`, también `am`/`pm`). Sin `horario`, RelojIron manda el de Chile (hora < 12 → AM). Misma cookie que oficina. |
+| POST | `/api/hoy` | Marca asistencia: `alumno_id=12&accion=si&horario=AM` (`si` / `no` / `limpiar`). Sin `horario`, igual: default Chile. Respuesta `OK` o `ERROR|mensaje`. |
 | GET | `/api/rutina?fecha=YYYY-MM-DD` | Texto de la rutina de ese día |
 | GET | `/api/rutina/dias` | Texto plano: `HOY:…` `MANIANA:…` `DIAS:…` |
 | POST | `/guardar` | Guarda rutina (`fecha` + `rutina`, form-urlencoded) |
@@ -44,28 +44,31 @@ Formato de `GET /api/oficina` (una línea por registro, campos con `|`):
 - Contadores: `C|activos|N`, `C|vencidos|N`, `C|por_vencer|N`, `C|sin_plan|N`
 - Filas: `R|V|nombre|monto|dd/mm` (vencido) o `R|P|nombre|monto|dd/mm` (por vencer)
 
-Formato de `GET /api/hoy` (una línea por registro, campos con `|`):
+Formato de `GET /api/hoy?horario=AM` (una línea por registro, campos con `|`). Contrato del panel (`ironcross-dashboard` #18):
 
-- Contadores: `C|si|N`, `C|no|N`, `C|sin|N`
-- Filas tappeables: `R|alumno_id|nombre|si-o-no-o-vacio|origen` (respuesta vacía = sin respuesta)
+- Contadores: `C|si|N`, `C|no|N`, `C|sin|N`, `C|horario|AM`
+- Filas tappeables: `R|alumno_id|nombre|si-o-no-o-vacio|origen|AM` (6º campo = horario; parsers viejos que solo usan `parts[1..4]` siguen andando)
 - Filas solo lectura: `U|nombre_raw|si-o-no|origen` (sin `alumno_id`, no se pueden marcar)
+
+Un horario a la vez: el piso no mezcla AM y PM. RelojIron reenvía `horario` en el query del GET y en el form del POST.
 
 `/api/hoy` y `/api/oficina` piden la misma cookie de oficina (`POST /api/oficina-login`). RelojIron proxea ambas al panel con `Authorization: Bearer $IPAD_API_TOKEN`.
 
-**Verificar contra el panel** (cuando `nicohugof/ironcross-dashboard` #17 esté mergeado, o contra esa rama):
+**Verificar contra el panel** (cuando `nicohugof/ironcross-dashboard` #18 esté mergeado, o contra esa rama):
 
 ```
 # Directo al panel (desde una máquina con TLS moderno; no desde el iPad 1)
-curl -sS -H "Authorization: Bearer $IPAD_API_TOKEN" "$PANEL_API_URL/api/hoy"
+curl -sS -H "Authorization: Bearer $IPAD_API_TOKEN" "$PANEL_API_URL/api/hoy?horario=AM"
+curl -sS -H "Authorization: Bearer $IPAD_API_TOKEN" "$PANEL_API_URL/api/hoy?horario=PM"
 
 # POST de prueba
 curl -sS -H "Authorization: Bearer $IPAD_API_TOKEN" \
-  -d "alumno_id=12&accion=si" "$PANEL_API_URL/api/hoy"
+  -d "alumno_id=12&accion=si&horario=AM" "$PANEL_API_URL/api/hoy"
 
 # Vía RelojIron (:8090), con la clave de oficina
 curl -sS -c /tmp/ri.jar -d "password=$OFICINA_PASSWORD" http://127.0.0.1:8090/api/oficina-login
-curl -sS -b /tmp/ri.jar http://127.0.0.1:8090/api/hoy
-curl -sS -b /tmp/ri.jar -d "alumno_id=12&accion=si" http://127.0.0.1:8090/api/hoy
+curl -sS -b /tmp/ri.jar "http://127.0.0.1:8090/api/hoy?horario=AM"
+curl -sS -b /tmp/ri.jar -d "alumno_id=12&accion=si&horario=PM" http://127.0.0.1:8090/api/hoy
 ```
 
 También existe **GET `/rutina`** (y `/rutina.html`): un HTML aparte (~1.5 KB, título `Ironcross - Rutina`) para editar y guardar con un form clásico a `POST /guardar`. Esa página la genera el backend (la fecha va rellena al pedirla). `rutina.html` en este repo es una captura de esa respuesta, no un archivo estático en el Oracle.
