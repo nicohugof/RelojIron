@@ -17,14 +17,22 @@ SAMPLE_HOY = '\n'.join([
     'C|si|1',
     'C|no|1',
     'C|sin|1',
-    'R|12|Ana Perez|si|whatsapp',
-    'R|13|Bruno Soto||-',
+    'C|horario|AM',
+    'R|12|Ana Perez|si|whatsapp|AM',
+    'R|13|Bruno Soto||-|AM',
     'U|Invitado|no|lista',
 ]) + '\n'
 
 
 class MockPanel(http.server.BaseHTTPRequestHandler):
-    store = {'body': SAMPLE_HOY, 'last_post': None, 'auth': None, 'post_status': 200, 'post_body': 'OK'}
+    store = {
+        'body': SAMPLE_HOY,
+        'last_get': None,
+        'last_post': None,
+        'auth': None,
+        'post_status': 200,
+        'post_body': 'OK',
+    }
 
     def log_message(self, format, *args):
         pass
@@ -47,6 +55,10 @@ class MockPanel(http.server.BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
             return
+        self.store['last_get'] = {
+            'path': self.path,
+            'qs': urllib.parse.parse_qs(parsed.query),
+        }
         body = self.store['body'].encode('utf-8')
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
@@ -107,6 +119,7 @@ class HoyProxyTest(unittest.TestCase):
 
     def setUp(self):
         MockPanel.store['body'] = SAMPLE_HOY
+        MockPanel.store['last_get'] = None
         MockPanel.store['last_post'] = None
         MockPanel.store['post_status'] = 200
         MockPanel.store['post_body'] = 'OK'
@@ -152,6 +165,30 @@ class HoyProxyTest(unittest.TestCase):
         self.assertIn('R|12|Ana Perez|si|whatsapp', body)
         self.assertIn('U|Invitado|no|lista', body)
         self.assertEqual(MockPanel.store['auth'], 'Bearer test-token')
+        last = MockPanel.store['last_get']
+        self.assertIsNotNone(last)
+        self.assertIn(last['qs'].get('horario'), [['AM'], ['PM']])
+
+    def test_hoy_get_reenvia_horario_am(self):
+        cookie = self._login()
+        status, body, _ = self._req('GET', '/api/hoy?horario=AM', cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertIn('C|horario|AM', body)
+        last = MockPanel.store['last_get']
+        self.assertEqual(last['qs'].get('horario'), ['AM'])
+
+    def test_hoy_get_normaliza_horario_pm_minuscula(self):
+        cookie = self._login()
+        status, _, _ = self._req('GET', '/api/hoy?horario=pm', cookie=cookie)
+        last = MockPanel.store['last_get']
+        self.assertEqual(last['qs'].get('horario'), ['PM'])
+
+    def test_hoy_get_rechaza_horario_raro(self):
+        cookie = self._login()
+        status, body, _ = self._req('GET', '/api/hoy?horario=noche', cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(body, 'ERROR|horario invalido')
+        self.assertIsNone(MockPanel.store['last_get'])
 
     def test_hoy_post_form_urlencoded_ok(self):
         cookie = self._login()
@@ -163,6 +200,34 @@ class HoyProxyTest(unittest.TestCase):
         self.assertIn('application/x-www-form-urlencoded', last['ctype'])
         self.assertEqual(last['data'].get('alumno_id'), ['12'])
         self.assertEqual(last['data'].get('accion'), ['si'])
+        self.assertIn(last['data'].get('horario'), [['AM'], ['PM']])
+
+    def test_hoy_post_reenvia_horario(self):
+        cookie = self._login()
+        status, body, _ = self._req(
+            'POST', '/api/hoy', 'alumno_id=12&accion=si&horario=PM', cookie=cookie
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(body, 'OK')
+        last = MockPanel.store['last_post']
+        self.assertEqual(last['data'].get('horario'), ['PM'])
+
+    def test_hoy_post_normaliza_horario_am_minuscula(self):
+        cookie = self._login()
+        status, _, _ = self._req(
+            'POST', '/api/hoy', 'alumno_id=12&accion=no&horario=am', cookie=cookie
+        )
+        last = MockPanel.store['last_post']
+        self.assertEqual(last['data'].get('horario'), ['AM'])
+
+    def test_hoy_post_rechaza_horario_raro(self):
+        cookie = self._login()
+        status, body, _ = self._req(
+            'POST', '/api/hoy', 'alumno_id=12&accion=si&horario=tarde', cookie=cookie
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(body, 'ERROR|horario invalido')
+        self.assertIsNone(MockPanel.store['last_post'])
 
     def test_hoy_post_limpia_y_rechaza_accion_rara(self):
         cookie = self._login()
@@ -183,14 +248,26 @@ class HoyProxyTest(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(body, 'ERROR|alumno no encontrado')
 
+    def test_horario_chile_am_antes_del_mediodia(self):
+        from datetime import datetime
+        am = datetime(2026, 9, 12, 9, 30, tzinfo=rutina_server.TZ)
+        pm = datetime(2026, 9, 12, 12, 0, tzinfo=rutina_server.TZ)
+        self.assertEqual(rutina_server.horario_chile_ahora(am), 'AM')
+        self.assertEqual(rutina_server.horario_chile_ahora(pm), 'PM')
+
     def test_index_tiene_tab_hoy_es5(self):
         here = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(here, 'index.html'), encoding='utf-8') as fh:
             html = fh.read()
         self.assertIn('id="tabHoy"', html)
         self.assertIn('id="hoyView"', html)
-        self.assertIn("xhr.open('GET', '/api/hoy'", html)
+        self.assertIn('id="hoyBtnAm"', html)
+        self.assertIn('id="hoyBtnPm"', html)
+        self.assertIn('id="hoySearch"', html)
+        self.assertIn('id="hoyLetters"', html)
+        self.assertIn("xhr.open('GET', '/api/hoy?horario='", html)
         self.assertIn("xhr.open('POST', '/api/hoy'", html)
+        self.assertIn("'&horario=' + encodeURIComponent(hoyHorario)", html)
         self.assertNotIn('fetch(', html.split('hoy / asistencia')[1].split('---------- rutina')[0])
         self.assertNotIn('flex', html.lower().split('hoy / asistencia view')[1].split('stopwatch view')[0])
 
