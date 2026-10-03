@@ -1,12 +1,3 @@
-# Inicio de trabajo
-
-Antes de modificar este proyecto, lee `CONTEXTO_PROYECTO.md`. Si necesitas información compartida, consulta `../INDICE_PROYECTOS.md` e `../INVENTARIO_COMPARTIDO.md`.
-
-No inventes datos faltantes ni elimines, archives o muevas carpetas sin autorización explícita.
-
-
----
-
 ## Nicola OS — instrucciones para agentes de IA (03-10-2026)
 
 **Quién:** Nicolas Farias (Nico), Chile. Tiene TDAH: respuestas cortas, en español simple, un solo próximo paso. Nicola OS es su agente principal ("proyecto de vida"); Prometeo reparte encargos a los agentes de cada repo.
