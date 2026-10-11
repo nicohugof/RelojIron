@@ -337,6 +337,23 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         qs = urllib.parse.parse_qs(parsed.query)
 
+        if parsed.path in ('/', '/index.html'):
+            ruta = os.path.join(DIRECTORY, 'index.html')
+            try:
+                with open(ruta, 'rb') as f:
+                    body = f.read()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Content-Length', str(len(body)))
+                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                self.send_header('Pragma', 'no-cache')
+                self.send_header('Expires', '0')
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            except Exception:
+                pass
+
         if parsed.path == '/rutina.html' or parsed.path == '/rutina':
             fecha = qs.get('fecha', [hoy()])[0]
             if not es_fecha_valida(fecha):
