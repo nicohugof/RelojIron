@@ -23,6 +23,35 @@ TZ = ZoneInfo('America/Santiago')
 # Este servidor ya no toca la base: todo pasa por su API.
 PANEL_API_URL = os.environ.get('PANEL_API_URL', 'https://panel.ironcross.cl').rstrip('/')
 IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
+NICOLA_API_URL = os.environ.get('NICOLA_API_URL', 'http://127.0.0.1:8088').rstrip('/')
+
+
+def nicola_chat_request(mensaje):
+    """Envía un mensaje de texto al cerebro de Nicola OS y retorna la respuesta."""
+    url = NICOLA_API_URL + '/api/chat'
+    data = json.dumps({
+        'sender': '56984264318',
+        'message': mensaje,
+        'canal': 'iPad'
+    }).encode('utf-8')
+    req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'}, method='POST')
+    try:
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            res_json = json.loads(resp.read().decode('utf-8'))
+            return res_json.get('reply_text', 'Sin respuesta de Nicola OS')
+    except Exception as e:
+        return f"Error conectando con Nicola OS: {str(e)}"
+
+
+def nicola_historial_request():
+    """Consulta los turnos recientes en la memoria de Nicola OS."""
+    url = NICOLA_API_URL + '/api/chat-historial'
+    req = urllib.request.Request(url, method='GET')
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.read().decode('utf-8')
+    except Exception as e:
+        return json.dumps({"status": "error", "error": str(e), "turns": []})
 
 # Candado de la pestaña OFICINA (2026-09-06): esa pestaña mostraba nombres de
 # alumnos, deuda y estado de pago a cualquiera en internet, sin pedir nada.
@@ -34,6 +63,12 @@ OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD', '')
 OFICINA_SESSION_SECRET = os.environ.get('OFICINA_SESSION_SECRET', '')
 OFICINA_COOKIE = 'oficina_session'
 OFICINA_SESION_SEGUNDOS = 60 * 60 * 24 * 180  # 180 dias
+
+# Candado específico de la pestaña ASISTENTE (Chat con Nicola OS)
+CHAT_PASSWORD = os.environ.get('CHAT_PASSWORD', '2799706')
+CHAT_COOKIE = 'chat_session'
+CHAT_SESSION_SECRET = os.environ.get('CHAT_SESSION_SECRET') or OFICINA_SESSION_SECRET or 'ironcross-chat-secret-2799706'
+CHAT_SESION_SEGUNDOS = 60 * 60 * 24 * 30  # 30 dias
 
 
 def crear_token_oficina():
@@ -48,6 +83,26 @@ def token_oficina_valido(token):
         return False
     payload, _, firma = token.rpartition('.')
     esperada = hmac.new(OFICINA_SESSION_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(firma, esperada):
+        return False
+    try:
+        return time.time() < int(payload)
+    except ValueError:
+        return False
+
+
+def crear_token_chat():
+    expira = int(time.time()) + CHAT_SESION_SEGUNDOS
+    payload = str(expira)
+    firma = hmac.new(CHAT_SESSION_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
+    return payload + '.' + firma
+
+
+def token_chat_valido(token):
+    if not CHAT_SESSION_SECRET or not token or '.' not in token:
+        return False
+    payload, _, firma = token.rpartition('.')
+    esperada = hmac.new(CHAT_SESSION_SECRET.encode('utf-8'), payload.encode('utf-8'), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(firma, esperada):
         return False
     try:
@@ -268,6 +323,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 break
         return token_oficina_valido(token)
 
+    def _chat_sesion_valida(self):
+        cookie_header = self.headers.get('Cookie', '')
+        token = None
+        for parte in cookie_header.split(';'):
+            parte = parte.strip()
+            if parte.startswith(CHAT_COOKIE + '='):
+                token = parte[len(CHAT_COOKIE) + 1:]
+                break
+        return token_chat_valido(token)
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         qs = urllib.parse.parse_qs(parsed.query)
@@ -349,6 +414,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif parsed.path == '/api/chat-historial':
+            if not self._chat_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
+                return
+            body = nicola_historial_request().encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
             self.end_headers()
             self.wfile.write(body)
@@ -434,6 +510,51 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     self.end_headers()
                 return
             _responder_texto(self, 200, body)
+        elif parsed.path == '/api/chat-login':
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8')
+            data = urllib.parse.parse_qs(raw)
+            password = data.get('password', [''])[0]
+            if CHAT_PASSWORD and hmac.compare_digest(password, CHAT_PASSWORD):
+                token = crear_token_chat()
+                self.send_response(200)
+                cookie = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                    CHAT_COOKIE, token, CHAT_SESION_SEGUNDOS
+                )
+                self.send_header('Set-Cookie', cookie)
+                self.send_header('Content-Length', '2')
+                self.end_headers()
+                self.wfile.write(b'ok')
+            else:
+                self.send_response(401)
+                self.end_headers()
+        elif parsed.path == '/api/chat-logout':
+            self.send_response(200)
+            cookie = '{}=; Max-Age=0; Path=/; SameSite=Lax'.format(CHAT_COOKIE)
+            self.send_header('Set-Cookie', cookie)
+            self.send_header('Content-Length', '2')
+            self.end_headers()
+            self.wfile.write(b'ok')
+        elif parsed.path == '/api/chat':
+            if not self._chat_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
+                return
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8', errors='ignore')
+            data = urllib.parse.parse_qs(raw)
+            mensaje = data.get('mensaje', [''])[0].strip() or data.get('message', [''])[0].strip()
+            if not mensaje and raw.strip().startswith('{'):
+                try:
+                    jdata = json.loads(raw)
+                    mensaje = (jdata.get('mensaje') or jdata.get('message') or '').strip()
+                except Exception:
+                    pass
+            if not mensaje:
+                _responder_texto(self, 400, 'ERROR|mensaje requerido')
+                return
+            reply = nicola_chat_request(mensaje)
+            _responder_texto(self, 200, reply)
         else:
             self.send_response(404)
             self.end_headers()

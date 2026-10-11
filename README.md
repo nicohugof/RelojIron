@@ -25,6 +25,7 @@ El iPad 1 no tiene `fetch` ni flexbox: el HTML usa ES5, `XMLHttpRequest` y `disp
 3. **RUTINA** — rutinas por fecha (carga/guarda contra la API del mismo host).
 4. **GYM** — oficina: quién debe. Contadores **vencidos / por vencer / activos / sin plan** y listado (`tabGym`, `gymView`, `GET /api/oficina`).
 5. **HOY** — quién viene hoy (espejo de `panel.ironcross.cl/hoy`, sin iframe: el iPad 1 no hace TLS moderno). Un horario a la vez (**AM / PM**), búsqueda en la lista cargada, riel **A–Z** (Ñ va con N) y filas densas con Sí / No / Limpiar (~44px). Contadores **van / no / sin**. Filas `R|` (`tabHoy`, `hoyView`, `GET/POST /api/hoy?horario=`). Misma clave/sesión que oficina (muestra nombres). Es pestaña propia, no un sub-tab de GYM, para marcar asistencia en el piso sin pasar por oficina/planes. El AM/PM queda en cookie + `localStorage` (y en una variable JS si `localStorage` falla en iOS 5). Si no hay valor guardado, el default es la hora de Chile (hora < 12 → AM), igual que un reloj de 12h en `America/Santiago`.
+6. **ASISTENTE** — conversación de texto con Nicola OS / Mario / IronBot. Conectada a la memoria omnicanal unificada (`HISTORIAL_VOZ.md`, `HISTORIAL_VOZ.jsonl` y memoria corta). Compatible con iOS 5.1.1 sin dependencias modernas.
 
 ## Rutas de API (mismo host `:8090`)
 
@@ -34,10 +35,12 @@ El HTML llama a:
 |--------|------|----------|
 | GET | `/api/oficina` | Texto plano de la oficina (contadores + filas de alumnos) |
 | GET | `/api/hoy?horario=AM` | Texto plano de asistencia de **un** horario (`AM` / `PM`, también `am`/`pm`). Sin `horario`, RelojIron manda el de Chile (hora < 12 → AM). Misma cookie que oficina. |
-| POST | `/api/hoy` | Marca asistencia: `alumno_id=12&accion=si&horario=AM` (`si` / `no` / `limpiar`). Sin `horario`, igual: default Chile. Respuesta `OK` o `ERROR|mensaje`. |
+| POST | `/api/hoy` | Marca asistencia: `alumno_id=12&accion=si&horario=AM` (`si` / `no` / `limpiar`). Sin `horario`, igual: default Chile. Respuesta `OK` o `ERROR\|mensaje`. |
 | GET | `/api/rutina?fecha=YYYY-MM-DD` | Texto de la rutina de ese día |
 | GET | `/api/rutina/dias` | Texto plano: `HOY:…` `MANIANA:…` `DIAS:…` |
 | POST | `/guardar` | Guarda rutina (`fecha` + `rutina`, form-urlencoded) |
+| GET | `/api/chat-historial` | JSON con los turnos recientes de la memoria unificada de Nicola OS |
+| POST | `/api/chat` | Envía mensaje de texto (`mensaje=...`) al enrutador de agentes de Nicola OS y responde en texto plano |
 
 Formato de `GET /api/oficina` (una línea por registro, campos con `|`):
 
@@ -103,3 +106,12 @@ Hace `git fetch` + fast-forward, valida que `rutina_server.py` compile, reinicia
 Un cron en el servidor corre `./deploy.sh` cada pocos minutos, así que normalmente no hace falta correrlo a mano — mergear a `main` alcanza.
 
 **Secretos:** `PANEL_API_URL` e `IPAD_API_TOKEN` viven en `/home/ubuntu/RelojIron.env`, fuera de este repo. Para rotar `IPAD_API_TOKEN`: generar uno nuevo, actualizarlo ahí y en `IPAD_API_TOKEN` del `docker-compose.yml` del panel (mismo valor en los dos lados), y `./deploy.sh --force`.
+
+## Pestaña ASISTENTE — Chat y Oficina Virtual 2D Pixel Art
+
+- **Oficina Virtual 2D Pixel Art (40% superior):** Renderizada directamente con la API HTML5 2D Canvas en JavaScript ES5 estricto. Representa los cuarteles generales de Nicola OS con Morfeo, Mario, Glenn, IronBot, Zauron y Buzz trabajando en sus escritorios con animación retro (tipeo, parpadeo de LEDs de servidores, dispensador de agua burbujeante y globos de diálogo con estados).
+- **Interacción táctil:** Tocar cualquier agente en la pantalla del iPad enfoca el input y prefija `@Agente` para dirigirle consultas de manera intuitiva.
+- **Eficiencia de CPU:** El temporizador de renderizado (400ms) se detiene automáticamente (`stopOfficeTimer()`) al cambiar a otras pestañas (RELOJ, CRONÓMETRO, HOY, etc.) para evitar consumo innecesario de procesador y batería en el hardware del iPad 1.
+- **Chat y Memoria Unificada (60% inferior):** Muestra el historial sincronizado de interacciones con Nicola OS (provenientes de voz, WhatsApp o el mismo iPad) y permite redactar y enviar mensajes directamente a los agentes del sistema mediante `POST /api/chat`.
+- **Candado de Seguridad y Contraseña (`CHAT_PASSWORD`):** Protege el acceso al chat mediante una pantalla de desbloqueo previa. Requiere la clave configurada (por defecto `2799706` o variable `CHAT_PASSWORD` en el servidor). La autenticación se valida en el servidor mediante cookies firmadas con HMAC (`chat_session`), evitando accesos no autorizados a la API. Cuenta con botón de bloqueo manual `[BLOQUEAR]` en la cabecera.
+
