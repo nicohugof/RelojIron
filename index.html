@@ -1521,6 +1521,11 @@
     rutinaView.style.display = 'none';
     gymView.style.display = 'none';
     hoyView.style.display = 'none';
+    if (asistenteView.style.display !== 'none' || (asistentePane && asistentePane.style.display !== 'none')) {
+      if (typeof bloquearAsistente === 'function') {
+        bloquearAsistente();
+      }
+    }
     asistenteView.style.display = 'none';
     tabClock.className = 'tab';
     tabStopwatch.className = 'tab';
