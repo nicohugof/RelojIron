@@ -2952,10 +2952,33 @@
     }, 100);
   }
 
+  var asistenteInactivityTimer = null;
+  var TIEMPO_INACTIVIDAD_CHAT = 5 * 60 * 1000; // 5 minutos
+
+  function reiniciarInactividadAsistente() {
+    if (asistenteInactivityTimer) {
+      clearTimeout(asistenteInactivityTimer);
+      asistenteInactivityTimer = null;
+    }
+    if (asistentePane && asistentePane.style.display !== 'none') {
+      asistenteInactivityTimer = setTimeout(function () {
+        bloquearAsistente();
+      }, TIEMPO_INACTIVIDAD_CHAT);
+    }
+  }
+
+  function cancelarInactividadAsistente() {
+    if (asistenteInactivityTimer) {
+      clearTimeout(asistenteInactivityTimer);
+      asistenteInactivityTimer = null;
+    }
+  }
+
   function ocultarLoginAsistente() {
     asistenteLogin.style.display = 'none';
     asistentePane.style.display = 'block';
     if (typeof startOfficeTimer === 'function') { startOfficeTimer(); }
+    reiniciarInactividadAsistente();
   }
 
   function intentarLoginAsistente() {
@@ -2979,6 +3002,7 @@
   }
 
   function bloquearAsistente() {
+    cancelarInactividadAsistente();
     mostrarLoginAsistente();
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/chat-logout', true);
@@ -2995,6 +3019,11 @@
     asistentePassword.addEventListener('keydown', function (e) {
       if (e.keyCode === 13) { intentarLoginAsistente(); }
     }, false);
+  }
+  if (asistenteView) {
+    asistenteView.addEventListener('touchstart', reiniciarInactividadAsistente, false);
+    asistenteView.addEventListener('click', reiniciarInactividadAsistente, false);
+    asistenteView.addEventListener('keydown', reiniciarInactividadAsistente, false);
   }
 
   function scrollChatAbajo() {
@@ -3065,6 +3094,7 @@
 
   function enviarMensajeAsistente() {
     if (enviandoChat) { return; }
+    reiniciarInactividadAsistente();
     var texto = asistenteInput.value;
     if (!texto || !texto.replace(/^\s+|\s+$/g, '')) { return; }
     texto = texto.replace(/^\s+|\s+$/g, '');
