@@ -23,9 +23,11 @@ El iPad 1 no tiene `fetch` ni flexbox: el HTML usa ES5, `XMLHttpRequest` y `disp
 1. **RELOJ** — hora a pantalla completa.
 2. **CRONOMETROS** — cronómetros y temporizadores con beep al terminar la cuenta regresiva.
 3. **RUTINA** — rutinas por fecha (carga/guarda contra la API del mismo host).
-4. **GYM** — oficina: quién debe. Contadores **vencidos / por vencer / activos / sin plan** y listado (`tabGym`, `gymView`, `GET /api/oficina`).
-5. **HOY** — quién viene hoy (espejo de `panel.ironcross.cl/hoy`, sin iframe: el iPad 1 no hace TLS moderno). Un horario a la vez (**AM / PM**), búsqueda en la lista cargada, riel **A–Z** (Ñ va con N) y filas densas con Sí / No / Limpiar (~44px). Contadores **van / no / sin**. Filas `R|` (`tabHoy`, `hoyView`, `GET/POST /api/hoy?horario=`). Misma clave/sesión que oficina (muestra nombres). Es pestaña propia, no un sub-tab de GYM, para marcar asistencia en el piso sin pasar por oficina/planes. El AM/PM queda en cookie + `localStorage` (y en una variable JS si `localStorage` falla en iOS 5). Si no hay valor guardado, el default es la hora de Chile (hora < 12 → AM), igual que un reloj de 12h en `America/Santiago`.
-6. **ASISTENTE** — conversación de texto con Nicola OS / Mario / IronBot. Conectada a la memoria omnicanal unificada (`HISTORIAL_VOZ.md`, `HISTORIAL_VOZ.jsonl` y memoria corta). Compatible con iOS 5.1.1 sin dependencias modernas.
+4. **HOY** — quién viene hoy (espejo de `panel.ironcross.cl/hoy`, sin iframe: el iPad 1 no hace TLS moderno). Un horario a la vez (**AM / PM**), búsqueda en la lista cargada, riel **A–Z** (Ñ va con N) y filas densas con Sí / No / Limpiar (~44px). Contadores **van / no / sin**. Filas `R|` (`tabHoy`, `hoyView`, `GET/POST /api/hoy?horario=`).
+5. **🔒 GYM** — Control y administración ejecutiva protegida por clave unificada (`tabGym`, `gymView`, `/api/oficina-login`, `/api/oficina-logout`). Desbloquea simultáneamente el acceso seguro al negocio y contiene tres sub-pestañas:
+   - **DASHBOARD:** Reemplaza la antigua vista de texto de oficina por un dashboard ejecutivo en tiempo real con 5 tarjetas KPI (`INGRESOS ESTE MES`, `ALUMNOS ACTIVOS`, `POR VENCER`, `VENCIDOS`, `SIN PLAN`), filtros interactivos (`TODOS`, `VENCIDOS`, `POR VENCER`), buscador instantáneo y listado de morosos/vencimientos.
+   - **ASISTENTE:** Interfaz de IA con Nicola OS / Mario / IronBot, incluyendo la oficina virtual 2D Pixel Art interactiva y chat con memoria unificada. Throttling de CPU: el temporizador del canvas solo corre mientras la sub-pestaña está visible.
+   - **PLANES:** Enlaces de pago VirtualPos (Evaluación, Mensual, Trimestral, Semestral, Anual) con botón para copiar al portapapeles.
 
 ## Rutas de API (mismo host `:8090`)
 

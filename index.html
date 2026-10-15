@@ -30,7 +30,7 @@
     right: 0;
     bottom: 70px;
   }
-  #clockView, #stopwatchView, #rutinaView, #gymView, #hoyView, #asistenteView {
+  #clockView, #stopwatchView, #rutinaView, #gymView, #hoyView {
     position: absolute;
     top: 0;
     left: 0;
@@ -243,68 +243,242 @@
     overflow: hidden;
     background: #0A0A09;
   }
-  #gymSubBar {
+  #gymHeader {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 52px;
+    height: 38px;
     padding: 8px 16px 0 16px;
-    display: table;
-    width: 100%;
-    table-layout: fixed;
+    background: #0A0A09;
+    border-bottom: 1px solid #1E1D19;
   }
-  .gymSub {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    height: 36px;
-    background: #141412;
+  #gymTitle {
+    float: left;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
     letter-spacing: 2px;
+    line-height: 22px;
   }
-  #gymSubOficina { border-right: 1px solid #222; }
+  #gymLockBtn {
+    float: right;
+    font-size: 11px;
+    color: #7A7568;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 2px 10px;
+    border: 1px solid #2A2A26;
+    background: #141412;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    line-height: 20px;
+  }
+  #gymLogin {
+    display: none;
+    position: absolute;
+    top: 48px;
+    left: 16px;
+    right: 16px;
+    padding: 40px 20px;
+    background: #141412;
+    border: 1px solid #2A2A26;
+    text-align: center;
+  }
+  #gymLoginTitle {
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .gymLoginSubtitle {
+    color: #7A7568;
+    font-size: 12px;
+    font-family: Helvetica, Arial, sans-serif;
+    margin-bottom: 18px;
+  }
+  #gymPassword {
+    width: 260px;
+    height: 48px;
+    background: #0A0A09;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 22px;
+    text-align: center;
+    font-family: Helvetica, Arial, sans-serif;
+    margin-bottom: 14px;
+    letter-spacing: 4px;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  #gymLoginBtn {
+    display: inline-block;
+    width: 260px;
+    height: 48px;
+    line-height: 48px;
+    background: #C23B22;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-align: center;
+  }
+  #gymLoginError {
+    margin-top: 10px;
+    color: #C23B22;
+    font-size: 13px;
+    font-family: Helvetica, Arial, sans-serif;
+    min-height: 16px;
+  }
+  #gymContentPane {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  #gymSubBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 46px;
+    padding: 6px 16px 0 16px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    background: #0A0A09;
+    border-bottom: 1px solid #1E1D19;
+  }
+  .gymSub {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 34px;
+    background: #141412;
+    color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 2px;
+    border-right: 1px solid #222;
+    cursor: pointer;
+  }
+  .gymSub:last-child { border-right: none; }
   .gymSub.active {
     color: #EDE9DF;
     background: #1E1D19;
     -webkit-box-shadow: inset 0 3px 0 #C23B22;
   }
-  #gymOficinaPane, #gymPlanesPane {
+  #gymDashboardPane, #gymAsistentePane, #gymPlanesPane {
     position: absolute;
-    top: 52px;
+    top: 46px;
     left: 0;
     right: 0;
     bottom: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  #gymCounts {
-    padding: 8px 16px 10px 16px;
+  #gymKpis {
+    padding: 12px 16px 8px 16px;
+    overflow: hidden;
   }
-  .gymCount {
-    display: inline-block;
+  .gymKpiCard {
+    float: left;
+    background: #141412;
+    border: 1px solid #222;
+    padding: 10px 14px;
     margin-right: 10px;
     margin-bottom: 8px;
-    padding: 8px 12px;
-    background: #141412;
-    color: #EDE9DF;
+    min-width: 130px;
+  }
+  .gymKpiLabel {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    color: #7A7568;
+    margin-bottom: 4px;
     font-family: Helvetica, Arial, sans-serif;
   }
-  .gymCount b {
-    display: block;
-    font-size: 22px;
+  .gymKpiVal {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
     color: #EDE9DF;
   }
-  .gymCount span {
+  .gymKpiSub {
     font-size: 11px;
-    letter-spacing: 1px;
     color: #7A7568;
+    font-family: Helvetica, Arial, sans-serif;
+    margin-top: 2px;
   }
-  .gymCount.vencido b { color: #C23B22; }
-  .gymCount.porvencer b { color: #C29A22; }
+  .kpiIngresos .gymKpiVal { color: #3CD070; }
+  .kpiActivos .gymKpiVal { color: #2E6B3E; }
+  .kpiPorVencer .gymKpiVal { color: #C29A22; }
+  .kpiVencidos .gymKpiVal { color: #C23B22; }
+  .kpiSinPlan .gymKpiVal { color: #7A7568; }
+  #gymToolbar {
+    padding: 6px 16px 10px 16px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  #gymFilters {
+    display: table-cell;
+    width: 250px;
+    vertical-align: middle;
+  }
+  .gymFilterBtn {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #141412;
+    color: #7A7568;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-right: 4px;
+    cursor: pointer;
+    font-family: Helvetica, Arial, sans-serif;
+    border: 1px solid #2A2A26;
+  }
+  .gymFilterBtn.active {
+    background: #C23B22;
+    color: #EDE9DF;
+    border-color: #C23B22;
+  }
+  #gymSearch {
+    height: 34px;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 14px;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 0 10px;
+    width: 100%;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  .gymActionBtn {
+    display: table-cell;
+    width: 110px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    background: #2A2A26;
+    color: #EDE9DF;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    font-family: Helvetica, Arial, sans-serif;
+    vertical-align: middle;
+  }
   #gymList {
     padding: 0 16px 20px 16px;
   }
@@ -325,7 +499,7 @@
   }
   .gymMeta {
     display: table-cell;
-    width: 110px;
+    width: 130px;
     text-align: right;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
@@ -334,50 +508,11 @@
   }
   .gymRow.V .gymMeta { color: #C23B22; }
   .gymRow.P .gymMeta { color: #C29A22; }
-  #gymOficinaLogin {
-    display: none;
-    padding: 50px 24px;
-  }
-  #gymOficinaLoginTitle {
+  #gymStatus {
+    padding: 14px 16px;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
     font-size: 13px;
-    letter-spacing: 2px;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  #gymOficinaPassword {
-    display: block;
-    width: 100%;
-    height: 52px;
-    background: #141412;
-    color: #EDE9DF;
-    border: 1px solid #2A2A26;
-    font-size: 22px;
-    font-family: Helvetica, Arial, sans-serif;
-    padding: 0 14px;
-    text-align: center;
-    letter-spacing: 4px;
-  }
-  #gymOficinaLoginBtn {
-    display: block;
-    width: 100%;
-    height: 52px;
-    line-height: 52px;
-    margin-top: 12px;
-    background: #C23B22;
-    color: #EDE9DF;
-    font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 2px;
-    text-align: center;
-  }
-  #gymOficinaLoginError {
-    margin-top: 14px;
-    text-align: center;
-    color: #C23B22;
-    font-family: Helvetica, Arial, sans-serif;
     font-size: 13px;
     min-height: 16px;
   }
@@ -1022,94 +1157,7 @@
     color: #C29A22;
   }
 
-  /* asistente / chat view */
-  #asistenteView {
-    display: none;
-    overflow: hidden;
-    background: #0A0A09;
-  }
-  #asistenteHeader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 44px;
-    padding: 12px 16px 0 16px;
-    border-bottom: 1px solid #1E1D19;
-  }
-  #asistenteTitle {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 3px;
-    display: inline-block;
-  }
-  #asistenteSub {
-    display: inline-block;
-    color: #4A4639;
-    font-size: 11px;
-    font-family: Helvetica, Arial, sans-serif;
-    margin-left: 10px;
-    letter-spacing: 1px;
-  }
-  #asistenteLogin {
-    position: absolute;
-    top: 60px;
-    left: 16px;
-    right: 16px;
-    padding: 24px 16px;
-    background: #141412;
-    border: 1px solid #2A2A26;
-    text-align: center;
-  }
-  #asistenteLoginTitle {
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 2px;
-    margin-bottom: 16px;
-  }
-  #asistentePassword {
-    width: 240px;
-    height: 48px;
-    background: #0A0A09;
-    color: #EDE9DF;
-    border: 1px solid #2A2A26;
-    font-size: 20px;
-    text-align: center;
-    font-family: Helvetica, Arial, sans-serif;
-    margin-bottom: 14px;
-    -webkit-user-select: text;
-    user-select: text;
-  }
-  #asistenteLoginBtn {
-    display: inline-block;
-    width: 240px;
-    height: 48px;
-    line-height: 48px;
-    background: #C23B22;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 2px;
-    cursor: pointer;
-  }
-  #asistenteLoginError {
-    margin-top: 10px;
-    color: #C23B22;
-    font-size: 13px;
-    font-family: Helvetica, Arial, sans-serif;
-  }
-  #asistentePane {
-    position: absolute;
-    top: 40px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
+  /* asistente / chat (integrado en gym) */
   #asistenteOfficeWrap {
     position: absolute;
     top: 4px;
@@ -1292,23 +1340,108 @@
 
 
   <div id="gymView" style="display:none;">
-    <div id="gymSubBar">
-      <div id="gymSubOficina" class="gymSub active">OFICINA</div>
-      <div id="gymSubPlanes" class="gymSub">PLANES</div>
+    <div id="gymHeader">
+      <div id="gymTitle">IRONCROSS · CONTROL GYM</div>
+      <div id="gymLockBtn">BLOQUEAR</div>
     </div>
-    <div id="gymOficinaPane">
-      <div id="gymOficinaLogin">
-        <div id="gymOficinaLoginTitle">OFICINA — INGRESAR CLAVE</div>
-        <input type="password" id="gymOficinaPassword" placeholder="Clave" autocomplete="off">
-        <div id="gymOficinaLoginBtn">ENTRAR</div>
-        <div id="gymOficinaLoginError">&nbsp;</div>
+
+    <!-- Login unificado para proteger toda la pestaña GYM -->
+    <div id="gymLogin" style="display:none;">
+      <div id="gymLoginTitle">GYM — ACCESO PROTEGIDO</div>
+      <div class="gymLoginSubtitle">Dashboard en tiempo real, Asistente IA y Planes de Ironcross</div>
+      <input type="password" id="gymPassword" placeholder="Clave de acceso" autocomplete="off" inputmode="numeric">
+      <div id="gymLoginBtn">DESBLOQUEAR</div>
+      <div id="gymLoginError">&nbsp;</div>
+    </div>
+
+    <!-- Contenido autenticado con sub-pestañas -->
+    <div id="gymContentPane" style="display:none;">
+      <div id="gymSubBar">
+        <div id="gymSubDashboard" class="gymSub active">DASHBOARD</div>
+        <div id="gymSubAsistente" class="gymSub">ASISTENTE</div>
+        <div id="gymSubPlanes" class="gymSub">PLANES</div>
       </div>
-      <div id="gymCounts"></div>
-      <div id="gymList"></div>
-      <div id="gymStatus">&nbsp;</div>
-    </div>
-    <div id="gymPlanesPane" style="display:none;">
-      <div id="gymPlanes"></div>
+
+      <!-- 1. DASHBOARD EN TIEMPO REAL (reemplaza oficina) -->
+      <div id="gymDashboardPane">
+        <!-- Tarjetas de métricas ejecutivas -->
+        <div id="gymKpis">
+          <div class="gymKpiCard kpiIngresos">
+            <div class="gymKpiLabel">INGRESOS ESTE MES</div>
+            <div id="kpiIngresosVal" class="gymKpiVal">$0</div>
+            <div id="kpiIngresosSub" class="gymKpiSub">0 pagos</div>
+          </div>
+          <div class="gymKpiCard kpiActivos">
+            <div class="gymKpiLabel">ALUMNOS ACTIVOS</div>
+            <div id="kpiActivosVal" class="gymKpiVal">0</div>
+            <div class="gymKpiSub">Plan vigente</div>
+          </div>
+          <div class="gymKpiCard kpiPorVencer">
+            <div class="gymKpiLabel">POR VENCER</div>
+            <div id="kpiPorVencerVal" class="gymKpiVal">0</div>
+            <div class="gymKpiSub">Próximos días</div>
+          </div>
+          <div class="gymKpiCard kpiVencidos">
+            <div class="gymKpiLabel">VENCIDOS</div>
+            <div id="kpiVencidosVal" class="gymKpiVal">0</div>
+            <div class="gymKpiSub">Por cobrar</div>
+          </div>
+          <div class="gymKpiCard kpiSinPlan">
+            <div class="gymKpiLabel">SIN PLAN</div>
+            <div id="kpiSinPlanVal" class="gymKpiVal">0</div>
+            <div class="gymKpiSub">Registrados</div>
+          </div>
+        </div>
+
+        <!-- Filtros y búsqueda en tiempo real -->
+        <div id="gymToolbar">
+          <div id="gymFilters">
+            <div id="gymFilterTodos" class="gymFilterBtn active">TODOS</div>
+            <div id="gymFilterVencidos" class="gymFilterBtn">VENCIDOS</div>
+            <div id="gymFilterPorVencer" class="gymFilterBtn">POR VENCER</div>
+          </div>
+          <div style="display:table-cell; vertical-align:middle; padding:0 8px;">
+            <input type="text" id="gymSearch" placeholder="Buscar alumno..." autocomplete="off">
+          </div>
+          <div id="gymRefreshBtn" class="gymActionBtn">ACTUALIZAR</div>
+        </div>
+
+        <!-- Listado de alumnos -->
+        <div id="gymList"></div>
+        <div id="gymStatus">&nbsp;</div>
+      </div>
+
+      <!-- 2. ASISTENTE INTEGRADO -->
+      <div id="gymAsistentePane" style="display:none;">
+        <div id="asistenteOfficeWrap">
+          <div id="asistenteOfficeHead">
+            <span style="color:#3CD070;">●</span> HQ NICOLA OS · 2D PIXEL ART OFFICE
+            <span id="asistenteOfficeLiveBadge">LIVE</span>
+          </div>
+          <canvas id="asistenteOfficeCanvas" width="992" height="226"></canvas>
+        </div>
+        <div id="asistenteChatWrap">
+          <div id="asistenteChatList"></div>
+        </div>
+        <div id="asistenteInputRow">
+          <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+            <tr>
+              <td style="padding-right:8px;">
+                <input type="text" id="asistenteInput" placeholder="Escribe a Mario / IronBot / Glenn..." autocomplete="off">
+              </td>
+              <td style="width:110px;">
+                <div id="asistenteSendBtn">ENVIAR</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="asistenteStatus">&nbsp;</div>
+      </div>
+
+      <!-- 3. PLANES -->
+      <div id="gymPlanesPane" style="display:none;">
+        <div id="gymPlanes"></div>
+      </div>
     </div>
   </div>
   <div id="hoyView" style="display:none;">
@@ -1392,45 +1525,7 @@
       </div>
     </div>
   </div>
-  <div id="asistenteView" style="display:none;">
-    <div id="asistenteHeader">
-      <div id="asistenteTitle">ASISTENTE — NICOLA OS</div>
-      <div id="asistenteSub">Memoria unificada (Voz, WhatsApp, Gym)</div>
-      <div id="asistenteLockBtn" style="float:right; font-size:11px; color:#7A7568; font-weight:bold; cursor:pointer; padding:2px 8px; border:1px solid #2A2A26; background:#141412; -webkit-border-radius:3px; border-radius:3px; letter-spacing:1px; line-height:16px;">BLOQUEAR</div>
-    </div>
-    <div id="asistenteLogin" style="display:none;">
-      <div id="asistenteLoginTitle">ASISTENTE — ACCESO PROTEGIDO</div>
-      <div style="color:#7A7568; font-size:12px; margin-bottom:14px; font-family:Helvetica, Arial, sans-serif;">Ingresa la clave para acceder al chat y oficina de agentes</div>
-      <input type="password" id="asistentePassword" placeholder="Clave de 7 dígitos" autocomplete="off" inputmode="numeric" pattern="[0-9]*">
-      <div id="asistenteLoginBtn">DESBLOQUEAR</div>
-      <div id="asistenteLoginError">&nbsp;</div>
-    </div>
-    <div id="asistentePane">
-      <div id="asistenteOfficeWrap">
-        <div id="asistenteOfficeHead">
-          <span style="color:#3CD070;">●</span> HQ NICOLA OS · 2D PIXEL ART OFFICE
-          <span id="asistenteOfficeLiveBadge">LIVE</span>
-        </div>
-        <canvas id="asistenteOfficeCanvas" width="992" height="226"></canvas>
-      </div>
-      <div id="asistenteChatWrap">
-        <div id="asistenteChatList"></div>
-      </div>
-      <div id="asistenteInputRow">
-        <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
-          <tr>
-            <td style="padding-right:8px;">
-              <input type="text" id="asistenteInput" placeholder="Escribe a Mario / IronBot / Glenn..." autocomplete="off">
-            </td>
-            <td style="width:110px;">
-              <div id="asistenteSendBtn">ENVIAR</div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div id="asistenteStatus">&nbsp;</div>
-    </div>
-  </div>
+
 </div>
 
 <audio id="beepSound" preload="auto" src="data:audio/wav;base64,UklGRoyxAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YWixAAAAAD0BegK4A/UEMwb7AFL3FfbX9JrzXPIb/MYDXBGZEtcTFBVSFo79M+f25bjke+M94h7/PSB7Ibgi9iMzJSkGUtgU19fVmdRc07ryuwlcMJox1zIVNFI14/szyPXGuMV6xD3DePw+P3tAuUH2QjREFA1RuRS41raZtVu0HrPzDV1PmlDYURVTU1T7+zKp9ae3pnqlPKQQ+D5efF+5YPdhNGO5FY7jE5nWl5iWW5UdlGsQYG1gbWBtYG1gbfr9oJKgkqCSoJKgkpDzYG1gbWBtYG1gba8aaeSgkqCSoJKgkqCSXg1gbWBtYG1gbWBtFwGgkqCSoJKgkqCSefBgbWBtYG1gbWBtsh1w56CSoJKgkqCSoJJFCmBtYG1gbWBtYG00BKCSoJKgkqCSoJJl7WBtYG1gbWBtYG2vIHzqoJKgkqCSoJKgkikHYG1gbWBtYG1gbVEHoJKgkqCSoJKgklTqiSBgbWBtYG1gbWBtjO2gkqCSoJKgkqCSDARgbWBtYG1gbWBtbAqgkqCSoJKgkqCSSeeMHWBtYG1gbWBtYG2g8KCSoJKgkqCSoJLvAGBtYG1gbWBtYG2FDaCSoJKgkqCSoJJC5IkaYG1gbWBtYG1gbbjzoJKgkqCSoJKgktL9YG1gbWBtYG1gbZwQoJKgkqCSoJKgkkHhgBdgbWBtYG1gbWBt0vagkqCSoJKgkqCStfpgbWBtYG1gbWBtrhOgkqCSoJKgkqCSoJJyFGBtYG1gbWBtYG3t+aCSoJKgkqCSoJKY92BtYG1gbWBtYG29FoLgoJKgkqCSoJKgkmERYG1gbWBtYG1gbQv9oJKgkqCSoJKgkn70YG1gbWBtYG1gbccZgeOgkqCSoJKgkqCSSw5gbWBtYG1gbWBtJwCgkqCSoJKgkqCSZvFgbWBtYG1gbWBtzByH5qCSoJKgkqCSoJIzC2BtYG1gbWBtYG1FA6CSoJKgkqCSoJJR7mBtYG1gbWBtYG3KH5HpoJKgkqCSoJKgkhgIYG1gbWBtYG1gbWIGoJKgkqCSoJKgkj/rYG1gbWBtYG1gbWBtoOygkqCSoJKgkqCS/ARgbWBtYG1gbWBtfgmgkqCSoJKgkqCSMuhyHmBtYG1gbWBtYG2z76CSoJKgkqCSoJLeAWBtYG1gbWBtYG2YDKCSoJKgkqCSoJIq5XEbYG1gbWBtYG1gbcryoJKgkqCSoJKgksH+YG1gbWBtYG1gba8PoJKgkqCSoJKgkifiahhgbWBtYG1gbWBt4/WgkqCSoJKgkqCSpPtgbWBtYG1gbWBtwxKgkqCSoJKgkqCSoJJdFWBtYG1gbWBtYG3/+KCSoJKgkqCSoJKH+GBtYG1gbWBtYG3TFZ3foJKgkqCSoJKgkk0SYG1gbWBtYG1gbRv8oJKgkqCSoJKgkmz1YG1gbWBtYG1gbd4Ym+KgkqCSoJKgkqCSOA9gbWBtYG1gbWBtOf+gkqCSoJKgkqCSU/JgbWBtYG1gbWBt5Bue5aCSoJKgkqCSoJIhDGBtYG1gbWBtYG1WAqCSoJKgkqCSoJI972BtYG1gbWBtYG3lHqfooJKgkqCSoJKgkgcJYG1gbWBtYG1gbXMFoJKgkqCSoJKgkirsYG1gbWBtYG1gbWBtteugkqCSoJKgkqCS6wVgbWBtYG1gbWBtjwigkqCSoJKgkqCSHOlYH2BtYG1gbWBtYG3H7qCSoJKgkqCSoJLNAmBtYG1gbWBtYG2qC6CSoJKgkqCSoJIS5lgcYG1gbWBtYG1gbdzxoJKgkqCSoJKgkrH/YG1gbWBtYG1gbcIOoJKgkqCSoJKgkg7jUxlgbWBtYG1gbWBt9fSgkqCSoJKgkqCSk/xgbWBtYG1gbWBt1xGgkqCSoJKgkqCSEOBIFmBtYG1gbWBtYG0Q+KCSoJKgkqCSoJJ2+WBtYG1gbWBtYG3oFKCSoJKgkqCSoJKgkjkTYG1gbWBtYG1gbSz7oJKgkqCSoJKgklr2YG1gbWBtYG1gbfUXtOGgkqCSoJKgkqCSJRBgbWBtYG1gbWBtSv6gkqCSoJKgkqCSQfNgbWBtYG1gbWBt/Rq25KCSoJKgkqCSoJIPDWBtYG1gbWBtYG1nAaCSoJKgkqCSoJIq8GBtYG1gbWBtYG3/Hb3noJKgkqCSoJKgkvUJYG1gbWBtYG1gbYQEoJKgkqCSoJKgkhbtYG1gbWBtYG1gbWBtyuqgkqCSoJKgkqCS2gZgbWBtYG1gbWBtoQegkqCSoJKgkqCSBuo9IGBtYG1gbWBtYG3b7aCSoJKgkqCSoJK9A2BtYG1gbWBtYG28CqCSoJKgkqCSoJL75j8dYG1gbWBtYG1gbe/woJKgkqCSoJKgkp8AYG1gbWBtYG1gbdQNoJKgkqCSoJKgkvXjOxpgbWBtYG1gbWBtB/SgkqCSoJKgkqCSgv1gbWBtYG1gbWBt6hCgkqCSoJKgkqCS9eAyF2BtYG1gbWBtYG0h96CSoJKgkqCSoJJl+mBtYG1gbWBtYG39E6CSoJKgkqCSoJKgkiQUYG1gbWBtYG1gbT36oJKgkqCSoJKgkkn3YG1gbWBtYG1gbQsXz+CgkqCSoJKgkqCSEhFgbWBtYG1gbWBtWv2gkqCSoJKgkqCSL/RgbWBtYG1gbWBtFBrO46CSoJKgkqCSoJL8DWBtYG1gbWBtYG13AKCSoJKgkqCSoJIX8WBtYG1gbWBtYG0ZHdTmoJKgkqCSoJKgkuMKYG1gbWBtYG1gbZUDoJKgkqCSoJKgkgLuYG1gbWBtYG1gbRcg3+mgkqCSoJKgkqCSyAdgbWBtYG1gbWBtsgagkqCSoJKgkqCS8epgbWBtYG1gbWBtYG3v7KCSoJKgkqCSoJKsBGBtYG1gbWBtYG3NCaCSoJKgkqCSoJLk5yUeYG1gbWBtYG1gbQLwoJKgkqCSoJKgko4BYG1gbWBtYG1gbecMoJKgkqCSoJKgkt3kIxtgbWBtYG1gbWBtGfOgkqCSoJKgkqCScv5gbWBtYG1gbWBt/g+gkqCSoJKgkqCS2+EcGGBtYG1gbWBtYG0z9qCSoJKgkqCSoJJU+2BtYG1gbWBtYG0RE6CSoJKgkqCSoJKgkg8VYG1gbWBtYG1gbU75oJKgkqCSoJKgkjj4YG1gbWBtYG1gbSEW6d+gkqCSoJKgkqCS/hFgbWBtYG1gbWBta/ygkqCSoJKgkqCSHfVgbWBtYG1gbWBtLBnn4qCSoJKgkqCSoJLpDmBtYG1gbWBtYG2J/6CSoJKgkqCSoJIE8mBtYG1gbWBtYG0yHOzloJKgkqCSoJKgktELYG1gbWBtYG1gbaYCoJKgkqCSoJKgku7uYG1gbWBtYG1gbTEf9eigkqCSoJKgkqCStwhgbWBtYG1gbWBtwwWgkqCSoJKgkqCS3OtgbWBtYG1gbWBtYG0D7KCSoJKgkqCSoJKbBWBtYG1gbWBtYG3fCKCSoJKgkqCSoJLO6AsfYG1gbWBtYG1gbRbvoJKgkqCSoJKgkn4CYG1gbWBtYG1gbfkLoJKgkqCSoJKgksXlCxxgbWBtYG1gbWBtLPKgkqCSoJKgkqCS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YG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP14JIdlFuVmJa0Hu1mr2VyZC4QCZ5Hn4SgwqH5A8RbhlpJWQtYlepwqq2r66yl7ppQXU8gTuJMiQCZtda2FLhRucINNET2QrlBzBDCwP/BPcN6xK/8CznNN5A2UjU9+CnNZs6kz+HQ4i2kLGcrKSpdBFLYj9nN2grcdQN7IT0gAB/DHXvjuOT25TPnU/xSFhQV1xOZEiP/4u8f8VzymvPUAusJrghwB0UBC/tI/Ib9w/4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0BegK4A/UEMwb7AFL3FfbX9JrzXPIb/MYDXBGZEtcTFBVSFo79M+f25bjke+M94h7/PSB7Ibgi9iMzJSkGUtgU19fVmdRc07ryuwlcMJox1zIVNFI14/szyPXGuMV6xD3DePw+P3tAuUH2QjREFA1RuRS41raZtVu0HrPzDV1PmlDYURVTU1T7+zKp9ae3pnqlPKQQ+D5efF+5YPdhNGO5FY7jE5nWl5iWW5UdlGsQYG1gbWBtYG1gbfr9oJKgkqCSoJKgkpDzYG1gbWBtYG1gba8aaeSgkqCSoJKgkqCSXg1gbWBtYG1gbWBtFwGgkqCSoJKgkqCSefBgbWBtYG1gbWBtsh1w56CSoJKgkqCSoJJFCmBtYG1gbWBtYG00BKCSoJKgkqCSoJJl7WBtYG1gbWBtYG2vIHzqoJKgkqCSoJKgkikHYG1gbWBtYG1gbVEHoJKgkqCSoJKgklTqiSBgbWBtYG1gbWBtjO2gkqCSoJKgkqCSDARgbWBtYG1gbWBtbAqgkqCSoJKgkqCSSeeMHWBtYG1gbWBtYG2g8KCSoJKgkqCSoJLvAGBtYG1gbWBtYG2FDaCSoJKgkqCSoJJC5IkaYG1gbWBtYG1gbbjzoJKgkqCSoJKgktL9YG1gbWBtYG1gbZwQoJKgkqCSoJKgkkHhgBdgbWBtYG1gbWBt0vagkqCSoJKgkqCStfpgbWBtYG1gbWBtrhOgkqCSoJKgkqCSoJJyFGBtYG1gbWBtYG3t+aCSoJKgkqCSoJKY92BtYG1gbWBtYG29FoLgoJKgkqCSoJKgkmERYG1gbWBtYG1gbQv9oJKgkqCSoJKgkn70YG1gbWBtYG1gbccZgeOgkqCSoJKgkqCSSw5gbWBtYG1gbWBtJwCgkqCSoJKgkqCSZvFgbWBtYG1gbWBtzByH5qCSoJKgkqCSoJIzC2BtYG1gbWBtYG1FA6CSoJKgkqCSoJJR7mBtYG1gbWBtYG3KH5HpoJKgkqCSoJKgkhgIYG1gbWBtYG1gbWIGoJKgkqCSoJKgkj/rYG1gbWBtYG1gbWBtoOygkqCSoJKgkqCS/ARgbWBtYG1gbWBtfgmgkqCSoJKgkqCSMuhyHmBtYG1gbWBtYG2z76CSoJKgkqCSoJLeAWBtYG1gbWBtYG2YDKCSoJKgkqCSoJIq5XEbYG1gbWBtYG1gbcryoJKgkqCSoJKgksH+YG1gbWBtYG1gba8PoJKgkqCSoJKgkifiahhgbWBtYG1gbWBt4/WgkqCSoJKgkqCSpPtgbWBtYG1gbWBtwxKgkqCSoJKgkqCSoJJdFWBtYG1gbWBtYG3/+KCSoJKgkqCSoJKH+GBtYG1gbWBtYG3TFZ3foJKgkqCSoJKgkk0SYG1gbWBtYG1gbRv8oJKgkqCSoJKgkmz1YG1gbWBtYG1gbd4Ym+KgkqCSoJKgkqCSOA9gbWBtYG1gbWBtOf+gkqCSoJKgkqCSU/JgbWBtYG1gbWBt5Bue5aCSoJKgkqCSoJIhDGBtYG1gbWBtYG1WAqCSoJKgkqCSoJI972BtYG1gbWBtYG3lHqfooJKgkqCSoJKgkgcJYG1gbWBtYG1gbXMFoJKgkqCSoJKgkirsYG1gbWBtYG1gbWBtteugkqCSoJKgkqCS6wVgbWBtYG1gbWBtjwigkqCSoJKgkqCSHOlYH2BtYG1gbWBtYG3H7qCSoJKgkqCSoJLNAmBtYG1gbWBtYG2qC6CSoJKgkqCSoJIS5lgcYG1gbWBtYG1gbdzxoJKgkqCSoJKgkrH/YG1gbWBtYG1gbcIOoJKgkqCSoJKgkg7jUxlgbWBtYG1gbWBt9fSgkqCSoJKgkqCSk/xgbWBtYG1gbWBt1xGgkqCSoJKgkqCSEOBIFmBtYG1gbWBtYG0Q+KCSoJKgkqCSoJJ2+WBtYG1gbWBtYG3oFKCSoJKgkqCSoJKgkjkTYG1gbWBtYG1gbSz7oJKgkqCSoJKgklr2YG1gbWBtYG1gbfUXtOGgkqCSoJKgkqCSJRBgbWBtYG1gbWBtSv6gkqCSoJKgkqCSQfNgbWBtYG1gbWBt/Rq25KCSoJKgkqCSoJIPDWBtYG1gbWBtYG1nAaCSoJKgkqCSoJIq8GBtYG1gbWBtYG3/Hb3noJKgkqCSoJKgkvUJYG1gbWBtYG1gbYQEoJKgkqCSoJKgkhbtYG1gbWBtYG1gbWBtyuqgkqCSoJKgkqCS2gZgbWBtYG1gbWBtoQegkqCSoJKgkqCSBuo9IGBtYG1gbWBtYG3b7aCSoJKgkqCSoJK9A2BtYG1gbWBtYG28CqCSoJKgkqCSoJL75j8dYG1gbWBtYG1gbe/woJKgkqCSoJKgkp8AYG1gbWBtYG1gbdQNoJKgkqCSoJKgkvXjOxpgbWBtYG1gbWBtB/SgkqCSoJKgkqCSgv1gbWBtYG1gbWBt6hCgkqCSoJKgkqCS9eAyF2BtYG1gbWBtYG0h96CSoJKgkqCSoJJl+mBtYG1gbWBtYG39E6CSoJKgkqCSoJKgkiQUYG1gbWBtYG1gbT36oJKgkqCSoJKgkkn3YG1gbWBtYG1gbQsXz+CgkqCSoJKgkqCSEhFgbWBtYG1gbWBtWv2gkqCSoJKgkqCSL/RgbWBtYG1gbWBtFBrO46CSoJKgkqCSoJL8DWBtYG1gbWBtYG13AKCSoJKgkqCSoJIX8WBtYG1gbWBtYG0ZHdTmoJKgkqCSoJKgkuMKYG1gbWBtYG1gbZUDoJKgkqCSoJKgkgLuYG1gbWBtYG1gbRcg3+mgkqCSoJKgkqCSyAdgbWBtYG1gbWBtsgagkqCSoJKgkqCS8epgbWBtYG1gbWBtYG3v7KCSoJKgkqCSoJKsBGBtYG1gbWBtYG3NCaCSoJKgkqCSoJLk5yUeYG1gbWBtYG1gbQLwoJKgkqCSoJKgko4BYG1gbWBtYG1gbecMoJKgkqCSoJKgkt3kIxtgbWBtYG1gbWBtGfOgkqCSoJKgkqCScv5gbWBtYG1gbWBt/g+gkqCSoJKgkqCS2+EcGGBtYG1gbWBtYG0z9qCSoJKgkqCSoJJU+2BtYG1gbWBtYG0RE6CSoJKgkqCSoJKgkg8VYG1gbWBtYG1gbU75oJKgkqCSoJKgkjj4YG1gbWBtYG1gbSEW6d+gkqCSoJKgkqCS/hFgbWBtYG1gbWBta/ygkqCSoJKgkqCSHfVgbWBtYG1gbWBtLBnn4qCSoJKgkqCSoJLpDmBtYG1gbWBtYG2J/6CSoJKgkqCSoJIE8mBtYG1gbWBtYG0yHOzloJKgkqCSoJKgktELYG1gbWBtYG1gbaYCoJKgkqCSoJKgku7uYG1gbWBtYG1gbTEf9eigkqCSoJKgkqCStwhgbWBtYG1gbWBtwwWgkqCSoJKgkqCS3OtgbWBtYG1gbWBtYG0D7KCSoJKgkqCSoJKbBWBtYG1gbWBtYG3fCKCSoJKgkqCSoJLO6AsfYG1gbWBtYG1gbRbvoJKgkqCSoJKgkn4CYG1gbWBtYG1gbfkLoJKgkqCSoJKgksXlCxxgbWBtYG1gbWBtLPKgkqCSoJKgkqCSYf9gbWBtYG1gbWBtEQ+gkqCSoJKgkqCSweIFGWBtYG1gbWBtYG1E9aCSoJKgkqCSoJJD/GBtYG1gbWBtYG0lEqCSoJKgkqCSoJLD3/oVYG1gbWBtYG1gbV/4oJKgkqCSoJKgkib5YG1gbWBtYG1gbTYVoJKgkqCSoJKgkqCS6hJgbWBtYG1gbWBtfPugkqCSoJKgkqCSC/ZgbWBtYG1gbWBtQxgB4qCSoJKgkqCSoJLWD2BtYG1gbWBtYG2Z/qCSoJKgkqCSoJLx8mBtYG1gbWBtYG1KGwPloJKgkqCSoJKgkr8MYG1gbWBtYG1gbbYBoJKgkqCSoJKgktvvYG1gbWBtYG1gbUweC+igkqCSoJKgkqCSpglgbWBtYG1gbWBt1ASgkqCSoJKgkqCSx+xgbWBtYG1gbWBtYG0Y66CSoJKgkqCSoJKKBmBtYG1gbWBtYG3wB6CSoJKgkqCSoJK46fAfYG1gbWBtYG1gbSnuoJKgkqCSoJKgkm0DYG1gbWBtYG1gbQsLoJKgkqCSoJKgkq3m8hxgbWBtYG1gbWBtPvGgkqCSoJKgkqCSTwBgbWBtYG1gbWBtJA6gkqCSoJKgkqCSqOPuGWBtYG1gbWBtYG1W9KCSoJKgkqCSoJIz/WBtYG1gbWBtYG05EaCSoJKgkqCSoJKo4OQWYG1gbWBtYG1gbXH3oJKgkqCSoJKgkhX6YG1gbWBtYG1gbUsUoJKgkqCSoJKgkqCS1hNgbWBtYG1gbWBtjfqgkqCSoJKgkqCS+fZgbWBtYG1gbWBtWRcb4aCSoJKgkqCSoJLDEGBtYG1gbWBtYG2q/aCSoJKgkqCSoJLf82BtYG1gbWBtYG1iGhzkoJKgkqCSoJKgkq0NYG1gbWBtYG1gbccAoJKgkqCSoJKgksjwYG1gbWBtYG1gbWUdIuegkqCS4JIdlFuVMgoqaO1mr2VyZDRjfQNHn4SgwqH/ojyk2/BJWQtYzlaQVVNUmhis72avo7DgsR6zW7QVBSpJ7EevRnFFNERKBEe+hb/CwP/BPcNg9Eg6CznNN5A2UjUVNEj3Zs6kz+HQHtJc07sBKSrsKK4ncSYzJVMDSN2F3sPfAOE94qP5cQcKGs0YjxdSFhQVKP1n7aTu4u8f8VzyJAApC+sJrghwBzMGmQBI/Ib9w/4AAD0BegK4A/UEu/6Q+FL3FfYs/WYMpA3hDh4Q3QBn7Sns7Oqu6a0DzRgKGkgbhRw94gDhw9+F3ov89iMzJXEmriej+9fVmdRc0x7SHy9cMJox1zLDB67KcMkzyPXGUQOGO8M8AT4+PzTvR74Kvcy7PvKvRuxHKklnSnf/HrPgsaOwZq9bERVTU1SQVWsV9ae3pnqlPKQH/D5efF+5YPdh0u+Om1GaE5lM4WhppWrjayBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP14JIdlFuVmJa0Hu1mr2VyZC4QCZ5Hn4SgwqH5A8RbhlpJWQtYlepwqq2r66yl7ppQXU8gTuJMiQCZtda2FLhRucINNET2QrlBzBDCwP/BPcN6xK/8CznNN5A2UjU9+CnNZs6kz+HQ4i2kLGcrKSpdBFLYj9nN2grcdQN7IT0gAB/DHXvjuOT25TPnU/xSFhQV1xOZEiP/4u8f8VzymvPUAusJrghwB0UBC/tI/Ib9w/4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0BegK4A/UEMwb7AFL3FfbX9JrzXPIb/MYDXBGZEtcTFBVSFo79M+f25bjke+M94h7/PSB7Ibgi9iMzJSkGUtgU19fVmdRc07ryuwlcMJox1zIVNFI14/szyPXGuMV6xD3DePw+P3tAuUH2QjREFA1RuRS41raZtVu0HrPzDV1PmlDYURVTU1T7+zKp9ae3pnqlPKQQ+D5efF+5YPdhNGO5FY7jE5nWl5iWW5UdlGsQYG1gbWBtYG1gbfr9oJKgkqCSoJKgkpDzYG1gbWBtYG1gba8aaeSgkqCSoJKgkqCSXg1gbWBtYG1gbWBtFwGgkqCSoJKgkqCSefBgbWBtYG1gbWBtsh1w56CSoJKgkqCSoJJFCmBtYG1gbWBtYG00BKCSoJKgkqCSoJJl7WBtYG1gbWBtYG2vIHzqoJKgkqCSoJKgkikHYG1gbWBtYG1gbVEHoJKgkqCSoJKgklTqiSBgbWBtYG1gbWBtjO2gkqCSoJKgkqCSDARgbWBtYG1gbWBtbAqgkqCSoJKgkqCSSeeMHWBtYG1gbWBtYG2g8KCSoJKgkqCSoJLvAGBtYG1gbWBtYG2FDaCSoJKgkqCSoJJC5IkaYG1gbWBtYG1gbbjzoJKgkqCSoJKgktL9YG1gbWBtYG1gbZwQoJKgkqCSoJKgkkHhgBdgbWBtYG1gbWBt0vagkqCSoJKgkqCStfpgbWBtYG1gbWBtrhOgkqCSoJKgkqCSoJJyFGBtYG1gbWBtYG3t+aCSoJKgkqCSoJKY92BtYG1gbWBtYG29FoLgoJKgkqCSoJKgkmERYG1gbWBtYG1gbQv9oJKgkqCSoJKgkn70YG1gbWBtYG1gbccZgeOgkqCSoJKgkqCSSw5gbWBtYG1gbWBtJwCgkqCSoJKgkqCSZvFgbWBtYG1gbWBtzByH5qCSoJKgkqCSoJIzC2BtYG1gbWBtYG1FA6CSoJKgkqCSoJJR7mBtYG1gbWBtYG3KH5HpoJKgkqCSoJKgkhgIYG1gbWBtYG1gbWIGoJKgkqCSoJKgkj/rYG1gbWBtYG1gbWBtoOygkqCSoJKgkqCS/ARgbWBtYG1gbWBtfgmgkqCSoJKgkqCSMuhyHmBtYG1gbWBtYG2z76CSoJKgkqCSoJLeAWBtYG1gbWBtYG2YDKCSoJKgkqCSoJIq5XEbYG1gbWBtYG1gbcryoJKgkqCSoJKgksH+YG1gbWBtYG1gba8PoJKgkqCSoJKgkifiahhgbWBtYG1gbWBt4/WgkqCSoJKgkqCSpPtgbWBtYG1gbWBtwxKgkqCSoJKgkqCSoJJdFWBtYG1gbWBtYG3/+KCSoJKgkqCSoJKH+GBtYG1gbWBtYG3TFZ3foJKgkqCSoJKgkk0SYG1gbWBtYG1gbRv8oJKgkqCSoJKgkmz1YG1gbWBtYG1gbd4Ym+KgkqCSoJKgkqCSOA9gbWBtYG1gbWBtOf+gkqCSoJKgkqCSU/JgbWBtYG1gbWBt5Bue5aCSoJKgkqCSoJIhDGBtYG1gbWBtYG1WAqCSoJKgkqCSoJI972BtYG1gbWBtYG3lHqfooJKgkqCSoJKgkgcJYG1gbWBtYG1gbXMFoJKgkqCSoJKgkirsYG1gbWBtYG1gbWBtteugkqCSoJKgkqCS6wVgbWBtYG1gbWBtjwigkqCSoJKgkqCSHOlYH2BtYG1gbWBtYG3H7qCSoJKgkqCSoJLNAmBtYG1gbWBtYG2qC6CSoJKgkqCSoJIS5lgcYG1gbWBtYG1gbdzxoJKgkqCSoJKgkrH/YG1gbWBtYG1gbcIOoJKgkqCSoJKgkg7jUxlgbWBtYG1gbWBt9fSgkqCSoJKgkqCSk/xgbWBtYG1gbWBt1xGgkqCSoJKgkqCSEOBIFmBtYG1gbWBtYG0Q+KCSoJKgkqCSoJJ2+WBtYG1gbWBtYG3oFKCSoJKgkqCSoJKgkjkTYG1gbWBtYG1gbSz7oJKgkqCSoJKgklr2YG1gbWBtYG1gbfUXtOGgkqCSoJKgkqCSJRBgbWBtYG1gbWBtSv6gkqCSoJKgkqCSQfNgbWBtYG1gbWBt/Rq25KCSoJKgkqCSoJIPDWBtYG1gbWBtYG1nAaCSoJKgkqCSoJIq8GBtYG1gbWBtYG3/Hb3noJKgkqCSoJKgkvUJYG1gbWBtYG1gbYQEoJKgkqCSoJKgkhbtYG1gbWBtYG1gbWBtyuqgkqCSoJKgkqCS2gZgbWBtYG1gbWBtoQegkqCSoJKgkqCSBuo9IGBtYG1gbWBtYG3b7aCSoJKgkqCSoJK9A2BtYG1gbWBtYG28CqCSoJKgkqCSoJL75j8dYG1gbWBtYG1gbe/woJKgkqCSoJKgkp8AYG1gbWBtYG1gbdQNoJKgkqCSoJKgkvXjOxpgbWBtYG1gbWBtB/SgkqCSoJKgkqCSgv1gbWBtYG1gbWBt6hCgkqCSoJKgkqCS9eAyF2BtYG1gbWBtYG0h96CSoJKgkqCSoJJl+mBtYG1gbWBtYG39E6CSoJKgkqCSoJKgkiQUYG1gbWBtYG1gbT36oJKgkqCSoJKgkkn3YG1gbWBtYG1gbQsXz+CgkqCSoJKgkqCSEhFgbWBtYG1gbWBtWv2gkqCSoJKgkqCSL/RgbWBtYG1gbWBtFBrO46CSoJKgkqCSoJL8DWBtYG1gbWBtYG13AKCSoJKgkqCSoJIX8WBtYG1gbWBtYG0ZHdTmoJKgkqCSoJKgkuMKYG1gbWBtYG1gbZUDoJKgkqCSoJKgkgLuYG1gbWBtYG1gbRcg3+mgkqCSoJKgkqCSyAdgbWBtYG1gbWBtsgagkqCSoJKgkqCS8epgbWBtYG1gbWBtYG3v7KCSoJKgkqCSoJKsBGBtYG1gbWBtYG3NCaCSoJKgkqCSoJLk5yUeYG1gbWBtYG1gbQLwoJKgkqCSoJKgko4BYG1gbWBtYG1gbecMoJKgkqCSoJKgkt3kIxtgbWBtYG1gbWBtGfOgkqCSoJKgkqCScv5gbWBtYG1gbWBt/g+gkqCSoJKgkqCS2+EcGGBtYG1gbWBtYG0z9qCSoJKgkqCSoJJU+2BtYG1gbWBtYG0RE6CSoJKgkqCSoJKgkg8VYG1gbWBtYG1gbU75oJKgkqCSoJKgkjj4YG1gbWBtYG1gbSEW6d+gkqCSoJKgkqCS/hFgbWBtYG1gbWBta/ygkqCSoJKgkqCSHfVgbWBtYG1gbWBtLBnn4qCSoJKgkqCSoJLpDmBtYG1gbWBtYG2J/6CSoJKgkqCSoJIE8mBtYG1gbWBtYG0yHOzloJKgkqCSoJKgktELYG1gbWBtYG1gbaYCoJKgkqCSoJKgku7uYG1gbWBtYG1gbTEf9eigkqCSoJKgkqCStwhgbWBtYG1gbWBtwwWgkqCSoJKgkqCS3OtgbWBtYG1gbWBtYG0D7KCSoJKgkqCSoJKbBWBt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YG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP14JIdlFuVmJa0Hu1mr2VyZC4QCZ5Hn4SgwqH5A8RbhlpJWQtYlepwqq2r66yl7ppQXU8gTuJMiQCZtda2FLhRucINNET2QrlBzBDCwP/BPcN6xK/8CznNN5A2UjU9+CnNZs6kz+HQ4i2kLGcrKSpdBFLYj9nN2grcdQN7IT0gAB/DHXvjuOT25TPnU/xSFhQV1xOZEiP/4u8f8VzymvPUAusJrghwB0UBC/tI/Ib9w/4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0BegK4A/UEMwb7AFL3FfbX9JrzXPIb/MYDXBGZEtcTFBVSFo79M+f25bjke+M94h7/PSB7Ibgi9iMzJSkGUtgU19fVmdRc07ryuwlcMJox1zIVNFI14/szyPXGuMV6xD3DePw+P3tAuUH2QjREFA1RuRS41raZtVu0HrPzDV1PmlDYURVTU1T7+zKp9ae3pnqlPKQQ+D5efF+5YPdhNGO5FY7jE5nWl5iWW5UdlGsQYG1gbWBtYG1gbfr9oJKgkqCSoJKgkpDzYG1gbWBtYG1gba8aaeSgkqCSoJKgkqCSXg1gbWBtYG1gbWBtFwGgkqCSoJKgkqCSefBgbWBtYG1gbWBtsh1w56CSoJKgkqCSoJJFCmBtYG1gbWBtYG00BKCSoJKgkqCSoJJl7WBtYG1gbWBtYG2vIHzqoJKgkqCSoJKgkikHYG1gbWBtYG1gbVEHoJKgkqCSoJKgklTqiSBgbWBtYG1gbWBtjO2gkqCSoJKgkqCSDARgbWBtYG1gbWBtbAqgkqCSoJKgkqCSSeeMHWBtYG1gbWBtYG2g8KCSoJKgkqCSoJLvAGBtYG1gbWBtYG2FDaCSoJKgkqCSoJJC5IkaYG1gbWBtYG1gbbjzoJKgkqCSoJKgktL9YG1gbWBtYG1gbZwQoJKgkqCSoJKgkkHhgBdgbWBtYG1gbWBt0vagkqCSoJKgkqCStfpgbWBtYG1gbWBtrhOgkqCSoJKgkqCSoJJyFGBtYG1gbWBtYG3t+aCSoJKgkqCSoJKY92BtYG1gbWBtYG29FoLgoJKgkqCSoJKgkmERYG1gbWBtYG1gbQv9oJKgkqCSoJKgkn70YG1gbWBtYG1gbccZgeOgkqCSoJKgkqCSSw5gbWBtYG1gbWBtJwCgkqCSoJKgkqCSZvFgbWBtYG1gbWBtzByH5qCSoJKgkqCSoJIzC2BtYG1gbWBtYG1FA6CSoJKgkqCSoJJR7mBtYG1gbWBtYG3KH5HpoJKgkqCSoJKgkhgIYG1gbWBtYG1gbWIGoJKgkqCSoJKgkj/rYG1gbWBtYG1gbWBtoOygkqCSoJKgkqCS/ARgbWBtYG1gbWBtfgmgkqCSoJKgkqCSMuhyHmBtYG1gbWBtYG2z76CSoJKgkqCSoJLeAWBtYG1gbWBtYG2YDKCSoJKgkqCSoJIq5XEbYG1gbWBtYG1gbcryoJKgkqCSoJKgksH+YG1gbWBtYG1gba8PoJKgkqCSoJKgkifiahhgbWBtYG1gbWBt4/WgkqCSoJKgkqCSpPtgbWBtYG1gbWBtwxKgkqCSoJKgkqCSoJJdFWBtYG1gbWBtYG3/+KCSoJKgkqCSoJKH+GBtYG1gbWBtYG3TFZ3foJKgkqCSoJKgkk0SYG1gbWBtYG1gbRv8oJKgkqCSoJKgkmz1YG1gbWBtYG1gbd4Ym+KgkqCSoJKgkqCSOA9gbWBtYG1gbWBtOf+gkqCSoJKgkqCSU/JgbWBtYG1gbWBt5Bue5aCSoJKgkqCSoJIhDGBtYG1gbWBtYG1WAqCSoJKgkqCSoJI972BtYG1gbWBtYG3lHqfooJKgkqCSoJKgkgcJYG1gbWBtYG1gbXMFoJKgkqCSoJKgkirsYG1gbWBtYG1gbWBtteugkqCSoJKgkqCS6wVgbWBtYG1gbWBtjwigkqCSoJKgkqCSHOlYH2BtYG1gbWBtYG3H7qCSoJKgkqCSoJLNAmBtYG1gbWBtYG2qC6CSoJKgkqCSoJIS5lgcYG1gbWBtYG1gbdzxoJKgkqCSoJKgkrH/YG1gbWBtYG1gbcIOoJKgkqCSoJKgkg7jUxlgbWBtYG1gbWBt9fSgkqCSoJKgkqCSk/xgbWBtYG1gbWBt1xGgkqCSoJKgkqCSEOBIFmBtYG1gbWBtYG0Q+KCSoJKgkqCSoJJ2+WBtYG1gbWBtYG3oFKCSoJKgkqCSoJKgkjkTYG1gbWBtYG1gbSz7oJKgkqCSoJKgklr2YG1gbWBtYG1gbfUXtOGgkqCSoJKgkqCSJRBgbWBtYG1gbWBtSv6gkqCSoJKgkqCSQfNgbWBtYG1gbWBt/Rq25KCSoJKgkqCSoJIPDWBtYG1gbWBtYG1nAaCSoJKgkqCSoJIq8GBtYG1gbWBtYG3/Hb3noJKgkqCSoJKgkvUJYG1gbWBtYG1gbYQEoJKgkqCSoJKgkhbtYG1gbWBtYG1gbWBtyuqgkqCSoJKgkqCS2gZgbWBtYG1gbWBtoQegkqCSoJKgkqCSBuo9IGBtYG1gbWBtYG3b7aCSoJKgkqCSoJK9A2BtYG1gbWBtYG28CqCSoJKgkqCSoJL75j8dYG1gbWBtYG1gbe/woJKgkqCSoJKgkp8AYG1gbWBtYG1gbdQNoJKgkqCSoJKgkvXjOxpgbWBtYG1gbWBtB/SgkqCSoJKgkqCSgv1gbWBtYG1gbWBt6hCgkqCSoJKgkqCS9eAyF2BtYG1gbWBtYG0h96CSoJKgkqCSoJJl+mBtYG1gbWBtYG39E6CSoJKgkqCSoJKgkiQUYG1gbWBtYG1gbT36oJKgkqCSoJKgkkn3YG1gbWBtYG1gbQsXz+CgkqCSoJKgkqCSEhFgbWBtYG1gbWBtWv2gkqCSoJKgkqCSL/RgbWBtYG1gbWBtFBrO46CSoJKgkqCSoJL8DWBtYG1gbWBtYG13AKCSoJKgkqCSoJIX8WBtYG1gbWBtYG0ZHdTmoJKgkqCSoJKgkuMKYG1gbWBtYG1gbZUDoJKgkqCSoJKgkgLuYG1gbWBtYG1gbRcg3+mgkqCSoJKgkqCSyAdgbWBtYG1gbWBtsgagkqCSoJKgkqCS8epgbWBtYG1gbWBtYG3v7KCSoJKgkqCSoJKsBGBtYG1gbWBtYG3NCaCSoJKgkqCSoJLk5yUeYG1gbWBtYG1gbQLwoJKgkqCSoJKgko4BYG1gbWBtYG1gbecMoJKgkqCSoJKgkt3kIxtgbWBtYG1gbWBtGfOgkqCSoJKgkqCScv5gbWBtYG1gbWBt/g+gkqCSoJKgkqCS2+EcGGBtYG1gbWBtYG0z9qCSoJKgkqCSoJJU+2BtYG1gbWBtYG0RE6CSoJKgkqCSoJKgkg8VYG1gbWBtYG1gbU75oJKgkqCSoJKgkjj4YG1gbWBtYG1gbSEW6d+gkqCSoJKgkqCS/hFgbWBtYG1gbWBta/ygkqCSoJKgkqCSHfVgbWBtYG1gbWBtLBnn4qCSoJKgkqCSoJLpDmBtYG1gbWBtYG2J/6CSoJKgkqCSoJIE8mBtYG1gbWBtYG0yHOzloJKgkqCSoJKgktELYG1gbWBtYG1gbaYCoJKgkqCSoJKgku7uYG1gbWBtYG1gbTEf9eigkqCSoJKgkqCStwhgbWBtYG1gbWBtwwWgkqCSoJKgkqCS3OtgbWBtYG1gbWBtYG0D7KCSoJKgkqCSoJKbBWBtYG1gbWBtYG3fCKCSoJKgkqCSoJLO6AsfYG1gbWBtYG1gbRbvoJKgkqCSoJKgkn4CYG1gbWBtYG1gbfkLoJKgkqCSoJKgksXlCxxgbWBtYG1gbWBtLPKgkqCSoJKgkqCSYf9gbWBtYG1gbWBtEQ+gkqCSoJKgkqCSweIFGWBtYG1gbWBtYG1E9aCSoJKgkqCSoJJD/GBtYG1gbWBtYG0lEqCSoJKgkqCSoJLD3/oVYG1gbWBtYG1gbV/4oJKgkqCSoJKgkib5YG1gbWBtYG1gbTYVoJKgkqCSoJKgkqCS6hJgbWBtYG1gbWBtfPugkqCSoJKgkqCSC/ZgbWBtYG1gbWBtQxgB4qCSoJKgkqCSoJLWD2BtYG1gbWBtYG2Z/qCSoJKgkqCSoJLx8mBtYG1gbWBtYG1KGwPloJKgkqCSoJKgkr8MYG1gbWBtYG1gbbYBoJKgkqCSoJKgktvvYG1gbWBtYG1gbUweC+igkqCSoJKgkqCSpglgbWBtYG1gbWBt1ASgkqCSoJKgkqCSx+xgbWBtYG1gbWBtYG0Y66CSoJKgkqCSoJKKBmBtYG1gbWBtYG3wB6CSoJKgkqCSoJK46fAfYG1gbWBtYG1gbSnuoJKgkqCSoJKgkm0DYG1gbWBtYG1gbQsLoJKgkqCSoJKgkq3m8hxgbWBtYG1gbWBtPvGgkqCSoJKgkqCSTwBgbWBtYG1gbWBtJA6gkqCSoJKgkqCSqOPuGWBtYG1gbWBtYG1W9KCSoJKgkqCSoJIz/WBtYG1gbWBtYG05EaCSoJKgkqCSoJKo4OQWYG1gbWBtYG1gbXH3oJKgkqCSoJKgkhX6YG1gbWBtYG1gbUsUoJKgkqCSoJKgkqCS1hNgbWBtYG1gbWBtjfqgkqCSoJKgkqCS+fZgbWBtYG1gbWBtWRcb4aCSoJKgkqCSoJLDEGBtYG1gbWBtYG2q/aCSoJKgkqCSoJLf82BtYG1gbWBtYG1iGhzkoJKgkqCSoJKgkq0NYG1gbWBtYG1gbccAoJKgkqCSoJKgksjwYG1gbWBtYG1gbWUdIuegkqCS4JIdlFuVMgoqaO1mr2VyZDRjfQNHn4SgwqH/ojyk2/BJWQtYzlaQVVNUmhis72avo7DgsR6zW7QVBSpJ7EevRnFFNERKBEe+hb/CwP/BPcNg9Eg6CznNN5A2UjUVNEj3Zs6kz+HQHtJc07sBKSrsKK4ncSYzJVMDSN2F3sPfAOE94qP5cQcKGs0YjxdSFhQVKP1n7aTu4u8f8VzyJAApC+sJrghwBzMGmQBI/Ib9w/4AAD0BegK4A/UEu/6Q+FL3FfYs/WYMpA3hDh4Q3QBn7Sns7Oqu6a0DzRgKGkgbhRw94gDhw9+F3ov89iMzJXEmriej+9fVmdRc0x7SHy9cMJox1zLDB67KcMkzyPXGUQOGO8M8AT4+PzTvR74Kvcy7PvKvRuxHKklnSnf/HrPgsaOwZq9bERVTU1SQVWsV9ae3pnqlPKQH/D5efF+5YPdh0u+Om1GaE5lM4WhppWrjayBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP1oJKgkqCSoJI9IGBtYG1gbdcRoJKgkqCSoJKsBGBtYG1gbWBtA+WgkqCSoJLO6GBtYG1gbWBtxwCgkqCSoJKgkqwVYG1gbWBtfxygkqCSoJKgksb5YG1gbWBtYG2z76CSoJKgkqCSYG1gbWBtYG2qC6CSoJKgkqCS4wpgbWBtYG1gbaCSoJKgkqCS7u5gbWBtYG1gbY36oJKgkqCSoJK+G2BtYG1gbW8WoJKgkqCSoJIAAGBtYG1gbWBtkemgkqCSoJJC5GBtYG1gbWBtcwWgkqCSoJKgkhIRYG1gbWBtYG2gkqCSoJKgkh31YG1gbWBtYG1W9KCSoJKgkqCSYG1gbWBtYG1NEKCSoJKgkqCSOgZgbWBtYG1gbYHjoJKgkqCSVOpgbWBtYG1gbTn/oJKgkqCSoJIyF2BtYG1gbf0aoJKgkqCSoJJU+2BtYG1gbWBtKe6gkqCSoJLD32BtYG1gbWBtHQqgkqCSoJKgknAMYG1gbWBtYG2gkqCSoJKgknnwYG1gbWBtYG3/+KCSoJKgkqCSPx1gbWBtYG3oFKCSoJKgkqCSjgFgbWBtYG1gbQvooJKgkqCSxeVgbWBtYG1gbeUDoJKgkqCSoJKbEmBtYG1gbX4foJKgkqCSoJKq9mBtYG1gbWBtyvKgkqCSoJKgkmBtYG1gbWBtwg6gkqCSoJKgksgHYG1gbWBtYG0B4qCSoJKgktzrYG1gbWBtYG2q/aCSoJKgkqCStxhgbWBtYG15GaCSoJKgkqCS4/xgbWBtYG1gbaDsoJKgkqCSQeFgbWBtYG1gbY8IoJKgkqCSoJL8DWBtYG1gbWBtoJKgkqCSoJIE8mBtYG1gbWBtcfegkqCSoJKgkr8eYG1gbWBtYBOgkqCSoJKgkh0DYG1gbWBtYG2H5qCSoJKgkknnYG1gbWBtYG1WAqCSoJKgkqCSJBRgbWBtYG3/HaCSoJKgkqCSOPhgbWBtYG1gbT7xoJKgkqCSoJJgbWBtYG1gbTYNoJKgkqCSoJJWCWBtYG1gbWBtguCgkqCSoJJl7WBtYG1gbWBtG/ygkqCSoJKgkjsaYG1gbWBt9RegkqCSoJKgknL+YG1gbWBtYG0Y66CSoJKgksHiYG1gbWBtYG0BB6CSoJKgkqCShw9gbWBtYG1gbaCSoJKgkqCSkPNgbWBtYG1gbeP14JIdlFuVmJa0Hu1mr2VyZC4QCZ5Hn4SgwqH5A8RbhlpJWQtYlepwqq2r66yl7ppQXU8gTuJMiQCZtda2FLhRucINNET2QrlBzBDCwP/BPcN6xK/8CznNN5A2UjU9+CnNZs6kz+HQ4i2kLGcrKSpdBFLYj9nN2grcdQN7IT0gAB/DHXvjuOT25TPnU/xSFhQV1xOZEiP/4u8f8VzymvPUAusJrghwB0UBC/tI/Ib9w/4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0BegK4A/UEMwb7AFL3FfbX9JrzXPIb/MYDXBGZEtcTFBVSFo79M+f25bjke+M94h7/PSB7Ibgi9iMzJSkGUtgU19fVmdRc07ryuwlcMJox1zIVNFI14/szyPXGuMV6xD3DePw+P3tAuUH2QjREFA1RuRS41raZtVu0HrPzDV1PmlDYURVTU1T7+zKp9ae3pnqlPKQQ+D5efF+5YPdhNGO5FY7jE5nWl5iWW5UdlGsQYG1gbWBtYG1gbfr9oJKgkqCSoJKgkpDzYG1gbWBtYG1gba8aaeSgkqCSoJKgkqCSXg1gbWBtYG1gbWBtFwGgkqCSoJKgkqCSefBgbWBtYG1gbWBtsh1w56CSoJKgkqCSoJJFCmBtYG1gbWBtYG00BKCSoJKgkqCSoJJl7WBtYG1gbWBtYG2vIHzqoJKgkqCSoJKgkikHYG1gbWBtYG1gbVEHoJKgkqCSoJKgklTqiSBgbWBtYG1gbWBtjO2gkqCSoJKgkqCSDARgbWBtYG1gbWBtbAqgkqCSoJKgkqCSSeeMHWBtYG1gbWBtYG2g8KCSoJKgkqCSoJLvAGBtYG1gbWBtYG2FDaCSoJKgkqCSoJJC5IkaYG1gbWBtYG1gbbjzoJKgkqCSoJKgktL9YG1gbWBtYG1gbZwQoJKgkqCSoJKgkkHhgBdgbWBtYG1gbWBt0vagkqCSoJKgkqCStfpgbWBtYG1gbWBtrhOgkqCSoJKgkqCSoJJyFGBtYG1gbWBtYG3t+aCSoJKgkqCSoJKY92BtYG1gbWBtYG29FoLgoJKgkqCSoJKgkmERYG1gbWBtYG1gbQv9oJKgkqCSoJKgkn70YG1gbWBtYG1gbccZgeOgkqCSoJKgkqCSSw5gbWBtYG1gbWBtJwCgkqCSoJKgkqCSZvFgbWBtYG1gbWBtzByH5qCSoJKgkqCSoJIzC2BtYG1gbWBtYG1FA6CSoJKgkqCSoJJR7mBtYG1gbWBtYG3KH5HpoJKgkqCSoJKgkhgIYG1gbWBtYG1gbWIGoJKgkqCSoJKgkj/rYG1gbWBtYG1gbWBtoOygkqCSoJKgkqCS/ARgbWBtYG1gbWBtfgmgkqCSoJKgkqCSMuhyHmBtYG1gbWBtYG2z76CSoJKgkqCSoJLeAWBtYG1gbWBtYG2YDKCSoJKgkqCSoJIq5XEbYG1gbWBtYG1gbcryoJKgkqCSoJKgksH+YG1gbWBtYG1gba8PoJKgkqCSoJKgkifiahhgbWBtYG1gbWBt4/WgkqCSoJKgkqCSpPtgbWBtYG1gbWBtwxKgkqCSoJKgkqCSoJJdFWBtYG1gbWBtYG3/+KCSoJKgkqCSoJKH+GBtYG1gbWBtYG3TFZ3foJKgkqCSoJKgkk0SYG1gbWBtYG1gbRv8oJKgkqCSoJKgkmz1YG1gbWBtYG1gbd4Ym+KgkqCSoJKgkqCSOA9gbWBtYG1gbWBtOf+gkqCSoJKgkqCSU/JgbWBtYG1gbWBt5Bue5aCSoJKgkqCSoJIhDGBtYG1gbWBtYG1WAqCSoJKgkqCSoJI972BtYG1gbWBtYG3lHqfooJKgkqCSoJKgkgcJYG1gbWBtYG1gbXMFoJKgkqCSoJKgkirsYG1gbWBtYG1gbWBtteugkqCSoJKgkqCS6wVgbWBtYG1gbWBtjwigkqCSoJKgkqCSHOlYH2BtYG1gbWBtYG3H7qCSoJKgkqCSoJLNAmBtYG1gbWBtYG2qC6CSoJKgkqCSoJIS5lgcYG1gbWBtYG1gbdzxoJKgkqCSoJKgkrH/YG1gbWBtYG1gbcIOoJKgkqCSoJKgkg7jUxlgbWBtYG1gbWBt9fSgkqCSoJKgkqCSk/xgbWBtYG1gbWBt1xGgkqCSoJKgkqCSEOBIFmBtYG1gbWBtYG0Q+KCSoJKgkqCSoJJ2+WBtYG1gbWBtYG3oFKCSoJKgkqCSoJKgkjkTYG1gbWBtYG1gbSz7oJKgkqCSoJKgklr2YG1gbWBtYG1gbfUXtOGgkqCSoJKgkqCSJRBgbWBtYG1gbWBtSv6gkqCSoJKgkqCSQfNgbWBtYG1gbWBt/Rq25KCSoJKgkqCSoJIPDWBtYG1gbWBtYG1nAaCSoJKgkqCSoJIq8GBtYG1gbWBtYG3/Hb3noJKgkqCSoJKgkvUJYG1gbWBtYG1gbYQEoJKgkqCSoJKgkhbtYG1gbWBtYG1gbWBtyuqgkqCSoJKgkqCS2gZgbWBtYG1gbWBtoQegkqCSoJKgkqCSBuo9IGBtYG1gbWBtYG3b7aCSoJKgkqCSoJK9A2BtYG1gbWBtYG28CqCSoJKgkqCSoJL75j8dYG1gbWBtYG1gbe/woJKgkqCSoJKgkp8AYG1gbWBtYG1gbdQNoJKgkqCSoJKgkvXjOxpgbWBtYG1gbWBtB/SgkqCSoJKgkqCSgv1gbWBtYG1gbWBt6hCgkqCSoJKgkqCS9eAyF2BtYG1gbWBtYG0h96CSoJKgkqCSoJJl+mBtYG1gbWBtYG39E6CSoJKgkqCSoJKgkiQUYG1gbWBtYG1gbT36oJKgkqCSoJKgkkn3YG1gbWBtYG1gbQsXz+CgkqCSoJKgkqCSEhFgbWBtYG1gbWBtWv2gkqCSoJKgkqCSL/RgbWBtYG1gbWBtFBrO46CSoJKgkqCSoJL8DWBtYG1gbWBtYG13AKCSoJKgkqCSoJIX8WBtYG1gbWBtYG0ZHdTmoJKgkqCSoJKgkuMKYG1gbWBtYG1gbZUDoJKgkqCSoJKgkgLuYG1gbWBtYG1gbRcg3+mgkqCSoJKgkqCSyAdgbWBtYG1gbWBtsgagkqCSoJKgkqCS8epgbWBtYG1gbWBtYG3v7KCSoJKgkqCSoJKsBGBtYG1gbWBtYG3NCaCSoJKgkqCSoJLk5yUeYG1gbWBtYG1gbQLwoJKgkqCSoJKgko4BYG1gbWBtYG1gbecMoJKgkqCSoJKgkt3kIxtgbWBtYG1gbWBtGfOgkqCSoJKgkqCScv5gbWBtYG1gbWBt/g+gkqCSoJKgkqCS2+EcGGBtYG1gbWBtYG0z9qCSoJKgkqCSoJJU+2BtYG1gbWBtYG0RE6CSoJKgkqCSoJKgkg8VYG1gbWBtYG1gbU75oJKgkqCSoJKgkjj4YG1gbWBtYG1gbSEW6d+gkqCSoJKgkqCS/hFgbWBtYG1gbWBta/ygkqCSoJKgkqCSHfVgbWBtYG1gbWBtLBnn4qCSoJKgkqCSoJLpDmBtYG1gbWBtYG2J/6CSoJKgkqCSoJIE8mBtYG1gbWBtYG0yHOzloJKgkqCSoJKgktELYG1gbWBtYG1gbaYCoJKgkqCSoJKgku7uYG1gbWBtYG1gbTEf9eigkqCSoJKgkqCStwhgbWBtYG1gbWBtwwWgkqCSoJKgkqCS3OtgbWBtYG1gbWBtYG0D7KCSoJKgkqCSoJKbBWBtYG1gbWBtYG3fCKCSoJKgkqCSoJLO6AsfYG1gbWBtYG1gbRbvoJKgkqCSoJKgkn4CYG1gbWBtYG1gbfkLoJKgkqCSoJKgksXlCxxgbWBtYG1gbWBtLPKgkqCSoJKgkqCSYf9gbWBtYG1gbWBtEQ+gkqCSoJKgkqCSweIFGWBtYG1gbWBtYG1E9aCSoJKgkqCSoJJD/GBtYG1gbWBtYG0lEqCSoJKgkqCSoJLD3/oVYG1gbWBtYG1gbV/4oJKgkqCSoJKgkib5YG1gbWBtYG1gbTYVoJKgkqCSoJKgkqCS6hJgbWBtYG1gbWBtfPugkqCSoJKgkqCSC/ZgbWBtYG1gbWBtQxgB4qCSoJKgkqCSoJLWD2BtYG1gbWBtYG2Z/qCSoJKgkqCSoJLx8mBtYG1gbWBtYG1KGwPloJKgkqCSoJKgkr8MYG1gbWBtYG1gbbYBoJKgkqCSoJKgktvvYG1gbWBtYG1gbUweC+igkqCSoJKgkqCSpglgbWBtYG1gbWBt1ASgkqCSoJKgkqCSx+xgbWBtYG1gbWBtYG0Y66CSoJKgkqCSoJKKBmBtYG1gbWBtYG3wB6CSoJKgkqCSoJK46fAfYG1gbWBtYG1gbSnuoJKgkqCSoJKgkm0DYG1gbWBtYG1gbQsLoJKgkqCSoJKgkq3m8hxgbWBtYG1gbWBtPvGgkqCSoJKgkqCSTwBgbWBtYG1gbWBtJA6gkqCSoJKgkqCSqOPuGWBtYG1gbWBtYG1W9KCSoJKgkqCSoJIz/WBtYG1gbWBtYG05EaCSoJKgkqCSoJKo4OQWYG1gbWBtYG1gbXH3oJKgkqCSoJKgkhX6YG1gbWBtYG1gbUsUoJKgkqCSoJKgkqCS1hNgbWBtYG1gbWBtjfqgkqCSoJKgkqCS+fZgbWBtYG1gbWBtWRcb4aCSoJKgkqCSoJLDEGBtYG1gbWBtYG2q/aCSoJKgkqCSoJLf82BtYG1gbWBtYG1iGhzkoJKgkqCSoJKgkq0NYG1gbWBtYG1gbccAoJKgkqCSoJKgksjwYG1gbWBtYG1gbWUdIuegkqCSoJKgkqCSlApgbWBtYG1gbWBt5QOgkqCSoJKgkqCSs+1gbWBtYG1gbWBtYyAt6qCSoJKgkqCSoJJ5B2BtYG1gbWBtYG0BB6CSoJKgkqCSoJKj6mBtYG1gbWBtYG1gbT3toJKgkqCSoJKgklwEYG1gbWBtYG1gbR0KoJKgkqCSoJKgkpbn2R1gbWBtYG1gbWBtUfCgkqCSoJKgkqCSPwFgbWBtYG1gbWBtNg2gkqCSoJKgkqCSj+TWGmBtYG1gbWBtYG1o86CSoJKgkqCSoJIi/mBtYG1gbWBtYG1NEKCSoJKgkqCSoJKO4c4XYG1gbWBtYG1gbYL2oJKgkqCSoJKgkgT7YG1gbWBtYG1gbWAToJKgkqCSoJKgkqCSwRRgbWBtYG1gbWBtnvmgkqCSoJKgkqCS6PdgbWBtYG1gbWBtbxY24KCSoJKgkqCSoJKvEWBtYG1gbWBtYG27/KCSoJKgkqCSoJLN9GBtYG1gbWBtYG15GTTjoJKgkqCSoJKgkpoOYG1gbWBtYG1gbdn/oJKgkqCSoJKgkrXxYG1gbWBtYG1gbX8cOeagkqCSoJKgkqCSggtgbWBtYG1gbWBt9QKgkqCSoJKgkqCSn+5gbWBtYG1gbWBtfh9D6aCSoJKgkqCSoJJoCGBtYG1gbWBtYG0TBqCSoJKgkqCSoJKO62BtYG1gbWBtYG1gbVLsoJKgkqCSoJKgkksFYG1gbWBtYG1gbS4JoJKgkqCSoJKgkoDovx5gbWBtYG1gbWBtZO+gkqCSoJKgkqCSLgJgbWBtYG1gbWBtSAygkqCSoJKgkqCSd+W+G2BtYG1gbWBtYG178qCSoJKgkqCSoJIR/2BtYG1gbWBtYG1gD6CSoJKgkqCSoJJ04rcYYG1gbWBtYG1gbZT1oJKgkqCSoJKgkvT7YG1gbWBtYG1gbXQSoJKgkqCSoJKgknffrBVgbWBtYG1gbWBtr/igkqCSoJKgkqCS1/hgbWBtYG1gbWBthBVR36CSoJKgkqCSoJKbEmBtYG1gbWBtYG3M+6CSoJKgkqCSoJK79WBtYG1gbWBtYG2QGE7ioJKgkqCSoJKgkocPYG1gbWBtYG1gben+oJKgkqCSoJKgkqLyYG1gbWBtYG1gbZcbUeWgkqCSoJKgkqCScAxgbWBtYG1gbWBtBgKgkqCSoJKgkqCSjO9gbWBtYG1gbWBtmB5Z6KCSoJKgkqCSoJJWCWBtYG1gbWBtYG0jBaCSoJKgkqCSoJJ57GBtYG1gbWBtYG1gbWbroJKgkqCSoJKgkjoGYG1gbWBtYG1gbUAIoJKgkqCSoJKgkmrppB9gbWBtYG1gbWBteO6gkqCSoJKgkqCSHQNgbWBtYG1gbWBtWgugkqCSoJKgkqCSYOalHGBtYG1gbWBtYG2N8aCSoJKgkqCSoJIAAGBtYG1gbWBtYG1zDqCSoJKgkqCSoJJb46AZYG1gbWBtYG1gbab0oJKgkqCSoJKgkuP8YG1gbWBtYG1gbYgRoJKgkqCSoJKgklzglhZgbWBtYG1gbWBtwPegkqCSoJKgkqCSxvlgbWBtYG1gbWBtmhSgkqCSoJKgkqCSoJKHE2BtYG1gbWBtYG3d+qCSoJKgkqCSoJKq9mBtYG1gbWBtYG2nF2jhoJKgkqCSoJKgknQQYG1gbWBtYG1gbfr9oJKgkqCSoJKgkpDzYG1gbWBtYG1gba8aaeSgkqCSoJKgkqCSXg1gbWBtYG1gbWBtFwGgkqCSoJKgkqCSefBgbWBtYG1gbWBtsh1+5x2UW5WYltaXE5mMCXJkNGP3YblgfF+fA/+iPKR6pbem9ac88ZBVU1QVU9hRmlC3F6LwHrNbtJm11rYUuKEEcUU0RPZCuUF7QDsE/8E9w3rEuMX1xvL0OxBSNRU01zKaMVwwDfge0lzTmdTX1RTXeAFxJjMl9iO4InshEgMA4T3ie+O45PblZvpdBlIWFBXXE5kSXBG8/R/xXPKa89f0FfYSAHAHMwb1BLgDegInAAAAPQF6ArgD9QS7/pD4UvcV9iz9ZgykDeEOHhDdAGftKezs6q7prQPNGAoaSBuFHD3iAOHD34Xei/z2IzMlcSauJ6P719WZ1FzTHtIfL1wwmjHXMsMHrspwyTPI9cZRA4Y7wzwBPj4/NO9Hvgq9zLs+8q9G7EcqSWdKd/8es+Cxo7Bmr1sRFVNTVJBVaxX1p7emeqU8pAf8Pl58X7lg92HS746bUZoTmUzhaGmlauNrIG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/WgkqCSoJKgkj0gYG1gbWBt1xGgkqCSoJKgkqwEYG1gbWBtYG0D5aCSoJKgks7oYG1gbWBtYG3HAKCSoJKgkqCSrBVgbWBtYG1/HKCSoJKgkqCSxvlgbWBtYG1gbbPvoJKgkqCSoJJgbWBtYG1gbaoLoJKgkqCSoJLjCmBtYG1gbWBtoJKgkqCSoJLu7mBtYG1gbWBtjfqgkqCSoJKgkr4bYG1gbWBtbxagkqCSoJKgkgAAYG1gbWBtYG2R6aCSoJKgkkLkYG1gbWBtYG1zBaCSoJKgkqCSEhFgbWBtYG1gbaCSoJKgkqCSHfVgbWBtYG1gbVb0oJKgkqCSoJJgbWBtYG1gbU0QoJKgkqCSoJI6BmBtYG1gbWBtgeOgkqCSoJJU6mBtYG1gbWBtOf+gkqCSoJKgkjIXYG1gbWBt/RqgkqCSoJKgklT7YG1gbWBtYG0p7qCSoJKgksPfYG1gbWBtYG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/WgkqCSoJKgkj0gYG1gbWBt1xGgkqCSoJKgkqwEYG1gbWBtYG0D5aCSoJKgks7oYG1gbWBtYG3HAKCSoJKgkqCSrBVgbWBtYG1/HKCSoJKgkqCSxvlgbWBtYG1gbbPvoJKgkqCSoJJgbWBtYG1gbaoLoJKgkqCSoJLjCmBtYG1gbWBtoJKgkqCSoJLu7mBtYG1gbWBtjfqgkqCSoJKgkr4bYG1gbWBtbxagkqCSoJKgkgAAYG1gbWBtYG2R6aCSoJKgkkLkYG1gbWBtYG1zBaCSoJKgkqCSEhFgbWBtYG1gbaCSoJKgkqCSHfVgbWBtYG1gbVb0oJKgkqCSoJJgbWBtYG1gbU0QoJKgkqCSoJI6BmBtYG1gbWBtgeOgkqCSoJJU6mBtYG1gbWBtOf+gkqCSoJKgkjIXYG1gbWBt/RqgkqCSoJKgklT7YG1gbWBtYG0p7qCSoJKgksPfYG1gbWBtYG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/WgkqCSoJKgkj0gYG1gbWBt1xGgkqCSoJKgkqwEYG1gbWBtYG0D5aCSoJKgks7oYG1gbWBtYG3HAKCSoJKgkqCSrBVgbWBtYG1/HKCSoJKgkqCSxvlgbWBtYG1gbbPvoJKgkqCSoJJgbWBtYG1gbaoLoJKgkqCSoJLjCmBtYG1gbWBtoJKgkqCSoJLu7mBtYG1gbWBtjfqgkqCSoJKgkr4bYG1gbWBtbxagkqCSoJKgkgAAYG1gbWBtYG2R6aCSoJKgkkLkYG1gbWBtYG1zBaCSoJKgkqCSEhFgbWBtYG1gbaCSoJKgkqCSHfVgbWBtYG1gbVb0oJKgkqCSoJJgbWBtYG1gbU0QoJKgkqCSoJI6BmBtYG1gbWBtgeOgkqCSoJJU6mBtYG1gbWBtOf+gkqCSoJKgkjIXYG1gbWBt/RqgkqCSoJKgklT7YG1gbWBtYG0p7qCSoJKgksPfYG1gbWBtYG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/WgkqCSoJKgkj0gYG1gbWBt1xGgkqCSoJKgkqwEYG1gbWBtYG0D5aCSoJKgks7oYG1gbWBtYG3HAKCSoJKgkqCSrBVgbWBtYG1/HKCSoJKgkqCSxvlgbWBtYG1gbbPvoJKgkqCSoJJgbWBtYG1gbaoLoJKgkqCSoJLjCmBtYG1gbWBtoJKgkqCSoJLu7mBtYG1gbWBtjfqgkqCSoJKgkr4bYG1gbWBtbxagkqCSoJKgkgAAYG1gbWBtYG2R6aCSoJKgkkLkYG1gbWBtYG1zBaCSoJKgkqCSEhFgbWBtYG1gbaCSoJKgkqCSHfVgbWBtYG1gbVb0oJKgkqCSoJJgbWBtYG1gbU0QoJKgkqCSoJI6BmBtYG1gbWBtgeOgkqCSoJJU6mBtYG1gbWBtOf+gkqCSoJKgkjIXYG1gbWBt/RqgkqCSoJKgklT7YG1gbWBtYG0p7qCSoJKgksPfYG1gbWBtYG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/WgkqCSoJKgkj0gYG1gbWBt1xGgkqCSoJKgkqwEYG1gbWBtYG0D5aCSoJKgks7oYG1gbWBtYG3HAKCSoJKgkqCSrBVgbWBtYG1/HKCSoJKgkqCSxvlgbWBtYG1gbbPvoJKgkqCSoJJgbWBtYG1gbaoLoJKgkqCSoJLjCmBtYG1gbWBtoJKgkqCSoJLu7mBtYG1gbWBtjfqgkqCSoJKgkr4bYG1gbWBtbxagkqCSoJKgkgAAYG1gbWBtYG2R6aCSoJKgkkLkYG1gbWBtYG1zBaCSoJKgkqCSEhFgbWBtYG1gbaCSoJKgkqCSHfVgbWBtYG1gbVb0oJKgkqCSoJJgbWBtYG1gbU0QoJKgkqCSoJI6BmBtYG1gbWBtgeOgkqCSoJJU6mBtYG1gbWBtOf+gkqCSoJKgkjIXYG1gbWBt/RqgkqCSoJKgklT7YG1gbWBtYG0p7qCSoJKgksPfYG1gbWBtYG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/WgkqCSoJKgkj0gYG1gbWBt1xGgkqCSoJKgkqwEYG1gbWBtYG0D5aCSoJKgks7oYG1gbWBtYG3HAKCSoJKgkqCSrBVgbWBtYG1/HKCSoJKgkqCSxvlgbWBtYG1gbbPvoJKgkqCSoJJgbWBtYG1gbaoLoJKgkqCSoJLjCmBtYG1gbWBtoJKgkqCSoJLu7mBtYG1gbWBtjfqgkqCSoJKgkr4bYG1gbWBtbxagkqCSoJKgkgAAYG1gbWBtYG2R6aCSoJKgkkLkYG1gbWBtYG1zBaCSoJKgkqCSEhFgbWBtYG1gbaCSoJKgkqCSHfVgbWBtYG1gbVb0oJKgkqCSoJJgbWBtYG1gbU0QoJKgkqCSoJI6BmBtYG1gbWBtgeOgkqCSoJJU6mBtYG1gbWBtOf+gkqCSoJKgkjIXYG1gbWBt/RqgkqCSoJKgklT7YG1gbWBtYG0p7qCSoJKgksPfYG1gbWBtYG0dCqCSoJKgkqCScAxgbWBtYG1gbaCSoJKgkqCSefBgbWBtYG1gbf/4oJKgkqCSoJI/HWBtYG1gbegUoJKgkqCSoJKOAWBtYG1gbWBtC+igkqCSoJLF5WBtYG1gbWBt5QOgkqCSoJKgkpsSYG1gbWBtfh+gkqCSoJKgkqr2YG1gbWBtYG3K8qCSoJKgkqCSYG1gbWBtYG3CDqCSoJKgkqCSyAdgbWBtYG1gbQHioJKgkqCS3OtgbWBtYG1gbar9oJKgkqCSoJK3GGBtYG1gbXkZoJKgkqCSoJLj/GBtYG1gbWBtoOygkqCSoJJB4WBtYG1gbWBtjwigkqCSoJKgkvwNYG1gbWBtYG2gkqCSoJKgkgTyYG1gbWBtYG1x96CSoJKgkqCSvx5gbWBtYG1gE6CSoJKgkqCSHQNgbWBtYG1gbYfmoJKgkqCSSedgbWBtYG1gbVYCoJKgkqCSoJIkFGBtYG1gbf8doJKgkqCSoJI4+GBtYG1gbWBtPvGgkqCSoJKgkmBtYG1gbWBtNg2gkqCSoJKgklYJYG1gbWBtYG2C4KCSoJKgkmXtYG1gbWBtYG0b/KCSoJKgkqCSOxpgbWBtYG31F6CSoJKgkqCScv5gbWBtYG1gbRjroJKgkqCSweJgbWBtYG1gbQEHoJKgkqCSoJKHD2BtYG1gbWBtoJKgkqCSoJKQ82BtYG1gbWBt4/Xgkh2UW5WYlrQe7WavZXJkLhAJnkefhKDCofkDxFuGWklZC1iV6nCqravrrKXumlBdTyBO4kyJAJm11rYUuFG5wg00RPZCuUHMEMLA/8E9w3rEr/wLOc03kDZSNT34Kc1mzqTP4dDiLaQsZyspKl0EUtiP2c3aCtx1A3shPSAAH8Mde+O45PblM+dT/FIWFBXXE5kSI//i7x/xXPKa89QC6wmuCHAHRQEL+0j8hv3D/g==" style="display:none;"></audio>
@@ -1439,9 +1534,8 @@
   <div id="tabClock" class="tab active">RELOJ</div>
   <div id="tabStopwatch" class="tab">CRONOMETROS</div>
   <div id="tabRutina" class="tab">RUTINA</div>
-  <div id="tabGym" class="tab">GYM</div>
   <div id="tabHoy" class="tab">HOY</div>
-  <div id="tabAsistente" class="tab">ASISTENTE</div>
+  <div id="tabGym" class="tab">&#128274; GYM</div>
 </div>
 
 <script type="text/javascript">
@@ -1508,34 +1602,25 @@
   var clockView = document.getElementById('clockView');
   var stopwatchView = document.getElementById('stopwatchView');
   var rutinaView = document.getElementById('rutinaView');
+  var hoyView = document.getElementById('hoyView');
+  var gymView = document.getElementById('gymView');
   var tabClock = document.getElementById('tabClock');
   var tabStopwatch = document.getElementById('tabStopwatch');
   var tabRutina = document.getElementById('tabRutina');
-  var gymView = document.getElementById('gymView');
-  var tabGym = document.getElementById('tabGym');
-  var hoyView = document.getElementById('hoyView');
   var tabHoy = document.getElementById('tabHoy');
-  var asistenteView = document.getElementById('asistenteView');
-  var tabAsistente = document.getElementById('tabAsistente');
+  var tabGym = document.getElementById('tabGym');
 
   function hideAllViews() {
     clockView.style.display = 'none';
     stopwatchView.style.display = 'none';
     rutinaView.style.display = 'none';
-    gymView.style.display = 'none';
     hoyView.style.display = 'none';
-    if (asistenteView.style.display !== 'none' || (asistentePane && asistentePane.style.display !== 'none')) {
-      if (typeof bloquearAsistente === 'function') {
-        bloquearAsistente();
-      }
-    }
-    asistenteView.style.display = 'none';
+    gymView.style.display = 'none';
     tabClock.className = 'tab';
     tabStopwatch.className = 'tab';
     tabRutina.className = 'tab';
-    tabGym.className = 'tab';
     tabHoy.className = 'tab';
-    tabAsistente.className = 'tab';
+    tabGym.className = 'tab';
     if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
   }
 
@@ -1562,13 +1647,6 @@
     cargarDias();
   }
 
-  function showGym() {
-    hideAllViews();
-    gymView.style.display = 'block';
-    tabGym.className = 'tab active';
-    showGymOficina();
-  }
-
   function showHoy() {
     hideAllViews();
     hoyView.style.display = 'block';
@@ -1576,70 +1654,187 @@
     cargarHoy();
   }
 
-  function showAsistente() {
+  function showGym() {
     hideAllViews();
-    asistenteView.style.display = 'block';
-    tabAsistente.className = 'tab active';
-    cargarHistorialAsistente();
-    if (typeof startOfficeTimer === 'function') { startOfficeTimer(); }
+    gymView.style.display = 'block';
+    tabGym.className = 'tab active';
+    if (gymContentPane && gymContentPane.style.display === 'block') {
+      if (gymSubAsistente && gymSubAsistente.className.indexOf('active') !== -1) {
+        showGymAsistente();
+      } else if (gymSubPlanes && gymSubPlanes.className.indexOf('active') !== -1) {
+        showGymPlanes();
+      } else {
+        showGymDashboard();
+      }
+    } else {
+      cargarGymDashboard();
+    }
   }
 
   tabClock.addEventListener('click', showClock, false);
   tabStopwatch.addEventListener('click', showStopwatch, false);
   tabRutina.addEventListener('click', showRutina, false);
-  tabGym.addEventListener('click', showGym, false);
   tabHoy.addEventListener('click', showHoy, false);
-  tabAsistente.addEventListener('click', showAsistente, false);
+  tabGym.addEventListener('click', showGym, false);
 
 
-  /* ---------- oficina / gym ---------- */
-  var gymCounts = document.getElementById('gymCounts');
+  /* ---------- gym / control (dashboard + asistente + planes) ---------- */
+  var gymLockBtn = document.getElementById('gymLockBtn');
+  var gymLogin = document.getElementById('gymLogin');
+  var gymPassword = document.getElementById('gymPassword');
+  var gymLoginBtn = document.getElementById('gymLoginBtn');
+  var gymLoginError = document.getElementById('gymLoginError');
+  var gymContentPane = document.getElementById('gymContentPane');
+
+  var gymSubDashboard = document.getElementById('gymSubDashboard');
+  var gymSubAsistente = document.getElementById('gymSubAsistente');
+  var gymSubPlanes = document.getElementById('gymSubPlanes');
+
+  var gymDashboardPane = document.getElementById('gymDashboardPane');
+  var gymAsistentePane = document.getElementById('gymAsistentePane');
+  var gymPlanesPane = document.getElementById('gymPlanesPane');
+
   var gymList = document.getElementById('gymList');
   var gymStatus = document.getElementById('gymStatus');
-  var gymOficinaLogin = document.getElementById('gymOficinaLogin');
-  var gymOficinaPassword = document.getElementById('gymOficinaPassword');
-  var gymOficinaLoginBtn = document.getElementById('gymOficinaLoginBtn');
-  var gymOficinaLoginError = document.getElementById('gymOficinaLoginError');
+  var gymSearch = document.getElementById('gymSearch');
+  var gymRefreshBtn = document.getElementById('gymRefreshBtn');
 
-  function mostrarLoginOficina() {
-    gymStatus.innerHTML = '&nbsp;';
-    gymCounts.innerHTML = '';
-    gymList.innerHTML = '';
-    gymOficinaLoginError.innerHTML = '&nbsp;';
-    gymOficinaPassword.value = '';
-    gymOficinaLogin.style.display = 'block';
+  var gymFilterTodos = document.getElementById('gymFilterTodos');
+  var gymFilterVencidos = document.getElementById('gymFilterVencidos');
+  var gymFilterPorVencer = document.getElementById('gymFilterPorVencer');
+
+  var gymRowsData = [];
+  var gymCountsData = { activos: '0', vencidos: '0', por_vencer: '0', sin_plan: '0', ingresos_mes: '0', pagos_mes: '0', mes_pasado: '0' };
+  var gymFilterActual = 'TODOS';
+  var gymSearchQuery = '';
+
+  var gymInactivityTimer = null;
+  var TIEMPO_INACTIVIDAD_GYM = 10 * 60 * 1000;
+
+  function reiniciarInactividadGym() {
+    if (gymInactivityTimer) {
+      clearTimeout(gymInactivityTimer);
+      gymInactivityTimer = null;
+    }
+    if (gymContentPane && gymContentPane.style.display !== 'none') {
+      gymInactivityTimer = setTimeout(function () {
+        bloquearGym();
+      }, TIEMPO_INACTIVIDAD_GYM);
+    }
   }
 
-  function ocultarLoginOficina() {
-    gymOficinaLogin.style.display = 'none';
+  function cancelarInactividadGym() {
+    if (gymInactivityTimer) {
+      clearTimeout(gymInactivityTimer);
+      gymInactivityTimer = null;
+    }
   }
 
-  function intentarLoginOficina() {
-    var pass = gymOficinaPassword.value;
+  function mostrarLoginGym() {
+    cancelarInactividadGym();
+    if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
+    if (gymContentPane) { gymContentPane.style.display = 'none'; }
+    if (gymLogin) { gymLogin.style.display = 'block'; }
+    if (gymLoginError) { gymLoginError.innerHTML = '&nbsp;'; }
+    if (gymPassword) {
+      gymPassword.value = '';
+      setTimeout(function () {
+        try { gymPassword.focus(); } catch (e) {}
+      }, 100);
+    }
+  }
+
+  function ocultarLoginGym() {
+    if (gymLogin) { gymLogin.style.display = 'none'; }
+    if (gymContentPane) { gymContentPane.style.display = 'block'; }
+    reiniciarInactividadGym();
+  }
+
+  function intentarLoginGym() {
+    var pass = gymPassword ? gymPassword.value : '';
     if (!pass) { return; }
-    gymOficinaLoginError.innerHTML = 'Entrando...';
+    if (gymLoginError) { gymLoginError.innerHTML = 'Verificando clave...'; }
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/oficina-login', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
       if (xhr.status === 200) {
-        cargarOficina();
+        ocultarLoginGym();
+        showGymDashboard();
       } else {
-        gymOficinaLoginError.innerHTML = 'Clave incorrecta';
-        gymOficinaPassword.value = '';
+        if (gymLoginError) { gymLoginError.innerHTML = 'Clave incorrecta'; }
+        if (gymPassword) { gymPassword.value = ''; }
       }
     };
     xhr.send('password=' + encodeURIComponent(pass));
   }
 
-  gymOficinaLoginBtn.addEventListener('click', intentarLoginOficina, false);
-  gymOficinaPassword.addEventListener('keydown', function (e) {
-    if (e.keyCode === 13) { intentarLoginOficina(); }
-  }, false);
+  function bloquearGym() {
+    cancelarInactividadGym();
+    if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
+    mostrarLoginGym();
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/oficina-logout', true);
+    xhr.send(null);
+  }
+
+  if (gymLoginBtn) {
+    gymLoginBtn.addEventListener('click', intentarLoginGym, false);
+  }
+  if (gymLockBtn) {
+    gymLockBtn.addEventListener('click', bloquearGym, false);
+  }
+  if (gymPassword) {
+    gymPassword.addEventListener('keydown', function (e) {
+      if (e.keyCode === 13) { intentarLoginGym(); }
+    }, false);
+  }
+  if (gymView) {
+    gymView.addEventListener('touchstart', reiniciarInactividadGym, false);
+    gymView.addEventListener('click', reiniciarInactividadGym, false);
+    gymView.addEventListener('keydown', reiniciarInactividadGym, false);
+  }
+
+  function showGymDashboard() {
+    if (gymSubDashboard) { gymSubDashboard.className = 'gymSub active'; }
+    if (gymSubAsistente) { gymSubAsistente.className = 'gymSub'; }
+    if (gymSubPlanes) { gymSubPlanes.className = 'gymSub'; }
+    if (gymDashboardPane) { gymDashboardPane.style.display = 'block'; }
+    if (gymAsistentePane) { gymAsistentePane.style.display = 'none'; }
+    if (gymPlanesPane) { gymPlanesPane.style.display = 'none'; }
+    if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
+    cargarGymDashboard();
+  }
+
+  function showGymAsistente() {
+    if (gymSubDashboard) { gymSubDashboard.className = 'gymSub'; }
+    if (gymSubAsistente) { gymSubAsistente.className = 'gymSub active'; }
+    if (gymSubPlanes) { gymSubPlanes.className = 'gymSub'; }
+    if (gymDashboardPane) { gymDashboardPane.style.display = 'none'; }
+    if (gymAsistentePane) { gymAsistentePane.style.display = 'block'; }
+    if (gymPlanesPane) { gymPlanesPane.style.display = 'none'; }
+    if (typeof initOfficeCanvas === 'function') { initOfficeCanvas(); }
+    if (typeof startOfficeTimer === 'function') { startOfficeTimer(); }
+    if (typeof cargarHistorialAsistente === 'function') { cargarHistorialAsistente(); }
+  }
+
+  function showGymPlanes() {
+    if (gymSubDashboard) { gymSubDashboard.className = 'gymSub'; }
+    if (gymSubAsistente) { gymSubAsistente.className = 'gymSub'; }
+    if (gymSubPlanes) { gymSubPlanes.className = 'gymSub active'; }
+    if (gymDashboardPane) { gymDashboardPane.style.display = 'none'; }
+    if (gymAsistentePane) { gymAsistentePane.style.display = 'none'; }
+    if (gymPlanesPane) { gymPlanesPane.style.display = 'block'; }
+    if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
+  }
+
+  if (gymSubDashboard) { gymSubDashboard.addEventListener('click', showGymDashboard, false); }
+  if (gymSubAsistente) { gymSubAsistente.addEventListener('click', showGymAsistente, false); }
+  if (gymSubPlanes) { gymSubPlanes.addEventListener('click', showGymPlanes, false); }
 
   function fmtMonto(n) {
-    if (!n) { return ''; }
+    if (!n && n !== 0) { return ''; }
     var s = String(n);
     var out = '';
     while (s.length > 3) {
@@ -1649,7 +1844,160 @@
     return '$' + s + out;
   }
 
-  /* ---------- planes VirtualPos (estatico; no toca cargarOficina) ---------- */
+  function actualizarKpisGym() {
+    var c = gymCountsData;
+    var kpiIngresos = document.getElementById('kpiIngresosVal');
+    var kpiIngresosSub = document.getElementById('kpiIngresosSub');
+    var kpiActivos = document.getElementById('kpiActivosVal');
+    var kpiPorVencer = document.getElementById('kpiPorVencerVal');
+    var kpiVencidos = document.getElementById('kpiVencidosVal');
+    var kpiSinPlan = document.getElementById('kpiSinPlanVal');
+
+    if (kpiIngresos) {
+      kpiIngresos.innerHTML = fmtMonto(c.ingresos_mes) || '$0';
+    }
+    if (kpiIngresosSub) {
+      var cant = c.pagos_mes || '0';
+      var txt = cant + ' pago' + (cant === '1' ? '' : 's');
+      if (c.mes_pasado && c.mes_pasado !== '0') {
+        txt += ' (Ant: ' + fmtMonto(c.mes_pasado) + ')';
+      }
+      kpiIngresosSub.innerHTML = txt;
+    }
+    if (kpiActivos) { kpiActivos.innerHTML = c.activos || '0'; }
+    if (kpiPorVencer) { kpiPorVencer.innerHTML = c.por_vencer || '0'; }
+    if (kpiVencidos) { kpiVencidos.innerHTML = c.vencidos || '0'; }
+    if (kpiSinPlan) { kpiSinPlan.innerHTML = c.sin_plan || '0'; }
+  }
+
+  function renderGymList() {
+    if (!gymList) { return; }
+    while (gymList.firstChild) { gymList.removeChild(gymList.firstChild); }
+
+    var q = (gymSearchQuery || '').toLowerCase();
+    var matchCount = 0;
+    var i;
+    for (i = 0; i < gymRowsData.length; i++) {
+      var r = gymRowsData[i];
+      if (gymFilterActual === 'VENCIDOS' && r.tipo !== 'V') { continue; }
+      if (gymFilterActual === 'POR_VENCER' && r.tipo !== 'P') { continue; }
+      if (q && r.nombre.toLowerCase().indexOf(q) === -1) { continue; }
+
+      matchCount++;
+      var row = document.createElement('div');
+      row.className = 'gymRow ' + r.tipo;
+
+      var name = document.createElement('div');
+      name.className = 'gymName';
+      name.appendChild(document.createTextNode(r.nombre));
+
+      var meta = document.createElement('div');
+      meta.className = 'gymMeta';
+      var bits = [];
+      if (r.monto) { bits.push(fmtMonto(r.monto)); }
+      if (r.vence) { bits.push(r.vence); }
+      meta.appendChild(document.createTextNode(bits.join(' · ')));
+
+      row.appendChild(name);
+      row.appendChild(meta);
+      gymList.appendChild(row);
+    }
+
+    if (gymStatus) {
+      if (matchCount === 0) {
+        if (gymRowsData.length === 0) {
+          gymStatus.innerHTML = 'Sin alumnos con cobros pendientes o por vencer.';
+        } else {
+          gymStatus.innerHTML = 'No se encontraron resultados para el filtro aplicado.';
+        }
+      } else {
+        gymStatus.innerHTML = 'Mostrando ' + matchCount + ' alumno' + (matchCount === 1 ? '' : 's');
+      }
+    }
+  }
+
+  function setGymFilter(filtro) {
+    gymFilterActual = filtro;
+    if (gymFilterTodos) { gymFilterTodos.className = 'gymFilterBtn' + (filtro === 'TODOS' ? ' active' : ''); }
+    if (gymFilterVencidos) { gymFilterVencidos.className = 'gymFilterBtn' + (filtro === 'VENCIDOS' ? ' active' : ''); }
+    if (gymFilterPorVencer) { gymFilterPorVencer.className = 'gymFilterBtn' + (filtro === 'POR_VENCER' ? ' active' : ''); }
+    renderGymList();
+  }
+
+  if (gymFilterTodos) { gymFilterTodos.addEventListener('click', function () { setGymFilter('TODOS'); }, false); }
+  if (gymFilterVencidos) { gymFilterVencidos.addEventListener('click', function () { setGymFilter('VENCIDOS'); }, false); }
+  if (gymFilterPorVencer) { gymFilterPorVencer.addEventListener('click', function () { setGymFilter('POR_VENCER'); }, false); }
+
+  var cardVencidos = document.querySelector ? document.querySelector('.kpiVencidos') : null;
+  var cardPorVencer = document.querySelector ? document.querySelector('.kpiPorVencer') : null;
+  var cardActivos = document.querySelector ? document.querySelector('.kpiActivos') : null;
+  var cardIngresos = document.querySelector ? document.querySelector('.kpiIngresos') : null;
+
+  if (cardVencidos) { cardVencidos.addEventListener('click', function () { setGymFilter('VENCIDOS'); }, false); }
+  if (cardPorVencer) { cardPorVencer.addEventListener('click', function () { setGymFilter('POR_VENCER'); }, false); }
+  if (cardActivos) { cardActivos.addEventListener('click', function () { setGymFilter('TODOS'); }, false); }
+  if (cardIngresos) { cardIngresos.addEventListener('click', function () { setGymFilter('TODOS'); }, false); }
+
+  if (gymSearch) {
+    gymSearch.addEventListener('keyup', function () {
+      gymSearchQuery = gymSearch.value;
+      renderGymList();
+    }, false);
+    gymSearch.addEventListener('change', function () {
+      gymSearchQuery = gymSearch.value;
+      renderGymList();
+    }, false);
+  }
+
+  if (gymRefreshBtn) {
+    gymRefreshBtn.addEventListener('click', function () {
+      cargarGymDashboard();
+    }, false);
+  }
+
+  function cargarGymDashboard() {
+    if (gymStatus) { gymStatus.innerHTML = 'Actualizando dashboard...'; }
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/oficina', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status === 401) {
+        mostrarLoginGym();
+        return;
+      }
+      if (xhr.status !== 200) {
+        if (gymStatus) { gymStatus.innerHTML = 'No se pudo cargar el dashboard (' + xhr.status + ')'; }
+        return;
+      }
+      ocultarLoginGym();
+      var lines = xhr.responseText.split('\n');
+      var counts = { activos: '0', vencidos: '0', por_vencer: '0', sin_plan: '0', ingresos_mes: '0', pagos_mes: '0', mes_pasado: '0' };
+      var rows = [];
+      var i;
+      for (i = 0; i < lines.length; i++) {
+        var line = lines[i].replace(/^\s+|\s+$/g, '');
+        if (!line) { continue; }
+        var parts = line.split('|');
+        if (parts[0] === 'C' && parts.length >= 3) {
+          counts[parts[1]] = parts[2];
+        } else if (parts[0] === 'R' && parts.length >= 3) {
+          rows.push({
+            tipo: parts[1],
+            nombre: parts[2],
+            monto: parts[3] || '',
+            vence: parts[4] || ''
+          });
+        }
+      }
+      gymCountsData = counts;
+      gymRowsData = rows;
+      actualizarKpisGym();
+      renderGymList();
+    };
+    xhr.send(null);
+  }
+
+  /* ---------- planes VirtualPos (estatico) ---------- */
   var PLANES_PAGO = [
     { grupo: 'EVALUACIÓN', nombre: 'Clase de Evaluación', precio: 20000, url: 'https://pages.virtualpos.cl/ironcross/48326a79412722f95' },
     { grupo: 'MENSUAL', nombre: 'Base', precio: 59900, url: 'https://pages.virtualpos.cl/ironcross/48326a7941a5581fb' },
@@ -1665,29 +2013,6 @@
     { grupo: 'ANUAL', nombre: 'Progreso', precio: 699900, url: 'https://pages.virtualpos.cl/ironcross/48326a7944ad43557' },
     { grupo: 'ANUAL', nombre: 'Élite', precio: 849900, url: 'https://pages.virtualpos.cl/ironcross/48326a7944e45c650' }
   ];
-
-  var gymOficinaPane = document.getElementById('gymOficinaPane');
-  var gymPlanesPane = document.getElementById('gymPlanesPane');
-  var gymSubOficina = document.getElementById('gymSubOficina');
-  var gymSubPlanes = document.getElementById('gymSubPlanes');
-
-  function showGymOficina() {
-    gymOficinaPane.style.display = 'block';
-    gymPlanesPane.style.display = 'none';
-    gymSubOficina.className = 'gymSub active';
-    gymSubPlanes.className = 'gymSub';
-    cargarOficina();
-  }
-
-  function showGymPlanes() {
-    gymOficinaPane.style.display = 'none';
-    gymPlanesPane.style.display = 'block';
-    gymSubOficina.className = 'gymSub';
-    gymSubPlanes.className = 'gymSub active';
-  }
-
-  gymSubOficina.addEventListener('click', showGymOficina, false);
-  gymSubPlanes.addEventListener('click', showGymPlanes, false);
 
   function renderPlanes() {
     var wrap = document.getElementById('gymPlanes');
@@ -1750,62 +2075,6 @@
   }
 
   renderPlanes();
-
-  function cargarOficina() {
-    ocultarLoginOficina();
-    gymStatus.innerHTML = 'Cargando...';
-    gymCounts.innerHTML = '';
-    gymList.innerHTML = '';
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/oficina', true);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4) { return; }
-      if (xhr.status === 401) {
-        mostrarLoginOficina();
-        return;
-      }
-      if (xhr.status !== 200) {
-        gymStatus.innerHTML = 'No se pudo cargar';
-        return;
-      }
-      gymStatus.innerHTML = '&nbsp;';
-      var lines = xhr.responseText.split('\n');
-      var counts = { activos: '0', vencidos: '0', por_vencer: '0', sin_plan: '0' };
-      var i;
-      for (i = 0; i < lines.length; i++) {
-        var parts = lines[i].split('|');
-        if (parts[0] === 'C' && parts.length >= 3) {
-          counts[parts[1]] = parts[2];
-        } else if (parts[0] === 'R' && parts.length >= 3) {
-          var row = document.createElement('div');
-          row.className = 'gymRow ' + parts[1];
-          var name = document.createElement('div');
-          name.className = 'gymName';
-          name.innerHTML = parts[2];
-          var meta = document.createElement('div');
-          meta.className = 'gymMeta';
-          var bits = [];
-          if (parts[3]) { bits.push(fmtMonto(parts[3])); }
-          if (parts[4]) { bits.push(parts[4]); }
-          meta.innerHTML = bits.join(' · ');
-          row.appendChild(name);
-          row.appendChild(meta);
-          gymList.appendChild(row);
-        }
-      }
-      function countBox(cls, label, val) {
-        var d = document.createElement('div');
-        d.className = 'gymCount ' + cls;
-        d.innerHTML = '<b>' + val + '</b><span>' + label + '</span>';
-        gymCounts.appendChild(d);
-      }
-      countBox('vencido', 'VENCIDOS', counts.vencidos);
-      countBox('porvencer', 'POR VENCER', counts.por_vencer);
-      countBox('', 'ACTIVOS', counts.activos);
-      countBox('', 'SIN PLAN', counts.sin_plan);
-    };
-    xhr.send(null);
-  }
 
   /* ---------- hoy / asistencia ---------- */
   var hoyCounts = document.getElementById('hoyCounts');
@@ -2986,103 +3255,12 @@
   bindCalc('calc9', function () { calcInputDigit('9'); });
 
   /* ---------- asistente / chat (nicola os) ---------- */
-  var asistenteLogin = document.getElementById('asistenteLogin');
-  var asistentePassword = document.getElementById('asistentePassword');
-  var asistenteLoginBtn = document.getElementById('asistenteLoginBtn');
-  var asistenteLoginError = document.getElementById('asistenteLoginError');
-  var asistentePane = document.getElementById('asistentePane');
   var asistenteChatWrap = document.getElementById('asistenteChatWrap');
   var asistenteChatList = document.getElementById('asistenteChatList');
   var asistenteInput = document.getElementById('asistenteInput');
   var asistenteSendBtn = document.getElementById('asistenteSendBtn');
-  var asistenteLockBtn = document.getElementById('asistenteLockBtn');
   var asistenteStatus = document.getElementById('asistenteStatus');
   var enviandoChat = false;
-
-  function mostrarLoginAsistente() {
-    if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
-    asistentePane.style.display = 'none';
-    asistenteLogin.style.display = 'block';
-    asistenteLoginError.innerHTML = '&nbsp;';
-    asistentePassword.value = '';
-    setTimeout(function () {
-      if (asistentePassword) { asistentePassword.focus(); }
-    }, 100);
-  }
-
-  var asistenteInactivityTimer = null;
-  var TIEMPO_INACTIVIDAD_CHAT = 5 * 60 * 1000; // 5 minutos
-
-  function reiniciarInactividadAsistente() {
-    if (asistenteInactivityTimer) {
-      clearTimeout(asistenteInactivityTimer);
-      asistenteInactivityTimer = null;
-    }
-    if (asistentePane && asistentePane.style.display !== 'none') {
-      asistenteInactivityTimer = setTimeout(function () {
-        bloquearAsistente();
-      }, TIEMPO_INACTIVIDAD_CHAT);
-    }
-  }
-
-  function cancelarInactividadAsistente() {
-    if (asistenteInactivityTimer) {
-      clearTimeout(asistenteInactivityTimer);
-      asistenteInactivityTimer = null;
-    }
-  }
-
-  function ocultarLoginAsistente() {
-    asistenteLogin.style.display = 'none';
-    asistentePane.style.display = 'block';
-    if (typeof startOfficeTimer === 'function') { startOfficeTimer(); }
-    reiniciarInactividadAsistente();
-  }
-
-  function intentarLoginAsistente() {
-    var pass = asistentePassword.value;
-    if (!pass) { return; }
-    asistenteLoginError.innerHTML = 'Verificando...';
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/chat-login', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState !== 4) { return; }
-      if (xhr.status === 200) {
-        ocultarLoginAsistente();
-        cargarHistorialAsistente();
-      } else {
-        asistenteLoginError.innerHTML = 'Clave incorrecta';
-        asistentePassword.value = '';
-      }
-    };
-    xhr.send('password=' + encodeURIComponent(pass));
-  }
-
-  function bloquearAsistente() {
-    cancelarInactividadAsistente();
-    mostrarLoginAsistente();
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/chat-logout', true);
-    xhr.send(null);
-  }
-
-  if (asistenteLoginBtn) {
-    asistenteLoginBtn.addEventListener('click', intentarLoginAsistente, false);
-  }
-  if (asistenteLockBtn) {
-    asistenteLockBtn.addEventListener('click', bloquearAsistente, false);
-  }
-  if (asistentePassword) {
-    asistentePassword.addEventListener('keydown', function (e) {
-      if (e.keyCode === 13) { intentarLoginAsistente(); }
-    }, false);
-  }
-  if (asistenteView) {
-    asistenteView.addEventListener('touchstart', reiniciarInactividadAsistente, false);
-    asistenteView.addEventListener('click', reiniciarInactividadAsistente, false);
-    asistenteView.addEventListener('keydown', reiniciarInactividadAsistente, false);
-  }
 
   function scrollChatAbajo() {
     if (asistenteChatWrap) {
@@ -3117,34 +3295,33 @@
   }
 
   function cargarHistorialAsistente() {
-    asistenteStatus.innerHTML = 'Sincronizando memoria...';
+    if (asistenteStatus) { asistenteStatus.innerHTML = 'Sincronizando memoria...'; }
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/api/chat-historial', true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
       if (xhr.status === 401) {
-        mostrarLoginAsistente();
+        bloquearGym();
         return;
       }
-      ocultarLoginAsistente();
       if (xhr.status === 200) {
         try {
           var data = JSON.parse(xhr.responseText);
           if (data && data.turns && data.turns.length > 0) {
-            asistenteChatList.innerHTML = '';
+            if (asistenteChatList) { asistenteChatList.innerHTML = ''; }
             for (var i = 0; i < data.turns.length; i++) {
               var t = data.turns[i];
               var fecha = t.created_at ? t.created_at.substr(11, 5) : '';
               renderizarMensaje(t.role, t.content, fecha);
             }
-            asistenteStatus.innerHTML = 'Memoria sincronizada con Nicola OS';
+            if (asistenteStatus) { asistenteStatus.innerHTML = 'Memoria sincronizada con Nicola OS'; }
             scrollChatAbajo();
             return;
           }
         } catch (e) {}
-        asistenteStatus.innerHTML = 'Listo para escribir';
+        if (asistenteStatus) { asistenteStatus.innerHTML = 'Listo para escribir'; }
       } else {
-        asistenteStatus.innerHTML = 'No se pudo cargar historial (' + xhr.status + ')';
+        if (asistenteStatus) { asistenteStatus.innerHTML = 'No se pudo cargar historial (' + xhr.status + ')'; }
       }
     };
     xhr.send(null);
@@ -3152,18 +3329,18 @@
 
   function enviarMensajeAsistente() {
     if (enviandoChat) { return; }
-    reiniciarInactividadAsistente();
-    var texto = asistenteInput.value;
+    reiniciarInactividadGym();
+    var texto = asistenteInput ? asistenteInput.value : '';
     if (!texto || !texto.replace(/^\s+|\s+$/g, '')) { return; }
     texto = texto.replace(/^\s+|\s+$/g, '');
 
     renderizarMensaje('user', texto, 'Ahora');
-    asistenteInput.value = '';
+    if (asistenteInput) { asistenteInput.value = ''; }
     scrollChatAbajo();
 
     enviandoChat = true;
-    asistenteSendBtn.style.opacity = '0.5';
-    asistenteStatus.innerHTML = 'Pensando...';
+    if (asistenteSendBtn) { asistenteSendBtn.style.opacity = '0.5'; }
+    if (asistenteStatus) { asistenteStatus.innerHTML = 'Pensando...'; }
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/chat', true);
@@ -3171,19 +3348,19 @@
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
       enviandoChat = false;
-      asistenteSendBtn.style.opacity = '1';
+      if (asistenteSendBtn) { asistenteSendBtn.style.opacity = '1'; }
       if (xhr.status === 401) {
-        asistenteStatus.innerHTML = 'Sesión requerida';
-        mostrarLoginAsistente();
+        if (asistenteStatus) { asistenteStatus.innerHTML = 'Sesión requerida'; }
+        bloquearGym();
         return;
       }
       if (xhr.status === 200) {
         var resp = xhr.responseText;
         renderizarMensaje('assistant', resp, 'Ahora');
-        asistenteStatus.innerHTML = 'Respuesta recibida';
+        if (asistenteStatus) { asistenteStatus.innerHTML = 'Respuesta recibida'; }
         scrollChatAbajo();
       } else {
-        asistenteStatus.innerHTML = 'Error al enviar (' + xhr.status + ')';
+        if (asistenteStatus) { asistenteStatus.innerHTML = 'Error al enviar (' + xhr.status + ')'; }
         renderizarMensaje('assistant', 'Error comunicando con Nicola OS (' + xhr.status + ')', 'Error');
         scrollChatAbajo();
       }
@@ -3472,7 +3649,8 @@
     officeCanvas.addEventListener('touchstart', handleOfficeClick, false);
   }
   window.addEventListener('resize', function () {
-    if (asistenteView && asistenteView.style.display !== 'none') {
+    var pane = document.getElementById('gymAsistentePane');
+    if (pane && pane.style.display !== 'none') {
       initOfficeCanvas();
       renderOffice();
     }

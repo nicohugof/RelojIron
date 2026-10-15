@@ -485,19 +485,36 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             raw = self.rfile.read(length).decode('utf-8')
             data = urllib.parse.parse_qs(raw)
             password = data.get('password', [''])[0]
-            if OFICINA_PASSWORD and OFICINA_SESSION_SECRET and hmac.compare_digest(password, OFICINA_PASSWORD):
-                token = crear_token_oficina()
+            es_valido_oficina = bool(OFICINA_PASSWORD and OFICINA_SESSION_SECRET and hmac.compare_digest(password, OFICINA_PASSWORD))
+            es_valido_chat = bool(CHAT_PASSWORD and hmac.compare_digest(password, CHAT_PASSWORD))
+            if es_valido_oficina or es_valido_chat:
                 self.send_response(200)
-                cookie = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
-                    OFICINA_COOKIE, token, OFICINA_SESION_SEGUNDOS
+                if OFICINA_SESSION_SECRET:
+                    token_oficina = crear_token_oficina()
+                    cookie_oficina = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                        OFICINA_COOKIE, token_oficina, OFICINA_SESION_SEGUNDOS
+                    )
+                    self.send_header('Set-Cookie', cookie_oficina)
+                token_chat = crear_token_chat()
+                cookie_chat = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                    CHAT_COOKIE, token_chat, CHAT_SESION_SEGUNDOS
                 )
-                self.send_header('Set-Cookie', cookie)
+                self.send_header('Set-Cookie', cookie_chat)
                 self.send_header('Content-Length', '2')
                 self.end_headers()
                 self.wfile.write(b'ok')
             else:
                 self.send_response(401)
                 self.end_headers()
+        elif parsed.path == '/api/oficina-logout':
+            self.send_response(200)
+            cookie_oficina = '{}=; Max-Age=0; Path=/; SameSite=Lax'.format(OFICINA_COOKIE)
+            cookie_chat = '{}=; Max-Age=0; Path=/; SameSite=Lax'.format(CHAT_COOKIE)
+            self.send_header('Set-Cookie', cookie_oficina)
+            self.send_header('Set-Cookie', cookie_chat)
+            self.send_header('Content-Length', '2')
+            self.end_headers()
+            self.wfile.write(b'ok')
         elif parsed.path == '/api/hoy':
             if not self._oficina_sesion_valida():
                 self.send_response(401)
