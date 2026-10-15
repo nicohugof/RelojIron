@@ -572,6 +572,46 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return
             reply = nicola_chat_request(mensaje)
             _responder_texto(self, 200, reply)
+        elif parsed.path == '/api/generar-rutina':
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8', errors='ignore')
+            data = urllib.parse.parse_qs(raw)
+            fecha = data.get('fecha', [hoy()])[0]
+            if not es_fecha_valida(fecha):
+                fecha = hoy()
+
+            # 1. Intentar generar vía API de ironcross-dashboard
+            try:
+                status, body = panel_request('POST', '/api/rutina/generar', json_body={'fecha': fecha})
+                if status == 200:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    body_b = body.encode('utf-8')
+                    self.send_header('Content-Length', str(len(body_b)))
+                    self.end_headers()
+                    self.wfile.write(body_b)
+                    return
+            except Exception:
+                pass
+
+            # 2. Fallback: solicitar a Nicola OS / IronBot
+            prompt = f"IronBot, crea la rutina de la clase del {fecha} basada en los entrenamientos registrados"
+            reply = nicola_chat_request(prompt)
+            try:
+                rutina_guardada = leer_rutina(fecha)
+                if rutina_guardada and 'CALENTAMIENTO' in rutina_guardada:
+                    resp_json = json.dumps({'ok': True, 'rutina': rutina_guardada, 'fuente': 'Nicola OS / IronBot'})
+                else:
+                    resp_json = json.dumps({'ok': True, 'rutina': reply, 'fuente': 'Nicola OS / IronBot'})
+            except Exception:
+                resp_json = json.dumps({'ok': True, 'rutina': reply, 'fuente': 'Nicola OS / IronBot'})
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            body_b = resp_json.encode('utf-8')
+            self.send_header('Content-Length', str(len(body_b)))
+            self.end_headers()
+            self.wfile.write(body_b)
         else:
             self.send_response(404)
             self.end_headers()

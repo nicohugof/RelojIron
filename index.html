@@ -209,17 +209,19 @@
   }
   .rutinaBtn {
     display: inline-block;
-    width: 48%;
+    width: 31%;
     height: 44px;
     line-height: 44px;
     text-align: center;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 2px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
   }
   #rutinaCopyBtn { background: #2A2A26; margin-right: 2%; }
+  #rutinaIronbotBtn { background: #8B2211; margin-right: 2%; }
   #rutinaSaveBtn { background: #C23B22; }
   #rutinaStatus {
     position: absolute;
@@ -1348,6 +1350,7 @@
       <textarea id="rutinaText"></textarea>
       <div id="rutinaBtnRow">
         <div id="rutinaCopyBtn" class="rutinaBtn">COPIAR</div>
+        <div id="rutinaIronbotBtn" class="rutinaBtn">⚡ IRONBOT</div>
         <div id="rutinaSaveBtn" class="rutinaBtn">GUARDAR</div>
       </div>
       <div id="rutinaStatus">&nbsp;</div>
@@ -2223,6 +2226,7 @@
   var rutinaText = document.getElementById('rutinaText');
   var rutinaSaveBtn = document.getElementById('rutinaSaveBtn');
   var rutinaCopyBtn = document.getElementById('rutinaCopyBtn');
+  var rutinaIronbotBtn = document.getElementById('rutinaIronbotBtn');
   var rutinaStatus = document.getElementById('rutinaStatus');
   var rutinaDays = document.getElementById('rutinaDays');
   var rutinaBody = document.getElementById('rutinaBody');
@@ -2357,6 +2361,55 @@
   }
 
   rutinaCopyBtn.addEventListener('click', copiarRutina, false);
+
+  function generarRutinaConIronBot() {
+    if (!fechaSeleccionada) { return; }
+    if (rutinaIronbotBtn) {
+      rutinaIronbotBtn.style.opacity = '0.5';
+      rutinaIronbotBtn.innerHTML = 'GENERANDO...';
+    }
+    rutinaStatus.innerHTML = '⚡ IronBot analizando sesiones registradas...';
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/generar-rutina', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (rutinaIronbotBtn) {
+          rutinaIronbotBtn.style.opacity = '1';
+          rutinaIronbotBtn.innerHTML = '⚡ IRONBOT';
+        }
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            if (data.rutina) {
+              rutinaText.value = data.rutina;
+              fitRutinaText();
+              rutinaStatus.innerHTML = '⚡ Rutina generada (' + (data.fuente || 'IronBot') + ')';
+              cargarDias();
+              return;
+            }
+          } catch (e) {}
+          var resp = xhr.responseText || '';
+          if (resp.indexOf('CALENTAMIENTO') !== -1) {
+            rutinaText.value = resp;
+            fitRutinaText();
+            rutinaStatus.innerHTML = '⚡ Rutina generada';
+            cargarDias();
+          } else {
+            rutinaStatus.innerHTML = 'Respuesta recibida';
+          }
+        } else {
+          rutinaStatus.innerHTML = 'No se pudo generar rutina';
+        }
+      }
+    };
+    xhr.send('fecha=' + encodeURIComponent(fechaSeleccionada));
+  }
+
+  if (rutinaIronbotBtn) {
+    rutinaIronbotBtn.addEventListener('click', generarRutinaConIronBot, false);
+  }
 
   /* ---------- cronometros y temporizadores ---------- */
   var swHeader = document.getElementById('swHeader');
