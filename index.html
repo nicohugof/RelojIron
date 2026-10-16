@@ -1196,13 +1196,13 @@
   #asistenteOfficeCanvas {
     display: block;
     width: 100%;
-    height: 226px;
+    height: 250px;
     background: #080A10;
     cursor: pointer;
   }
   #asistenteChatWrap {
     position: absolute;
-    top: 260px;
+    top: 285px;
     left: 16px;
     right: 16px;
     bottom: 92px;
@@ -1415,13 +1415,12 @@
       <div id="gymAsistentePane" style="display:none;">
         <div id="asistenteOfficeWrap">
           <div id="asistenteOfficeHead">
-            <span style="color:#3CD070;">●</span> HQ NICOLA OS · VOXEL MINECRAFT OFFICE
-            <span id="asistenteOfficeLiveBadge">VOXEL 3D</span>
-            <span id="btnOfficePodio" style="float:right; margin-right:6px; background:#142921; color:#3CD070; border:1px solid #3CD070; font-size:8px; font-weight:bold; padding:1px 6px; cursor:pointer; -webkit-border-radius:2px; border-radius:2px; margin-top:3px; line-height:12px;">PODIO</span>
-            <span id="btnOfficeConsejo" style="float:right; margin-right:6px; background:#261738; color:#D8B4FE; border:1px solid #942EE0; font-size:8px; font-weight:bold; padding:1px 6px; cursor:pointer; -webkit-border-radius:2px; border-radius:2px; margin-top:3px; line-height:12px;">CONSEJO</span>
-            <span id="btnOfficePasear" style="float:right; margin-right:6px; background:#142238; color:#7DD3FC; border:1px solid #1A80FA; font-size:8px; font-weight:bold; padding:1px 6px; cursor:pointer; -webkit-border-radius:2px; border-radius:2px; margin-top:3px; line-height:12px;">PASEAR</span>
+            <span style="color:#3CD070;">●</span> HQ NICOLA OS · SALA DE MANDO ISOMÉTRICA
+            <span id="asistenteOfficeLiveBadge">ISOMETRIC 2.5D</span>
+            <span id="btnOfficeConsejo" style="float:right; margin-right:6px; background:#261738; color:#D8B4FE; border:1px solid #942EE0; font-size:8px; font-weight:bold; padding:1px 6px; cursor:pointer; -webkit-border-radius:2px; border-radius:2px; margin-top:3px; line-height:12px;">🏛️ CONSEJO</span>
+            <span id="btnOfficeDetalle" style="float:right; margin-right:6px; background:#142921; color:#3CD070; border:1px solid #3CD070; font-size:8px; font-weight:bold; padding:1px 6px; cursor:pointer; -webkit-border-radius:2px; border-radius:2px; margin-top:3px; line-height:12px;">📊 DATOS EN VIVO</span>
           </div>
-          <canvas id="asistenteOfficeCanvas" width="992" height="226"></canvas>
+          <canvas id="asistenteOfficeCanvas" width="992" height="250"></canvas>
         </div>
         <div id="asistenteChatWrap">
           <div id="asistenteChatList"></div>
@@ -3385,193 +3384,152 @@
     }, false);
   }
 
-  /* ---------- OFICINA VOXEL MINECRAFT 2.5D (iPad 1 / iOS 5.1.1 Compatible) ---------- */
+  /* ---------- SALA DE MANDO ISOMÉTRICA CENITAL 2.5D (Top-Down Diagonal Executive) ---------- */
   var officeCanvas = document.getElementById('asistenteOfficeCanvas');
   var officeCtx = officeCanvas ? officeCanvas.getContext('2d') : null;
   var officeTimer = null;
   var officeTick = 0;
   var agenteSeleccionadoId = 'mario';
+  var modoDetalleActivo = false;
 
-  var agentesOffice = [
+  var estacionesOffice = [
     {
       id: 'morfeo', nombre: 'Morfeo', rol: 'Comandante CAO',
-      col: 9.5, row: 3.1, targetCol: 16.0, targetRow: 3.2, deskCol: 9.5, deskRow: 3.8,
-      color: '#942EE0', topColor: '#B866FF', sideColor: '#621B99',
-      pants: '#2A1842', hair: '#E6E6E6', skin: '#F2C29B',
-      state: 'walking', walkPhase: 0.4, speed: 0.085, facing: 1, waitTicks: 18,
-      status: 'Supervisando misiones'
-    },
-    {
-      id: 'mario', nombre: 'Mario', rol: 'Copiloto & Fast Path',
-      col: 3.5, row: 4.1, targetCol: 9.5, targetRow: 9.8, deskCol: 3.5, deskRow: 4.8,
-      color: '#1A80FA', topColor: '#52A3FF', sideColor: '#0F4EA8',
-      pants: '#1E293B', hair: '#38261A', skin: '#F5C6A5',
-      state: 'walking', walkPhase: 1.2, speed: 0.095, facing: 1, waitTicks: 25,
-      status: 'En Podio Beacon 🎙️'
+      gx: 2.8, gy: 2.8,
+      color: '#942EE0', halo: 'rgba(148, 46, 224, 0.35)', badgeCol: '#7922B8',
+      hair: '#E6E6E6', suit: '#1A1526', skin: '#E8BA95',
+      mision: 'Orquestando sistemas & misiones',
+      metrica: '3 Misiones Activas · Cadena de Mando',
+      detalle: 'Chief Agent Officer: Dirige especialistas y descompone objetivos estratégicos.'
     },
     {
       id: 'glenn', nombre: 'Glenn', rol: 'CFO & Tesorero',
-      col: 15.5, row: 4.1, targetCol: 15.5, targetRow: 4.1, deskCol: 15.5, deskRow: 4.8,
-      color: '#26CC73', topColor: '#5CE69B', sideColor: '#168047',
-      pants: '#1C2E24', hair: '#594026', skin: '#F0C099',
-      state: 'typing', walkPhase: 0, speed: 0.08, facing: -1, waitTicks: 32,
-      status: 'Flujo de caja & Cobros'
+      gx: 5.8, gy: 1.8,
+      color: '#26CC73', halo: 'rgba(38, 204, 115, 0.35)', badgeCol: '#1E9957',
+      hair: '#4A3525', suit: '#12261B', skin: '#E5B892',
+      mision: 'Flujo de caja & regla de 3 cubos',
+      metrica: 'Meta Ahorro Activa · Unit Economics',
+      detalle: 'CFO: Flujo de caja libre, cobros de mensualidades y blindaje de liquidez.'
     },
     {
       id: 'ironbot', nombre: 'IronBot', rol: 'Head Coach Ironcross',
-      col: 3.5, row: 7.9, targetCol: 8.8, targetRow: 4.3, deskCol: 3.5, deskRow: 8.6,
-      color: '#FF730D', topColor: '#FF984D', sideColor: '#B34A00',
-      pants: '#262633', hair: '#1E1E28', skin: '#EBBA94',
-      state: 'walking', walkPhase: 2.1, speed: 0.09, facing: 1, waitTicks: 22,
-      status: 'Pauta Calistenia 💪'
+      gx: 1.8, gy: 5.8,
+      color: '#FF730D', halo: 'rgba(255, 115, 13, 0.35)', badgeCol: '#C45400',
+      hair: '#1E1E28', suit: '#2E1D12', skin: '#E8BA95',
+      mision: '5 Alumnos Pausa ($504.550 CLP latentes)',
+      metrica: 'Arriendo Box ($310k) Asegurable',
+      detalle: 'Head Coach: Metodología calistenia, fuerza y reactivación de alumnos.'
+    },
+    {
+      id: 'mario', nombre: 'Mario', rol: 'Copiloto & Fast Path',
+      gx: 4.8, gy: 5.8,
+      color: '#1A80FA', halo: 'rgba(26, 128, 250, 0.35)', badgeCol: '#0F62C4',
+      hair: '#38261A', suit: '#121F2E', skin: '#F0C29E',
+      mision: 'Fast Path Activo · Voz & Enlace Nicolás',
+      metrica: 'Línea Directa Nicolás · Espera de Orden',
+      detalle: 'Copiloto Personal: Interfaz rápida de voz, WhatsApp y ejecución inmediata.'
     },
     {
       id: 'zauron', nombre: 'Zauron', rol: 'Radar Forense',
-      col: 9.5, row: 7.9, targetCol: 2.5, targetRow: 2.8, deskCol: 9.5, deskRow: 8.6,
-      color: '#00CCCC', topColor: '#4DFFFF', sideColor: '#008080',
-      pants: '#16242E', hair: '#595959', skin: '#EBC2A6',
-      state: 'walking', walkPhase: 0.9, speed: 0.088, facing: -1, waitTicks: 28,
-      status: 'Auditando racks 🔍'
+      gx: 1.5, gy: 2.2,
+      color: '#00CCCC', halo: 'rgba(0, 204, 204, 0.35)', badgeCol: '#009999',
+      hair: '#595959', suit: '#112429', skin: '#E0B592',
+      mision: 'Indexación de logs & memoria forense',
+      metrica: 'Logs al día · Tech Radar Activo',
+      detalle: 'Radar Tecnológico: Indexación profunda, comprobantes bancarios y memoria.'
     },
     {
       id: 'buzz', nombre: 'Buzz', rol: 'Comercial & Leads',
-      col: 15.5, row: 7.9, targetCol: 15.5, targetRow: 7.9, deskCol: 15.5, deskRow: 8.6,
-      color: '#E6B800', topColor: '#FFD633', sideColor: '#997A00',
-      pants: '#262626', hair: '#66331A', skin: '#F5C49E',
-      state: 'typing', walkPhase: 0, speed: 0.085, facing: -1, waitTicks: 15,
-      status: 'Leads WhatsApp ⚡'
+      gx: 5.8, gy: 4.5,
+      color: '#E6B800', halo: 'rgba(230, 184, 0, 0.35)', badgeCol: '#B38F00',
+      hair: '#66331A', suit: '#292411', skin: '#F0C29E',
+      mision: 'Calificación de leads WhatsApp 2026',
+      metrica: 'Captación en tiempo real · Planes 2026',
+      detalle: 'Comercial: Captación y calificación de nuevos atletas en WhatsApp.'
     }
   ];
-
-  // Dibuja un bloque cúbico Voxel 2.5D con cara frontal, cara superior y cara lateral derecha
-  function drawVoxelCube(ctx, x, y, w, h, depth, frontCol, topCol, sideCol, borderCol) {
-    var dx = depth * 0.65;
-    var dy = depth * 0.55;
-
-    // Cara frontal
-    ctx.fillStyle = frontCol;
-    ctx.fillRect(x, y, w, h);
-
-    // Cara superior (trapecio isométrico)
-    ctx.fillStyle = topCol;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + dx, y - dy);
-    ctx.lineTo(x + w + dx, y - dy);
-    ctx.lineTo(x + w, y);
-    ctx.closePath();
-    ctx.fill();
-
-    // Cara lateral derecha
-    ctx.fillStyle = sideCol;
-    ctx.beginPath();
-    ctx.moveTo(x + w, y);
-    ctx.lineTo(x + w + dx, y - dy);
-    ctx.lineTo(x + w + dx, y + h - dy);
-    ctx.lineTo(x + w, y + h);
-    ctx.closePath();
-    ctx.fill();
-
-    if (borderCol) {
-      ctx.strokeStyle = borderCol;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x, y, w, h);
-    }
-  }
 
   function initOfficeCanvas() {
     if (!officeCanvas) { return; }
     var wrap = document.getElementById('asistenteOfficeWrap');
     var w = (wrap && wrap.clientWidth) ? wrap.clientWidth : (officeCanvas.offsetWidth || 992);
     officeCanvas.width = w > 0 ? w : 992;
-    officeCanvas.height = 226;
+    officeCanvas.height = 250;
   }
 
-  function actualizarFisicaVoxel() {
-    for (var i = 0; i < agentesOffice.length; i++) {
-      var a = agentesOffice[i];
-      var dx = a.targetCol - a.col;
-      var dy = a.targetRow - a.row;
-      var dist = Math.sqrt(dx * dx + dy * dy);
+  // Conversión matemática: Coordenada de cuadrícula (gx, gy, gz) -> Coordenada en pantalla Isométrica 2:1
+  function toIso(gx, gy, gz, cw, ch) {
+    var tileW = Math.max(52, Math.min(74, cw / 12.5));
+    var tileH = tileW * 0.5; // Relación 2:1 perfecta
+    var originX = cw * 0.5;
+    var originY = 38;
+    return {
+      x: originX + (gx - gy) * (tileW * 0.5),
+      y: originY + (gx + gy) * (tileH * 0.5) - (gz || 0),
+      tw: tileW,
+      th: tileH
+    };
+  }
 
-      if (dist > 0.14) {
-        a.state = 'walking';
-        a.col += (dx / dist) * a.speed;
-        a.row += (dy / dist) * a.speed;
-        a.walkPhase += 0.42;
-        if (Math.abs(dx) > 0.03) {
-          a.facing = dx >= 0 ? 1 : -1;
-        }
-      } else {
-        a.col = a.targetCol;
-        a.row = a.targetRow;
-        if (a.state === 'walking') {
-          var nearDesk = (Math.abs(a.col - a.deskCol) < 0.6 && Math.abs(a.row - (a.deskRow - 0.7)) < 0.6);
-          a.state = nearDesk ? 'typing' : 'idle';
-        }
-        a.waitTicks--;
-        if (a.waitTicks <= 0) {
-          elegirNuevaRutinaVoxel(a, i);
-        }
-      }
+  // Dibuja un rombo de suelo isométrico
+  function drawIsoTile(ctx, gx, gy, fillCol, strokeCol, cw, ch) {
+    var p = toIso(gx, gy, 0, cw, ch);
+    var hw = p.tw * 0.5;
+    var hh = p.th * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(p.x + hw, p.y + hh);
+    ctx.lineTo(p.x, p.y + p.th);
+    ctx.lineTo(p.x - hw, p.y + hh);
+    ctx.closePath();
+    ctx.fillStyle = fillCol;
+    ctx.fill();
+    if (strokeCol) {
+      ctx.strokeStyle = strokeCol;
+      ctx.lineWidth = 1;
+      ctx.stroke();
     }
   }
 
-  function elegirNuevaRutinaVoxel(a, idx) {
-    var r = ((officeTick + idx * 17) % 100) / 100;
-    if (r < 0.42) {
-      // Ir a su escritorio a programar/trabajar
-      a.targetCol = a.deskCol;
-      a.targetRow = a.deskRow - 0.7;
-      a.waitTicks = 45 + (idx * 12);
-      var textosDesk = {
-        morfeo: 'Orquestando agentes',
-        mario: 'Fast Path Activo',
-        glenn: 'Auditando flujo caja',
-        ironbot: 'Armando rutina WOD',
-        zauron: 'Indexando memoria',
-        buzz: 'Calificando leads'
-      };
-      a.status = textosDesk[a.id] || 'En su estación';
-    } else if (r < 0.62) {
-      // Caminar a la estación de café / agua
-      a.targetCol = 15.8 + ((idx % 2) * 0.9);
-      a.targetRow = 2.6 + ((idx % 3) * 0.4);
-      a.waitTicks = 35 + (idx * 8);
-      a.status = 'Tomando café ☕';
-    } else if (r < 0.80) {
-      // Caminar a revisar los servidores Voxel
-      a.targetCol = 1.6 + ((idx % 3) * 1.1);
-      a.targetRow = 2.6 + ((idx % 2) * 0.4);
-      a.waitTicks = 32 + (idx * 9);
-      a.status = 'Revisando servidores 🖥️';
-    } else {
-      // Reunión rápida en la alfombra de mando de Morfeo
-      a.targetCol = 7.6 + ((idx % 4) * 1.1);
-      a.targetRow = 3.2 + ((idx % 2) * 1.1);
-      a.waitTicks = 40 + (idx * 10);
-      a.status = 'Sincronizando con Morfeo 🏛️';
-    }
-  }
+  // Dibuja un prisma / bloque isométrico 2.5D visto desde arriba
+  function drawIsoBlock(ctx, gx, gy, gz, wGrid, hGrid, heightPx, topCol, leftCol, rightCol, strokeCol, cw, ch) {
+    var pTop = toIso(gx, gy, gz + heightPx, cw, ch);
+    var pBot = toIso(gx, gy, gz, cw, ch);
+    var hw = (pTop.tw * 0.5) * wGrid;
+    var hh = (pTop.th * 0.5) * hGrid;
 
-  function llamarAgenteAPodio(agentId, customStatus) {
-    for (var i = 0; i < agentesOffice.length; i++) {
-      var a = agentesOffice[i];
-      if (a.id === agentId) {
-        a.targetCol = 9.5;
-        a.targetRow = 9.8;
-        a.waitTicks = 95;
-        if (customStatus) { a.status = customStatus; }
-      }
-    }
-  }
+    // 1. Cara lateral izquierda
+    ctx.beginPath();
+    ctx.moveTo(pTop.x - hw, pTop.y + hh);
+    ctx.lineTo(pTop.x, pTop.y + hh * 2);
+    ctx.lineTo(pBot.x, pBot.y + hh * 2);
+    ctx.lineTo(pBot.x - hw, pBot.y + hh);
+    ctx.closePath();
+    ctx.fillStyle = leftCol;
+    ctx.fill();
+    if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.stroke(); }
 
-  function actualizarEstadoAgenteOffice(agentId, nuevoStatus) {
-    for (var i = 0; i < agentesOffice.length; i++) {
-      if (agentesOffice[i].id === agentId) {
-        agentesOffice[i].status = nuevoStatus;
-      }
-    }
+    // 2. Cara lateral derecha
+    ctx.beginPath();
+    ctx.moveTo(pTop.x, pTop.y + hh * 2);
+    ctx.lineTo(pTop.x + hw, pTop.y + hh);
+    ctx.lineTo(pBot.x + hw, pBot.y + hh);
+    ctx.lineTo(pBot.x, pBot.y + hh * 2);
+    ctx.closePath();
+    ctx.fillStyle = rightCol;
+    ctx.fill();
+    if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.stroke(); }
+
+    // 3. Cara superior (isométrica)
+    ctx.beginPath();
+    ctx.moveTo(pTop.x, pTop.y);
+    ctx.lineTo(pTop.x + hw, pTop.y + hh);
+    ctx.lineTo(pTop.x, pTop.y + hh * 2);
+    ctx.lineTo(pTop.x - hw, pTop.y + hh);
+    ctx.closePath();
+    ctx.fillStyle = topCol;
+    ctx.fill();
+    if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.lineWidth = 1; ctx.stroke(); }
   }
 
   function renderOffice() {
@@ -3579,277 +3537,226 @@
     var cw = officeCanvas.width;
     var ch = officeCanvas.height;
     if (!cw || !ch) { return; }
-    var tileW = cw / 19;
-    var tileH = ch / 12;
 
-    // 1. Pared trasera estilo bloques de obsidiana/pizarra Minecraft + ventanas nocturnas
-    officeCtx.fillStyle = '#0B0E17';
-    officeCtx.fillRect(0, 0, cw, tileH * 2.2);
-    for (var wc = 0; wc < 19; wc++) {
-      var wx0 = wc * tileW;
-      officeCtx.fillStyle = (wc % 2 === 0) ? '#121826' : '#0E131F';
-      officeCtx.fillRect(wx0, 0, tileW - 1, tileH * 2.0);
-    }
-    // Ventanas panorámicas con estrellas
-    var winCols = [5.2, 11.2];
-    for (var wi = 0; wi < winCols.length; wi++) {
-      var wX = winCols[wi] * tileW;
-      var wY = tileH * 0.25;
-      var wW = tileW * 2.6;
-      var wH = tileH * 1.35;
-      officeCtx.fillStyle = '#071324';
-      officeCtx.fillRect(wX, wY, wW, wH);
-      officeCtx.strokeStyle = '#2A4365';
-      officeCtx.lineWidth = 1.5;
-      officeCtx.strokeRect(wX, wY, wW, wH);
-      officeCtx.fillStyle = (officeTick % 10 < 5) ? '#93C5FD' : '#E0F2FE';
-      officeCtx.fillRect(wX + 8, wY + 5, 2, 2);
-      officeCtx.fillRect(wX + wW - 12, wY + 9, 2, 2);
-    }
-    // Zócalo 3D de la pared
-    officeCtx.fillStyle = '#26334D';
-    officeCtx.fillRect(0, tileH * 2.0, cw, 3);
+    // Fondo elegante de Sala de Operaciones (Titanium Dark)
+    officeCtx.fillStyle = '#080A10';
+    officeCtx.fillRect(0, 0, cw, ch);
 
-    // 2. Suelo de bloques Voxel de piedra pulida con junta de profundidad
-    for (var r = 2; r < 12; r++) {
-      for (var c = 0; c < 19; c++) {
-        var rx = c * tileW;
-        var ry = r * tileH;
-        var isEven = (r + c) % 2 === 0;
-        officeCtx.fillStyle = isEven ? '#171B26' : '#121620';
-        officeCtx.fillRect(rx, ry, tileW + 0.5, tileH + 0.5);
-        officeCtx.fillStyle = isEven ? '#1E2433' : '#171C29';
-        officeCtx.fillRect(rx + 1, ry + 1, tileW - 2, 2);
-      }
-    }
+    // 1. Paredes Isométricas del fondo (North-West y North-East)
+    var pCorner = toIso(0, 0, 0, cw, ch);
+    var pLeftEnd = toIso(0, 7.5, 0, cw, ch);
+    var pRightEnd = toIso(7.5, 0, 0, cw, ch);
+    var wallH = 46;
 
-    // 3. Alfombra Real de Mando de Morfeo (con relieve Voxel)
-    var alfX = 6.7 * tileW;
-    var alfY = 2.4 * tileH;
-    var alfW = 5.6 * tileW;
-    var alfH = 3.4 * tileH;
-    drawVoxelCube(officeCtx, alfX, alfY, alfW, alfH, 3, '#311B4F', '#44266E', '#1F1033', '#994DE6');
-    officeCtx.strokeStyle = '#F2D933';
+    // Pared Noroeste
+    officeCtx.beginPath();
+    officeCtx.moveTo(pCorner.x, pCorner.y - wallH);
+    officeCtx.lineTo(pLeftEnd.x, pLeftEnd.y - wallH);
+    officeCtx.lineTo(pLeftEnd.x, pLeftEnd.y);
+    officeCtx.lineTo(pCorner.x, pCorner.y);
+    officeCtx.closePath();
+    officeCtx.fillStyle = '#0F1420';
+    officeCtx.fill();
+    officeCtx.strokeStyle = '#1E293B';
+    officeCtx.stroke();
+
+    // Pared Noreste
+    officeCtx.beginPath();
+    officeCtx.moveTo(pCorner.x, pCorner.y - wallH);
+    officeCtx.lineTo(pRightEnd.x, pRightEnd.y - wallH);
+    officeCtx.lineTo(pRightEnd.x, pRightEnd.y);
+    officeCtx.lineTo(pCorner.x, pCorner.y);
+    officeCtx.closePath();
+    officeCtx.fillStyle = '#141A29';
+    officeCtx.fill();
+    officeCtx.strokeStyle = '#1E293B';
+    officeCtx.stroke();
+
+    // Ventanales ejecutivos altos con luz de ciudad
+    var pWin1 = toIso(0, 3.5, 8, cw, ch);
+    officeCtx.fillStyle = '#1A2338';
+    officeCtx.fillRect(pWin1.x - 22, pWin1.y - 20, 36, 18);
+    officeCtx.strokeStyle = '#38BDF8';
     officeCtx.lineWidth = 1;
-    officeCtx.strokeRect(alfX + 4, alfY + 4, alfW - 8, alfH - 8);
+    officeCtx.strokeRect(pWin1.x - 22, pWin1.y - 20, 36, 18);
 
-    // 4. Racks de Servidores Voxel 3D con LEDs parpadeantes (Izquierda)
-    function dibujarRackVoxel(colPos, sTick) {
-      var sx = colPos * tileW;
-      var sy = 0.55 * tileH;
-      var sw = 1.65 * tileW;
-      var sh = 1.95 * tileH;
-      drawVoxelCube(officeCtx, sx, sy, sw, sh, 7, '#1B2230', '#2D3748', '#0F141C', '#00E6E6');
-      for (var s = 0; s < 3; s++) {
-        var slotY = sy + 4 + s * (sh / 3.3);
-        officeCtx.fillStyle = '#090C12';
-        officeCtx.fillRect(sx + 3, slotY, sw - 6, sh / 4.8);
-        var led1 = ((sTick + s) % 4 === 0) ? '#3CD070' : '#00E6E6';
-        var led2 = ((sTick + s) % 3 === 0) ? '#FF9900' : '#3CD070';
-        officeCtx.fillStyle = led1;
-        officeCtx.fillRect(sx + 6, slotY + 2, 3, 3);
-        officeCtx.fillStyle = led2;
-        officeCtx.fillRect(sx + 12, slotY + 2, 3, 3);
+    var pWin2 = toIso(3.5, 0, 8, cw, ch);
+    officeCtx.fillStyle = '#1A2338';
+    officeCtx.fillRect(pWin2.x - 14, pWin2.y - 20, 36, 18);
+    officeCtx.strokeStyle = '#38BDF8';
+    officeCtx.strokeRect(pWin2.x - 14, pWin2.y - 20, 36, 18);
+
+    // 2. Cuadrícula de suelo isométrico (8x8 baldosas de pizarra pulida)
+    for (var gx = 0; gx < 8; gx++) {
+      for (var gy = 0; gy < 8; gy++) {
+        var isOdd = (gx + gy) % 2 === 1;
+        var fCol = isOdd ? '#111724' : '#0D121D';
+
+        // Acentos de departamento en el suelo
+        if (gx >= 2 && gx <= 3 && gy >= 2 && gy <= 3) {
+          fCol = '#201233'; // Centro Morfeo
+        } else if (gx >= 5 && gy <= 2) {
+          fCol = '#10241A'; // Finanzas Glenn
+        } else if (gx <= 2 && gy >= 5) {
+          fCol = '#29180C'; // IronBot Coaching
+        } else if (gx >= 4 && gy >= 5) {
+          fCol = '#101B2E'; // Mario Copiloto
+        }
+
+        drawIsoTile(officeCtx, gx, gy, fCol, '#1A2333', cw, ch);
       }
     }
-    dibujarRackVoxel(0.7, Math.floor(officeTick / 3));
-    dibujarRackVoxel(2.6, Math.floor(officeTick / 3) + 2);
 
-    // 5. Estación de Café & Dispensador de Agua Voxel + Árbol Minecraft (Derecha)
-    var wx = 16.2 * tileW;
-    var wy = 0.75 * tileH;
-    // Mueble base del dispensador
-    drawVoxelCube(officeCtx, wx, wy + tileH * 0.55, tileW * 0.95, tileH * 0.95, 6, '#CBD5E1', '#F1F5F9', '#94A3B8', null);
-    // Bidón de agua cristalina cúbico
-    drawVoxelCube(officeCtx, wx + tileW * 0.12, wy, tileW * 0.7, tileH * 0.58, 5, '#38BDF8', '#7DD3FC', '#0284C7', null);
-    if (officeTick % 6 < 3) {
-      officeCtx.fillStyle = '#FFFFFF';
-      officeCtx.fillRect(wx + tileW * 0.38, wy + tileH * 0.18, 2, 2);
-    }
-    // Árbol / Planta cúbica estilo Minecraft
-    var px = 17.4 * tileW;
-    var py = 1.65 * tileH;
-    drawVoxelCube(officeCtx, px + tileW * 0.18, py + tileH * 0.65, tileW * 0.65, tileH * 0.65, 5, '#8B4513', '#A0522D', '#5C2E0B', null);
-    drawVoxelCube(officeCtx, px, py + tileH * 0.12, tileW * 1.0, tileH * 0.6, 6, '#16A34A', '#22C55E', '#14532D', null);
-    drawVoxelCube(officeCtx, px + tileW * 0.15, py - tileH * 0.25, tileW * 0.7, tileH * 0.42, 5, '#22C55E', '#4ADE80', '#166534', null);
+    // 3. Mesa Holográfica Central del Consejo (entre Morfeo y Mario)
+    var pHolo = toIso(3.8, 3.8, 0, cw, ch);
+    officeCtx.beginPath();
+    officeCtx.ellipse ? officeCtx.ellipse(pHolo.x, pHolo.y + 12, pHolo.tw * 0.55, pHolo.th * 0.55, 0, 0, Math.PI * 2) : officeCtx.arc(pHolo.x, pHolo.y + 12, pHolo.th * 0.55, 0, Math.PI * 2);
+    officeCtx.fillStyle = 'rgba(16, 185, 129, 0.12)';
+    officeCtx.fill();
+    officeCtx.strokeStyle = '#10B981';
+    officeCtx.lineWidth = 1;
+    officeCtx.stroke();
 
-    // 6. Podio Beacon de Voz/Mando en el frente (col 9.5, row 10.3)
-    var podX = 8.4 * tileW;
-    var podY = 9.7 * tileH;
-    var podW = 2.2 * tileW;
-    var podH = 1.35 * tileH;
-    var pulseBeacon = (officeTick % 12 < 6);
-    drawVoxelCube(
-      officeCtx, podX, podY, podW, podH, 5,
-      '#0F2922',
-      pulseBeacon ? '#10B981' : '#059669',
-      '#064E3B',
-      '#3CD070'
-    );
-    officeCtx.fillStyle = '#A7F3D0';
+    officeCtx.fillStyle = '#3CD070';
     officeCtx.font = 'bold 8px monospace';
     officeCtx.textAlign = 'center';
-    officeCtx.fillText('BEACON PODIO', podX + podW * 0.5, podY + podH - 4);
+    officeCtx.fillText('WAR ROOM · NICOLA OS', pHolo.x, pHolo.y + 15);
 
-    // 7. Ordenar escritorios y agentes por profundidad ( eje Y / row ) para oclusión 2.5D real
-    var renderables = [];
-    for (var d = 0; d < agentesOffice.length; d++) {
-      renderables.push({ kind: 'desk', row: agentesOffice[d].deskRow, agent: agentesOffice[d] });
-      renderables.push({ kind: 'agent', row: agentesOffice[d].row, agent: agentesOffice[d] });
-    }
-    renderables.sort(function (a, b) { return a.row - b.row; });
+    // 4. Servidores Forenses en la pared oeste (Zauron)
+    drawIsoBlock(officeCtx, 0.3, 0.6, 0, 0.8, 1.4, 28, '#26334D', '#161F2E', '#0E1520', '#00CCCC', cw, ch);
+    var pLed = toIso(0.3, 0.6, 18, cw, ch);
+    officeCtx.fillStyle = (officeTick % 6 < 3) ? '#00E6E6' : '#3CD070';
+    officeCtx.fillRect(pLed.x - 4, pLed.y, 3, 3);
+    officeCtx.fillStyle = (officeTick % 4 < 2) ? '#FF9900' : '#00E6E6';
+    officeCtx.fillRect(pLed.x + 3, pLed.y + 2, 3, 3);
 
-    for (var m = 0; m < renderables.length; m++) {
-      var item = renderables[m];
-      if (item.kind === 'desk') {
-        dibujarEscritorioVoxel(item.agent, tileW, tileH);
-      } else {
-        dibujarAgenteMinecraft(item.agent, tileW, tileH, cw);
-      }
+    // 5. Renderizado ordenado por profundidad isométrica (gx + gy)
+    var estacionesOrdenadas = estacionesOffice.slice(0).sort(function (a, b) {
+      return (a.gx + a.gy) - (b.gx + b.gy);
+    });
+
+    for (var i = 0; i < estacionesOrdenadas.length; i++) {
+      dibujarEstacionIsometria(officeCtx, estacionesOrdenadas[i], cw, ch);
     }
   }
 
-  function dibujarEscritorioVoxel(ag, tileW, tileH) {
-    var dx = (ag.deskCol - 1.1) * tileW;
-    var dy = ag.deskRow * tileH;
-    var dw = tileW * 2.2;
-    var dh = tileH * 1.15;
-    var esActivo = (ag.id === agenteSeleccionadoId);
+  // Dibuja una estación ejecutiva con escritorio en diagonal, monitores y silueta adulta vista desde arriba
+  function dibujarEstacionIsometria(ctx, est, cw, ch) {
+    var esSel = (est.id === agenteSeleccionadoId);
+    var pBase = toIso(est.gx, est.gy, 0, cw, ch);
 
-    // Mesa de madera cúbica 3D
-    drawVoxelCube(
-      officeCtx, dx, dy, dw, dh, 6,
-      '#4A3525', '#694B35', '#2E2016',
-      esActivo ? '#3CD070' : '#261A11'
-    );
-
-    // Monitor Voxel 3D sobre el escritorio
-    var mw = dw * 0.52;
-    var mh = dh * 0.78;
-    var mx = dx + (dw - mw) * 0.5;
-    var my = dy - mh * 0.65;
-    drawVoxelCube(officeCtx, mx, my, mw, mh, 4, '#111827', '#374151', '#030712', null);
-
-    // Pantalla brillante con líneas de código animadas
-    officeCtx.fillStyle = esActivo ? '#3CD070' : ag.color;
-    officeCtx.fillRect(mx + 2, my + 2, mw - 4, mh - 4);
-    var lineOff = (Math.floor(officeTick / 2) % 3) * 2;
-    officeCtx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-    officeCtx.fillRect(mx + 4, my + 3 + lineOff, mw - 8, 1.5);
-    officeCtx.fillRect(mx + 4, my + 6 + lineOff, (mw - 8) * 0.65, 1.5);
-  }
-
-  function dibujarAgenteMinecraft(a, tileW, tileH, cw) {
-    var esSel = (a.id === agenteSeleccionadoId);
-    var isWalking = (a.state === 'walking');
-    var bounce = isWalking ? Math.abs(Math.sin(a.walkPhase)) * 3.2 : ((officeTick % 8 < 4) ? 0 : -1);
-    var legSwing = isWalking ? Math.sin(a.walkPhase) * 4.5 : 0;
-    var armSwing = isWalking ? -Math.sin(a.walkPhase) * 4.8 : ((a.state === 'typing') ? Math.sin(officeTick * 0.8) * 2.0 : 0);
-
-    var cx = a.col * tileW;
-    var cy = a.row * tileH;
-    var bw = Math.max(14, tileW * 0.68);
-    var bh = Math.max(24, tileH * 1.45);
-
-    // Sombra proyectada en el suelo
-    officeCtx.fillStyle = esSel ? 'rgba(60, 208, 112, 0.38)' : 'rgba(0, 0, 0, 0.45)';
-    officeCtx.fillRect(cx - bw * 0.55, cy + 2, bw * 1.25, 5);
+    // Halo en suelo si está seleccionado
     if (esSel) {
-      officeCtx.strokeStyle = '#3CD070';
-      officeCtx.lineWidth = 1.5;
-      officeCtx.strokeRect(cx - bw * 0.65, cy, bw * 1.45, 8);
+      ctx.beginPath();
+      var rhw = pBase.tw * 0.75;
+      var rhh = pBase.th * 0.75;
+      ctx.moveTo(pBase.x, pBase.y - 2);
+      ctx.lineTo(pBase.x + rhw, pBase.y + rhh - 2);
+      ctx.lineTo(pBase.x, pBase.y + rhh * 2 - 2);
+      ctx.lineTo(pBase.x - rhw, pBase.y + rhh - 2);
+      ctx.closePath();
+      ctx.fillStyle = est.halo;
+      ctx.fill();
+      ctx.strokeStyle = '#3CD070';
+      ctx.lineWidth = 2;
+      ctx.stroke();
     }
 
-    var baseX = cx - bw * 0.5;
-    var baseY = cy - bh - bounce;
+    // A. Escritorio Ejecutivo Isométrico (Madera noble con bisel de cristal)
+    drawIsoBlock(
+      ctx, est.gx, est.gy, 0, 1.25, 0.85, 14,
+      esSel ? '#2D3748' : '#1F2937',
+      '#111827',
+      '#0B0F17',
+      esSel ? '#3CD070' : '#374151',
+      cw, ch
+    );
 
-    // 1. Piernas cúbicas articuladas (Izquierda y Derecha con ciclo pendular)
-    var legW = bw * 0.42;
-    var legH = bh * 0.30;
-    var legY = baseY + bh * 0.70;
-    drawVoxelCube(officeCtx, baseX + 1, legY + legSwing * 0.55, legW, legH, 3, a.pants, a.pants, '#090D16', null);
-    drawVoxelCube(officeCtx, baseX + bw - legW - 1, legY - legSwing * 0.55, legW, legH, 3, a.pants, a.pants, '#090D16', null);
+    // B. Pantalla / Monitor Isométrico en ángulo sobre el escritorio
+    var pDeskTop = toIso(est.gx, est.gy, 14, cw, ch);
+    drawIsoBlock(
+      ctx, est.gx + 0.1, est.gy - 0.15, 14, 0.6, 0.25, 10,
+      '#1E293B',
+      '#0F172A',
+      '#020617',
+      est.color,
+      cw, ch
+    );
 
-    // 2. Brazo trasero
-    var armW = bw * 0.26;
-    var armH = bh * 0.34;
-    var torsoY = baseY + bh * 0.34;
-    drawVoxelCube(officeCtx, baseX - armW + 1, torsoY + armSwing * 0.5, armW, armH, 3, a.color, a.topColor, a.sideColor, null);
+    // Resplandor del monitor
+    ctx.fillStyle = est.color;
+    ctx.fillRect(pDeskTop.x - 6, pDeskTop.y - 4, 10, 4);
 
-    // 3. Torso cúbico Voxel 3D
-    var torsoH = bh * 0.38;
-    drawVoxelCube(officeCtx, baseX, torsoY, bw, torsoH, 5, a.color, a.topColor, a.sideColor, null);
+    // C. Silueta Ejecutiva Adulta vista desde arriba en diagonal (Top-Down 3/4)
+    var pAgente = toIso(est.gx + 0.45, est.gy + 0.35, 10, cw, ch);
+    var pulse = (Math.sin(officeTick * 0.08 + est.gx) * 0.8);
 
-    // Detalle de corbata / insignia en el pecho
-    if (a.id === 'morfeo' || a.id === 'glenn') {
-      officeCtx.fillStyle = '#F2D933';
-      officeCtx.fillRect(baseX + bw * 0.42, torsoY + 2, bw * 0.16, torsoH * 0.65);
+    // Sombra del cuerpo en la silla
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.beginPath();
+    ctx.arc(pAgente.x, pAgente.y + 4, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Espalda / Hombros adultos en diagonal
+    ctx.fillStyle = est.suit;
+    ctx.beginPath();
+    ctx.ellipse ? ctx.ellipse(pAgente.x, pAgente.y - 2 + pulse, 9, 6, -Math.PI / 6, 0, Math.PI * 2) : ctx.arc(pAgente.x, pAgente.y - 2 + pulse, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = est.color;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Cabeza vista desde arriba (cabello y perfil cenital)
+    ctx.fillStyle = est.hair;
+    ctx.beginPath();
+    ctx.arc(pAgente.x - 2, pAgente.y - 9 + pulse, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Rostro / piel visible en ángulo
+    ctx.fillStyle = est.skin;
+    ctx.beginPath();
+    ctx.arc(pAgente.x - 1, pAgente.y - 7 + pulse, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lentes oscuros (Morfeo) o Visor (Zauron) o Cintillo (IronBot)
+    if (est.id === 'morfeo') {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(pAgente.x - 3, pAgente.y - 8 + pulse, 4, 2);
+    } else if (est.id === 'zauron') {
+      ctx.fillStyle = '#00FFFF';
+      ctx.fillRect(pAgente.x - 4, pAgente.y - 8 + pulse, 5, 1.8);
+    } else if (est.id === 'ironbot') {
+      ctx.fillStyle = '#FF730D';
+      ctx.fillRect(pAgente.x - 4, pAgente.y - 11 + pulse, 6, 2);
     }
 
-    // 4. Brazo delantero
-    drawVoxelCube(officeCtx, baseX + bw - 1, torsoY - armSwing * 0.5, armW, armH, 3, a.color, a.topColor, a.sideColor, null);
+    // D. Píldora Ejecutiva de Estado (HUD Flotante sin tapar la vista)
+    var tagText = est.nombre.toUpperCase() + ' · ' + est.metrica;
+    ctx.font = 'bold 8.5px monospace, Courier';
+    var txtW = ctx.measureText(tagText).width;
+    var pillW = txtW + 12;
+    var pillH = 13;
+    var pillX = pDeskTop.x - pillW * 0.5;
+    var pillY = pDeskTop.y - 26 + pulse;
 
-    // 5. Cabeza cúbica estilo Steve de Minecraft
-    var headW = bw * 0.92;
-    var headH = bh * 0.36;
-    var headX = baseX + (bw - headW) * 0.5;
-    var headY = baseY;
-    drawVoxelCube(officeCtx, headX, headY, headW, headH, 5, a.skin, '#FAD6B8', '#C99773', null);
+    // Caja de la píldora
+    ctx.fillStyle = esSel ? 'rgba(5, 20, 14, 0.94)' : 'rgba(10, 14, 22, 0.88)';
+    ctx.fillRect(pillX, pillY, pillW, pillH);
+    ctx.strokeStyle = esSel ? '#3CD070' : est.color;
+    ctx.lineWidth = esSel ? 1.5 : 1;
+    ctx.strokeRect(pillX, pillY, pillW, pillH);
 
-    // Cabello / Casco Voxel superior
-    drawVoxelCube(officeCtx, headX - 0.5, headY - 2, headW + 1, headH * 0.32, 5, a.hair, a.hair, '#1A1A1A', null);
+    // Punto de estado activo
+    ctx.fillStyle = esSel ? '#3CD070' : est.color;
+    ctx.fillRect(pillX + 3.5, pillY + 4.5, 4, 4);
 
-    // Ojos o Visor orientados según dirección de caminata (a.facing)
-    var eyeShift = (a.facing >= 0) ? 1.5 : -1.5;
-    if (a.id === 'zauron') {
-      // Visor cibernético cian
-      officeCtx.fillStyle = '#00FFFF';
-      officeCtx.fillRect(headX + 2, headY + headH * 0.42, headW - 4, 3);
-    } else if (a.id === 'morfeo') {
-      // Gafas oscuras Matrix
-      officeCtx.fillStyle = '#090A0F';
-      officeCtx.fillRect(headX + 2, headY + headH * 0.40, headW - 4, 3.5);
-    } else {
-      officeCtx.fillStyle = '#111111';
-      officeCtx.fillRect(headX + headW * 0.25 + eyeShift, headY + headH * 0.45, 2.2, 2.5);
-      officeCtx.fillRect(headX + headW * 0.62 + eyeShift, headY + headH * 0.45, 2.2, 2.5);
-    }
-
-    // Cinta de entrenamiento de IronBot
-    if (a.id === 'ironbot') {
-      officeCtx.fillStyle = '#FF730D';
-      officeCtx.fillRect(headX, headY + headH * 0.22, headW, 2.5);
-    }
-
-    // 6. Etiqueta con nombre del agente en la base
-    var tagW = bw * 1.6;
-    officeCtx.fillStyle = 'rgba(5, 7, 11, 0.82)';
-    officeCtx.fillRect(cx - tagW * 0.5, cy + 4, tagW, 9);
-    officeCtx.fillStyle = esSel ? '#3CD070' : '#EDE9DF';
-    officeCtx.font = 'bold 8px monospace';
-    officeCtx.textAlign = 'center';
-    officeCtx.fillText(a.nombre.toUpperCase(), cx, cy + 11);
-
-    // 7. Globo de actividad flotante arriba de la cabeza cúbica
-    var balloonText = a.nombre + ': ' + a.status;
-    officeCtx.font = 'bold 8px monospace';
-    var textWidth = officeCtx.measureText(balloonText).width;
-    var bubbleW = textWidth + 10;
-    var bubbleH = 13;
-    var bubbleLeft = Math.max(2, Math.min(cw - bubbleW - 2, cx - bubbleW * 0.5));
-    var bubbleTop = baseY - bubbleH - 6;
-
-    officeCtx.fillStyle = 'rgba(8, 10, 16, 0.92)';
-    officeCtx.fillRect(bubbleLeft, bubbleTop, bubbleW, bubbleH);
-    officeCtx.strokeStyle = esSel ? '#3CD070' : a.color;
-    officeCtx.lineWidth = esSel ? 1.5 : 1;
-    officeCtx.strokeRect(bubbleLeft, bubbleTop, bubbleW, bubbleH);
-
-    officeCtx.fillStyle = esSel ? '#3CD070' : '#FFFFFF';
-    officeCtx.textAlign = 'left';
-    officeCtx.fillText(balloonText, bubbleLeft + 5, bubbleTop + 9.5);
+    // Texto de la métrica
+    ctx.fillStyle = esSel ? '#3CD070' : '#F1F5F9';
+    ctx.textAlign = 'left';
+    ctx.fillText(tagText, pillX + 10, pillY + 9.5);
   }
 
+  // Manejador táctil y de clic: Detecta en qué estación se hizo clic según la proyección isométrica
   function handleOfficeClick(evt) {
     if (!officeCanvas) { return; }
     var rect = officeCanvas.getBoundingClientRect();
@@ -3861,80 +3768,76 @@
     }
     if (clientX === undefined) { return; }
     var clickX = clientX - rect.left;
-    var clickY = (clientY !== undefined) ? (clientY - rect.top) : 110;
+    var clickY = clientY - rect.top;
+
     var cw = officeCanvas.width;
     var ch = officeCanvas.height;
-    var tileW = cw / 19;
-    var tileH = ch / 12;
-    var clickedCol = clickX / tileW;
-    var clickedRow = clickY / tileH;
 
-    var minDist = 999;
+    var minDist = 9999;
     var nearest = null;
-    for (var k = 0; k < agentesOffice.length; k++) {
-      var dx = agentesOffice[k].col - clickedCol;
-      var dy = (agentesOffice[k].row - 0.8) - clickedRow;
+
+    for (var k = 0; k < estacionesOffice.length; k++) {
+      var est = estacionesOffice[k];
+      var p = toIso(est.gx, est.gy, 10, cw, ch);
+      var dx = p.x - clickX;
+      var dy = p.y - clickY;
       var dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < minDist) {
         minDist = dist;
-        nearest = agentesOffice[k];
+        nearest = est;
       }
     }
 
-    if (nearest) {
-      agenteSeleccionadoId = nearest.id;
-      llamarAgenteAPodio(nearest.id, 'En Podio Beacon 🎙️');
-      if (asistenteStatus) {
-        asistenteStatus.innerHTML = 'Agente en Podio: ' + nearest.nombre + ' (' + nearest.rol + ') · ' + nearest.status;
-      }
-      if (asistenteInput) {
-        var val = asistenteInput.value;
-        if (!val || val.indexOf('@') === 0) {
-          asistenteInput.value = '@' + nearest.nombre + ' ';
-        }
-        asistenteInput.focus();
-      }
-      renderOffice();
+    if (nearest && minDist < 65) {
+      seleccionarEstacion(nearest.id);
     }
   }
 
-  // Botones interactivos del encabezado de la Oficina Voxel (PASEAR / CONSEJO / PODIO)
-  var btnOfficePasear = document.getElementById('btnOfficePasear');
-  if (btnOfficePasear) {
-    btnOfficePasear.addEventListener('click', function () {
-      for (var i = 0; i < agentesOffice.length; i++) {
-        elegirNuevaRutinaVoxel(agentesOffice[i], i + 1);
+  function seleccionarEstacion(id) {
+    agenteSeleccionadoId = id;
+    var sel = null;
+    for (var i = 0; i < estacionesOffice.length; i++) {
+      if (estacionesOffice[i].id === id) { sel = estacionesOffice[i]; break; }
+    }
+    if (!sel) return;
+
+    if (asistenteStatus) {
+      asistenteStatus.innerHTML = '<strong style="color:' + sel.color + ';">[' + sel.nombre.toUpperCase() + ']</strong> ' + sel.detalle + ' &middot; <span style="color:#3CD070;">' + sel.metrica + '</span>';
+    }
+    if (asistenteInput) {
+      var val = asistenteInput.value;
+      if (!val || val.indexOf('@') === 0) {
+        asistenteInput.value = '@' + sel.nombre + ' ';
       }
-      if (asistenteStatus) { asistenteStatus.innerHTML = 'Agentes caminando por la Oficina Voxel'; }
-    }, false);
+      asistenteInput.focus();
+    }
+    renderOffice();
   }
 
+  // Botón CONSEJO: Reúne el foco de los 6 agentes en la mesa holográfica
   var btnOfficeConsejo = document.getElementById('btnOfficeConsejo');
   if (btnOfficeConsejo) {
     btnOfficeConsejo.addEventListener('click', function () {
-      var spots = [
-        { c: 9.5, r: 2.9 },
-        { c: 7.5, r: 3.5 },
-        { c: 11.5, r: 3.5 },
-        { c: 7.8, r: 4.9 },
-        { c: 9.5, r: 5.2 },
-        { c: 11.2, r: 4.9 }
-      ];
-      for (var i = 0; i < agentesOffice.length; i++) {
-        agentesOffice[i].targetCol = spots[i].c;
-        agentesOffice[i].targetRow = spots[i].r;
-        agentesOffice[i].waitTicks = 110;
-        agentesOffice[i].status = 'En Consejo con Morfeo 🏛️';
+      if (asistenteStatus) {
+        asistenteStatus.innerHTML = '🏛️ <strong>CONSEJO VIVO CONVOCADO:</strong> Morfeo, Glenn, IronBot, Mario, Zauron y Buzz alineados en el War Room.';
       }
-      if (asistenteStatus) { asistenteStatus.innerHTML = 'Consejo Multiagente reunido en la alfombra de Morfeo'; }
+      if (asistenteInput) {
+        asistenteInput.value = 'Consejo: Evaluar foco del día y orden de prioridades';
+        asistenteInput.focus();
+      }
+      renderOffice();
     }, false);
   }
 
-  var btnOfficePodio = document.getElementById('btnOfficePodio');
-  if (btnOfficePodio) {
-    btnOfficePodio.addEventListener('click', function () {
-      llamarAgenteAPodio(agenteSeleccionadoId, 'En Podio Beacon 🎙️');
-      if (asistenteStatus) { asistenteStatus.innerHTML = 'Agente convocado al Podio Beacon frontal'; }
+  // Botón DATOS EN VIVO: Muestra el resumen ejecutivo de métricas
+  var btnOfficeDetalle = document.getElementById('btnOfficeDetalle');
+  if (btnOfficeDetalle) {
+    btnOfficeDetalle.addEventListener('click', function () {
+      modoDetalleActivo = !modoDetalleActivo;
+      if (asistenteStatus) {
+        asistenteStatus.innerHTML = '📊 <strong>PULSO EJECUTIVO:</strong> Glenn (Flujo Caja) · IronBot (5 Pausados $504k) · Morfeo (Misiones) · Buzz (Leads)';
+      }
+      renderOffice();
     }, false);
   }
 
@@ -3944,15 +3847,13 @@
       if (officeCanvas) { officeCtx = officeCanvas.getContext('2d'); }
     }
     initOfficeCanvas();
-    actualizarFisicaVoxel();
     renderOffice();
     if (!officeTimer) {
-      // 25 FPS constantes en iPad 1 (iOS 5.1.1) para caminata fluida estilo Minecraft
+      // 30 FPS constantes, fluidos y de bajo consumo en iPad y iPhone
       officeTimer = setInterval(function () {
         officeTick = (officeTick + 1) % 10000;
-        actualizarFisicaVoxel();
         renderOffice();
-      }, 40);
+      }, 33);
     }
   }
 
