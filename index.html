@@ -397,6 +397,7 @@
     margin-right: 10px;
     margin-bottom: 8px;
     min-width: 130px;
+    cursor: pointer;
   }
   .gymKpiLabel {
     font-size: 10px;
@@ -431,7 +432,7 @@
   }
   #gymFilters {
     display: table-cell;
-    width: 250px;
+    width: 330px;
     vertical-align: middle;
   }
   .gymFilterBtn {
@@ -499,15 +500,16 @@
   }
   .gymMeta {
     display: table-cell;
-    width: 130px;
+    width: 280px;
     text-align: right;
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     vertical-align: middle;
   }
-  .gymRow.V .gymMeta { color: #C23B22; }
-  .gymRow.P .gymMeta { color: #C29A22; }
+  .gymRow.V .gymMeta { color: #C23B22; font-weight: bold; }
+  .gymRow.P .gymMeta { color: #C29A22; font-weight: bold; }
+  .gymRow.A .gymMeta { color: #5CB85C; }
   #gymStatus {
     padding: 14px 16px;
     color: #7A7568;
@@ -1397,8 +1399,9 @@
         <div id="gymToolbar">
           <div id="gymFilters">
             <div id="gymFilterTodos" class="gymFilterBtn active">TODOS</div>
-            <div id="gymFilterVencidos" class="gymFilterBtn">VENCIDOS</div>
+            <div id="gymFilterActivos" class="gymFilterBtn">ACTIVOS</div>
             <div id="gymFilterPorVencer" class="gymFilterBtn">POR VENCER</div>
+            <div id="gymFilterVencidos" class="gymFilterBtn">VENCIDOS</div>
           </div>
           <div style="display:table-cell; vertical-align:middle; padding:0 8px;">
             <input type="text" id="gymSearch" placeholder="Buscar alumno..." autocomplete="off">
@@ -1702,6 +1705,7 @@
   var gymRefreshBtn = document.getElementById('gymRefreshBtn');
 
   var gymFilterTodos = document.getElementById('gymFilterTodos');
+  var gymFilterActivos = document.getElementById('gymFilterActivos');
   var gymFilterVencidos = document.getElementById('gymFilterVencidos');
   var gymFilterPorVencer = document.getElementById('gymFilterPorVencer');
 
@@ -1883,7 +1887,8 @@
       var r = gymRowsData[i];
       if (gymFilterActual === 'VENCIDOS' && r.tipo !== 'V') { continue; }
       if (gymFilterActual === 'POR_VENCER' && r.tipo !== 'P') { continue; }
-      if (q && r.nombre.toLowerCase().indexOf(q) === -1) { continue; }
+      if (gymFilterActual === 'ACTIVOS' && r.tipo !== 'A') { continue; }
+      if (q && r.nombre.toLowerCase().indexOf(q) === -1 && (!r.plan || r.plan.toLowerCase().indexOf(q) === -1)) { continue; }
 
       matchCount++;
       var row = document.createElement('div');
@@ -1909,7 +1914,7 @@
     if (gymStatus) {
       if (matchCount === 0) {
         if (gymRowsData.length === 0) {
-          gymStatus.innerHTML = 'Sin alumnos con cobros pendientes o por vencer.';
+          gymStatus.innerHTML = 'Sin alumnos registrados.';
         } else {
           gymStatus.innerHTML = 'No se encontraron resultados para el filtro aplicado.';
         }
@@ -1922,14 +1927,16 @@
   function setGymFilter(filtro) {
     gymFilterActual = filtro;
     if (gymFilterTodos) { gymFilterTodos.className = 'gymFilterBtn' + (filtro === 'TODOS' ? ' active' : ''); }
-    if (gymFilterVencidos) { gymFilterVencidos.className = 'gymFilterBtn' + (filtro === 'VENCIDOS' ? ' active' : ''); }
+    if (gymFilterActivos) { gymFilterActivos.className = 'gymFilterBtn' + (filtro === 'ACTIVOS' ? ' active' : ''); }
     if (gymFilterPorVencer) { gymFilterPorVencer.className = 'gymFilterBtn' + (filtro === 'POR_VENCER' ? ' active' : ''); }
+    if (gymFilterVencidos) { gymFilterVencidos.className = 'gymFilterBtn' + (filtro === 'VENCIDOS' ? ' active' : ''); }
     renderGymList();
   }
 
   if (gymFilterTodos) { gymFilterTodos.addEventListener('click', function () { setGymFilter('TODOS'); }, false); }
-  if (gymFilterVencidos) { gymFilterVencidos.addEventListener('click', function () { setGymFilter('VENCIDOS'); }, false); }
+  if (gymFilterActivos) { gymFilterActivos.addEventListener('click', function () { setGymFilter('ACTIVOS'); }, false); }
   if (gymFilterPorVencer) { gymFilterPorVencer.addEventListener('click', function () { setGymFilter('POR_VENCER'); }, false); }
+  if (gymFilterVencidos) { gymFilterVencidos.addEventListener('click', function () { setGymFilter('VENCIDOS'); }, false); }
 
   var cardVencidos = document.querySelector ? document.querySelector('.kpiVencidos') : null;
   var cardPorVencer = document.querySelector ? document.querySelector('.kpiPorVencer') : null;
@@ -1938,7 +1945,7 @@
 
   if (cardVencidos) { cardVencidos.addEventListener('click', function () { setGymFilter('VENCIDOS'); }, false); }
   if (cardPorVencer) { cardPorVencer.addEventListener('click', function () { setGymFilter('POR_VENCER'); }, false); }
-  if (cardActivos) { cardActivos.addEventListener('click', function () { setGymFilter('TODOS'); }, false); }
+  if (cardActivos) { cardActivos.addEventListener('click', function () { setGymFilter('ACTIVOS'); }, false); }
   if (cardIngresos) { cardIngresos.addEventListener('click', function () { setGymFilter('TODOS'); }, false); }
 
   if (gymSearch) {
