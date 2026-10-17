@@ -1896,6 +1896,7 @@
       var meta = document.createElement('div');
       meta.className = 'gymMeta';
       var bits = [];
+      if (r.plan) { bits.push(r.plan); }
       if (r.monto) { bits.push(fmtMonto(r.monto)); }
       if (r.vence) { bits.push(r.vence); }
       meta.appendChild(document.createTextNode(bits.join(' · ')));
@@ -1987,7 +1988,8 @@
             tipo: parts[1],
             nombre: parts[2],
             monto: parts[3] || '',
-            vence: parts[4] || ''
+            vence: parts[4] || '',
+            plan: parts[5] || ''
           });
         }
       }
