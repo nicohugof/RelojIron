@@ -1961,7 +1961,7 @@
   function cargarGymDashboard() {
     if (gymStatus) { gymStatus.innerHTML = 'Actualizando dashboard...'; }
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/oficina', true);
+    xhr.open('GET', '/api/oficina?_t=' + (new Date()).getTime(), true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
       if (xhr.status === 401) {
