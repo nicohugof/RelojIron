@@ -90,7 +90,7 @@
     right: 0;
     bottom: 56px;
   }
-  #clockView, #stopwatchView, #rutinaView, #dashboardView, #alumnosView, #pagosView, #asistenteView, #hoyView {
+  #clockView, #stopwatchView, #rutinaView, #dashboardView, #alumnosView, #pagosView, #asistenteView, #hoyView, #remotoView {
     position: absolute;
     top: 0;
     left: 0;
@@ -1434,6 +1434,181 @@
     overflow: hidden;
     white-space: nowrap;
   }
+
+  /* antigravity remote control view (iPad 1 ES5) */
+  #remotoView {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px;
+    background: #0A0A09;
+    color: #EDE9DF;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .remotoCard {
+    background: #141412;
+    border: 1px solid #2A2A26;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .remotoHeaderRow {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 8px;
+  }
+  .remotoHeaderTitle {
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 13px;
+    font-weight: bold;
+    color: #EDE9DF;
+    letter-spacing: 2px;
+  }
+  .remotoHeaderBadge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    background: #142921;
+    color: #3CD070;
+    border: 1px solid #3CD070;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    margin-left: 8px;
+  }
+  .remotoHeaderActions {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+    width: 320px;
+  }
+  .remotoActionBtn {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #C23B22;
+    color: #EDE9DF;
+    font-weight: bold;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: 1px solid #E04428;
+    cursor: pointer;
+    margin-left: 6px;
+  }
+  .remotoActionBtnSecondary {
+    background: #1E1D19;
+    color: #C2BBB0;
+    border-color: #3A3830;
+  }
+  .remotoInfoGrid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 6px;
+    font-size: 11px;
+    color: #A39E93;
+  }
+  .remotoInfoCell {
+    display: table-cell;
+    padding: 4px 6px;
+  }
+  .remotoInfoLabel {
+    color: #7A7568;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .remotoInfoValue {
+    color: #EDE9DF;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 12px;
+  }
+  #remotoFrameWrap {
+    width: 100%;
+    height: 380px;
+    border: 1px solid #2A2A26;
+    background: #0D0E11;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  #antigravityFrame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #0D0E11;
+  }
+  .remotoNotice {
+    padding: 8px 12px;
+    background: #171512;
+    border-left: 3px solid #E09030;
+    color: #C2BBB0;
+    font-size: 11px;
+    line-height: 16px;
+    margin-bottom: 12px;
+  }
+  #remotoConsoleWrap {
+    background: #080A10;
+    border: 1px solid #1E293B;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+  }
+  #remotoConsoleTitle {
+    color: #3CD070;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  #remotoConsoleLog {
+    height: 120px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: monospace;
+    font-size: 12px;
+    color: #94A3B8;
+    background: #020617;
+    border: 1px solid #0F172A;
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  .remotoLogLine {
+    margin-bottom: 4px;
+    word-wrap: break-word;
+  }
+  .remotoLogLine.user { color: #38BDF8; }
+  .remotoLogLine.agent { color: #3CD070; }
+  .remotoLogLine.system { color: #F59E0B; }
+  #remotoInputTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  #remotoInput {
+    width: 100%;
+    height: 44px;
+    background: #141412;
+    color: #EDE9DF;
+    border: 1px solid #2A2A26;
+    font-size: 15px;
+    padding: 0 10px;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  #remotoSendBtn {
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    background: #C23B22;
+    color: #EDE9DF;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -1688,7 +1863,7 @@
   <div id="tabRutina" class="tab">RUTINA</div>
   <div id="tabClock" class="tab">RELOJ</div>
   <div id="tabStopwatch" class="tab">TIMERS</div>
-  <div id="tabAsistente" class="tab">IA</div>
+  <div id="tabAsistente" class="tab" style="font-weight:bold;color:#3CD070;">🏛️ OFICINA</div>
 </div>
 
 <script type="text/javascript">
@@ -3595,6 +3770,24 @@
     xhr.send(null);
   }
 
+  function llamarAgenteAPodio(id, status) {
+    if (typeof seleccionarEstacion === 'function') {
+      seleccionarEstacion(id);
+    }
+  }
+
+  function actualizarEstadoAgenteOffice(id, status) {
+    if (typeof estacionesOffice !== 'undefined') {
+      for (var i = 0; i < estacionesOffice.length; i++) {
+        if (estacionesOffice[i].id === id) {
+          estacionesOffice[i].metrica = status;
+          break;
+        }
+      }
+      if (typeof renderOffice === 'function') { renderOffice(); }
+    }
+  }
+
   function enviarMensajeAsistente() {
     if (enviandoChat) { return; }
     reiniciarInactividadGym();
@@ -3875,13 +4068,17 @@
 
     // 3. Mesa Holográfica Central del Consejo (entre Morfeo y Mario)
     var pHolo = toIso(3.8, 3.8, 0, cw, ch);
+    officeCtx.save();
+    officeCtx.translate(pHolo.x, pHolo.y + 12);
+    officeCtx.scale(1, 0.5);
     officeCtx.beginPath();
-    officeCtx.ellipse ? officeCtx.ellipse(pHolo.x, pHolo.y + 12, pHolo.tw * 0.55, pHolo.th * 0.55, 0, 0, Math.PI * 2) : officeCtx.arc(pHolo.x, pHolo.y + 12, pHolo.th * 0.55, 0, Math.PI * 2);
+    officeCtx.arc(0, 0, pHolo.tw * 0.55, 0, Math.PI * 2, false);
     officeCtx.fillStyle = 'rgba(16, 185, 129, 0.12)';
     officeCtx.fill();
     officeCtx.strokeStyle = '#10B981';
     officeCtx.lineWidth = 1;
     officeCtx.stroke();
+    officeCtx.restore();
 
     officeCtx.fillStyle = '#3CD070';
     officeCtx.font = 'bold 8px monospace';
@@ -3964,13 +4161,17 @@
     ctx.fill();
 
     // Espalda / Hombros adultos en diagonal
-    ctx.fillStyle = est.suit;
+    ctx.save();
+    ctx.translate(pAgente.x, pAgente.y - 2 + pulse);
+    ctx.scale(1, 0.65);
     ctx.beginPath();
-    ctx.ellipse ? ctx.ellipse(pAgente.x, pAgente.y - 2 + pulse, 9, 6, -Math.PI / 6, 0, Math.PI * 2) : ctx.arc(pAgente.x, pAgente.y - 2 + pulse, 7, 0, Math.PI * 2);
+    ctx.arc(0, 0, 8, 0, Math.PI * 2, false);
+    ctx.fillStyle = est.suit;
     ctx.fill();
     ctx.strokeStyle = est.color;
     ctx.lineWidth = 1;
     ctx.stroke();
+    ctx.restore();
 
     // Cabeza vista desde arriba (cabello y perfil cenital)
     ctx.fillStyle = est.hair;
@@ -4141,6 +4342,14 @@
       renderOffice();
     }
   }, false);
+
+  // Auto-activación si la URL contiene ?tab=ia o ?tab=oficina o hash #oficina
+  var urlStr = window.location.href || '';
+  if (urlStr.indexOf('tab=ia') !== -1 || urlStr.indexOf('tab=oficina') !== -1 || window.location.hash === '#oficina' || window.location.hash === '#asistente') {
+    setTimeout(function () {
+      showAsistente();
+    }, 50);
+  }
 
 })();
 </script>

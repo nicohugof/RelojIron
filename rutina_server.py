@@ -10,6 +10,8 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import subprocess
+import re
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -24,6 +26,8 @@ TZ = ZoneInfo('America/Santiago')
 PANEL_API_URL = os.environ.get('PANEL_API_URL', 'https://panel.ironcross.cl').rstrip('/')
 IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
 NICOLA_API_URL = os.environ.get('NICOLA_API_URL', 'http://127.0.0.1:8088').rstrip('/')
+ANTIGRAVITY_INSTANCE = os.environ.get('ANTIGRAVITY_INSTANCE', 'macbook-air-de-nicolas-local-golden-planet')
+ANTIGRAVITY_REMOTE_URL = os.environ.get('ANTIGRAVITY_REMOTE_URL', 'https://antigravity.google.com')
 
 
 def nicola_chat_request(mensaje):
@@ -52,6 +56,45 @@ def nicola_historial_request():
             return resp.read().decode('utf-8')
     except Exception as e:
         return json.dumps({"status": "error", "error": str(e), "turns": []})
+
+
+def obtener_antigravity_status():
+    """Consulta el estado del demonio agy remote-control o devuelve los metadatos configurados."""
+    info = {
+        'ok': True,
+        'daemon_state': 'unknown',
+        'instance_name': ANTIGRAVITY_INSTANCE,
+        'remote_url': ANTIGRAVITY_REMOTE_URL,
+        'source': 'config',
+        'timestamp': datetime.now(TZ).strftime('%H:%M:%S')
+    }
+    try:
+        res = subprocess.run(
+            ['agy', 'remote-control', 'status'],
+            capture_output=True,
+            text=True,
+            timeout=2
+        )
+        out = (res.stdout or '') + (res.stderr or '')
+        if 'Daemon state = active' in out or 'Daemon state = running' in out:
+            info['daemon_state'] = 'active'
+            info['source'] = 'live_daemon'
+        elif 'not running' in out.lower():
+            info['daemon_state'] = 'stopped'
+            info['source'] = 'live_daemon'
+
+        m_inst = re.search(r'Instance name:\s*([^\s(]+)', out)
+        if m_inst:
+            info['instance_name'] = m_inst.group(1).strip()
+
+        m_url = re.search(r'(https?://[^\s)]+)', out)
+        if m_url:
+            info['remote_url'] = m_url.group(1).strip()
+    except Exception:
+        info['daemon_state'] = 'configured'
+        info['source'] = 'config'
+
+    return info
 
 # Candado de la pestaña OFICINA (2026-09-06): esa pestaña mostraba nombres de
 # alumnos, deuda y estado de pago a cualquiera en internet, sin pedir nada.
@@ -354,6 +397,23 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             except Exception:
                 pass
 
+        if parsed.path in ('/oficina', '/oficina.html'):
+            ruta = os.path.join(DIRECTORY, 'oficina.html')
+            try:
+                with open(ruta, 'rb') as f:
+                    body = f.read()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Content-Length', str(len(body)))
+                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                self.send_header('Pragma', 'no-cache')
+                self.send_header('Expires', '0')
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            except Exception:
+                pass
+
         if parsed.path == '/rutina.html' or parsed.path == '/rutina':
             fecha = qs.get('fecha', [hoy()])[0]
             if not es_fecha_valida(fecha):
@@ -446,6 +506,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        elif parsed.path == '/api/antigravity-status':
+            body = json.dumps(obtener_antigravity_status()).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
             self.end_headers()
             self.wfile.write(body)
         else:
