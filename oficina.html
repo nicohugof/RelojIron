@@ -682,11 +682,11 @@
         actions.className = 'task-actions';
 
         if (columna === 'pendiente') {
-          var btnPlay = document.createElement('button');
-          btnPlay.className = 'btn-action-task btn-move-play';
-          btnPlay.appendChild(document.createTextNode('▶ Iniciar'));
-          btnPlay.addEventListener('click', function () { moverTarea(task.id, 'En progreso'); }, false);
-          actions.appendChild(btnPlay);
+          var btnExec = document.createElement('button');
+          btnExec.className = 'btn-action-task btn-move-play';
+          btnExec.appendChild(document.createTextNode('⚡ Enviar a Agente'));
+          btnExec.addEventListener('click', function () { ejecutarTarea(task.id, card); }, false);
+          actions.appendChild(btnExec);
 
           var btnPause = document.createElement('button');
           btnPause.className = 'btn-action-task btn-move-pause';
@@ -694,6 +694,12 @@
           btnPause.addEventListener('click', function () { moverTarea(task.id, 'En pausa'); }, false);
           actions.appendChild(btnPause);
         } else if (columna === 'curso') {
+          var btnExec2 = document.createElement('button');
+          btnExec2.className = 'btn-action-task btn-move-play';
+          btnExec2.appendChild(document.createTextNode('⚡ Re-ejecutar'));
+          btnExec2.addEventListener('click', function () { ejecutarTarea(task.id, card); }, false);
+          actions.appendChild(btnExec2);
+
           var btnPausar = document.createElement('button');
           btnPausar.className = 'btn-action-task btn-move-pause';
           btnPausar.appendChild(document.createTextNode('⏸ Pausar'));
@@ -721,10 +727,63 @@
 
         footer.appendChild(actions);
         card.appendChild(footer);
+
+        // Si la tarea tiene evidencia o respuesta previa del agente, mostrarla
+        if (task.evidencia && task.evidencia.resultado) {
+          var boxRes = document.createElement('div');
+          boxRes.style.marginTop = '8px';
+          boxRes.style.padding = '8px 10px';
+          boxRes.style.background = '#0B132B';
+          boxRes.style.borderLeft = '3px solid #10B981';
+          boxRes.style.borderRadius = '4px';
+          boxRes.style.fontSize = '11px';
+          boxRes.style.color = '#A7F3D0';
+          boxRes.style.lineHeight = '1.4';
+          boxRes.appendChild(document.createTextNode(task.evidencia.resultado));
+          card.appendChild(boxRes);
+        }
+
         container.appendChild(card);
       })(lista[i]);
     }
   }
+
+  window.ejecutarTarea = function (id, cardEl) {
+    var statusEl = document.createElement('div');
+    statusEl.style.marginTop = '8px';
+    statusEl.style.padding = '6px 10px';
+    statusEl.style.background = '#1E293B';
+    statusEl.style.color = '#38BDF8';
+    statusEl.style.borderRadius = '4px';
+    statusEl.style.fontSize = '11px';
+    statusEl.appendChild(document.createTextNode('⏳ Enviando instrucción al agente...'));
+    cardEl.appendChild(statusEl);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/tasks/' + id + '/execute', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            var resTxt = (data.evidencia && data.evidencia.resultado) || 'Tarea procesada por el agente.';
+            statusEl.style.background = '#064E3B';
+            statusEl.style.color = '#A7F3D0';
+            statusEl.innerHTML = '<strong>✓ Resultado:</strong> ' + resTxt;
+            // Recargar para sincronizar estado
+            setTimeout(cargarTareas, 1200);
+          } catch (e) {
+            statusEl.innerHTML = '✓ Orden enviada al agente.';
+          }
+        } else {
+          statusEl.style.color = '#FECACA';
+          statusEl.innerHTML = 'Error enviando al agente (' + xhr.status + ')';
+        }
+      }
+    };
+    xhr.send(JSON.stringify({}));
+  };
 
   window.moverTarea = function (id, nuevoEstado) {
     var encontrada = null;

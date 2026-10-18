@@ -802,6 +802,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             self.end_headers()
             self.wfile.write(body)
+        elif parsed.path.startswith('/api/tasks/') and parsed.path.endswith('/execute'):
+            partes = parsed.path.split('/')
+            tarea_id = partes[3] if len(partes) >= 4 else ''
+            url = f"{NICOLA_DASHBOARD_URL}/api/tasks/{tarea_id}/execute"
+            req = urllib.request.Request(url, data=b'{}', headers={'Content-Type': 'application/json'}, method='POST')
+            try:
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    body = resp.read()
+            except Exception as e:
+                body = json.dumps({"status": "error", "error": str(e)}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.end_headers()
+            self.wfile.write(body)
         else:
             self.send_response(404)
             self.end_headers()
