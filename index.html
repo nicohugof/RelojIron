@@ -1435,11 +1435,11 @@
     white-space: nowrap;
   }
 
-  /* antigravity remote control view (iPad 1 ES5) */
+  /* antigravity remote control view (iPad 1 ES5 + Mobile responsive) */
   #remotoView {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 12px 16px;
+    padding: 12px 14px;
     background: #0A0A09;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
@@ -1450,19 +1450,12 @@
     padding: 12px 14px;
     margin-bottom: 12px;
   }
-  .remotoHeaderRow {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    margin-bottom: 8px;
-  }
   .remotoHeaderTitle {
-    display: table-cell;
-    vertical-align: middle;
     font-size: 13px;
     font-weight: bold;
     color: #EDE9DF;
     letter-spacing: 2px;
+    margin-bottom: 8px;
   }
   .remotoHeaderBadge {
     display: inline-block;
@@ -1475,43 +1468,55 @@
     border: 1px solid #3CD070;
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    margin-left: 8px;
-  }
-  .remotoHeaderActions {
-    display: table-cell;
-    text-align: right;
-    vertical-align: middle;
-    width: 320px;
-  }
-  .remotoActionBtn {
-    display: inline-block;
-    padding: 6px 12px;
-    background: #C23B22;
-    color: #EDE9DF;
-    font-weight: bold;
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-decoration: none;
-    border: 1px solid #E04428;
-    cursor: pointer;
     margin-left: 6px;
   }
-  .remotoActionBtnSecondary {
+  .remotoBtnLaunch {
+    display: block;
+    width: 100%;
+    padding: 14px 10px;
+    background: #C23B22;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid #E04428;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin: 10px 0 6px 0;
+    cursor: pointer;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  .remotoBtnLaunch:active, .remotoBtnLaunch:hover {
+    background: #D94528;
+  }
+  .remotoRefreshBtnSm {
+    display: inline-block;
+    padding: 4px 10px;
     background: #1E1D19;
-    color: #C2BBB0;
-    border-color: #3A3830;
+    color: #A39E93;
+    border: 1px solid #3A3830;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 4px;
   }
   .remotoInfoGrid {
     display: table;
     width: 100%;
     table-layout: fixed;
-    margin-top: 6px;
+    margin-top: 10px;
     font-size: 11px;
-    color: #A39E93;
+    border-top: 1px solid #222;
+    padding-top: 8px;
   }
   .remotoInfoCell {
     display: table-cell;
     padding: 4px 6px;
+    vertical-align: top;
   }
   .remotoInfoLabel {
     color: #7A7568;
@@ -1525,35 +1530,22 @@
     color: #EDE9DF;
     font-weight: bold;
     font-family: monospace;
-    font-size: 12px;
-  }
-  #remotoFrameWrap {
-    width: 100%;
-    height: 380px;
-    border: 1px solid #2A2A26;
-    background: #0D0E11;
-    position: relative;
-    margin-bottom: 12px;
-  }
-  #antigravityFrame {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #0D0E11;
+    font-size: 11px;
+    word-break: break-all;
   }
   .remotoNotice {
-    padding: 8px 12px;
+    padding: 10px 12px;
     background: #171512;
-    border-left: 3px solid #E09030;
+    border-left: 3px solid #38BDF8;
     color: #C2BBB0;
-    font-size: 11px;
-    line-height: 16px;
+    font-size: 12px;
+    line-height: 17px;
     margin-bottom: 12px;
   }
   #remotoConsoleWrap {
     background: #080A10;
     border: 1px solid #1E293B;
-    padding: 10px 12px;
+    padding: 12px;
     margin-bottom: 20px;
   }
   #remotoConsoleTitle {
@@ -1854,16 +1846,14 @@
   <!-- 7. ANTIGRAVITY REMOTE CONTROL -->
   <div id="remotoView" style="display:none;">
     <div class="remotoCard">
-      <div class="remotoHeaderRow">
-        <div class="remotoHeaderTitle">
-          <span>●</span> ANTIGRAVITY REMOTE CONTROL
-          <span id="remotoStatusBadge" class="remotoHeaderBadge">VERIFICANDO...</span>
-        </div>
-        <div class="remotoHeaderActions">
-          <a id="remotoExternalBtn" href="https://antigravity.google.com" target="_blank" class="remotoActionBtn">ABRIR PÁGINA REMOTA ↗</a>
-          <span id="remotoRefreshBtn" class="remotoActionBtn remotoActionBtnSecondary">ACTUALIZAR</span>
-        </div>
+      <div class="remotoHeaderTitle">
+        <span>●</span> ANTIGRAVITY REMOTE CONTROL
+        <span id="remotoStatusBadge" class="remotoHeaderBadge">VERIFICANDO...</span>
       </div>
+      <a id="remotoExternalBtn" href="https://antigravity.google.com" target="_blank" class="remotoBtnLaunch">
+        🚀 ABRIR EN ANTIGRAVITY.GOOGLE.COM ↗
+      </a>
+      <span id="remotoRefreshBtn" class="remotoRefreshBtnSm">⟳ ACTUALIZAR ESTADO</span>
       <div class="remotoInfoGrid">
         <div class="remotoInfoCell">
           <span class="remotoInfoLabel">MÁQUINA / INSTANCIA</span>
@@ -1881,12 +1871,8 @@
     </div>
 
     <div class="remotoNotice">
-      <strong>Aviso de compatibilidad iPad 1 (Safari iOS 5.1.1):</strong>
-      Google Antigravity opera bajo HTTPS con cifrado moderno TLS 1.3 y políticas de origen seguro. Si el visor web inferior no carga debido a las restricciones de cifrado del iPad 1, pulsa <strong>"ABRIR PÁGINA REMOTA ↗"</strong> para lanzarlo directamente en una pestaña de navegador o utiliza a continuación la <strong>Consola Remota por Conector de Lenguaje</strong>.
-    </div>
-
-    <div id="remotoFrameWrap">
-      <iframe id="antigravityFrame" src="https://antigravity.google.com"></iframe>
+      <strong>Aviso de seguridad y acceso móvil:</strong>
+      Google prohíbe incrustar Antigravity en marcos internos (Error 403 por seguridad <code>X-Frame-Options</code>). Pulsa <strong>"🚀 ABRIR EN ANTIGRAVITY.GOOGLE.COM ↗"</strong> para acceder a la interfaz oficial de Google con tu cuenta. Para controlar sesiones sin salir de RelojIron, usa la <strong>Consola Remota por Lenguaje</strong> a continuación.
     </div>
 
     <!-- Consola Remota por Lenguaje -->
@@ -4432,7 +4418,6 @@
   var remotoInstanceName = document.getElementById('remotoInstanceName');
   var remotoUrl = document.getElementById('remotoUrl');
   var remotoDaemonText = document.getElementById('remotoDaemonText');
-  var antigravityFrame = document.getElementById('antigravityFrame');
   var remotoConsoleLog = document.getElementById('remotoConsoleLog');
   var remotoInput = document.getElementById('remotoInput');
   var remotoSendBtn = document.getElementById('remotoSendBtn');
@@ -4464,7 +4449,6 @@
             if (remotoInstanceName) { remotoInstanceName.innerHTML = inst; }
             if (remotoUrl) { remotoUrl.innerHTML = url; }
             if (remotoExternalBtn) { remotoExternalBtn.href = url; }
-            if (antigravityFrame && !antigravityFrame.src) { antigravityFrame.src = url; }
 
             if (st === 'active' || st === 'running') {
               if (remotoStatusBadge) {
