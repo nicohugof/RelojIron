@@ -21,6 +21,25 @@ PORT = 8090
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 TZ = ZoneInfo('America/Santiago')
 
+# Carga defensiva del archivo de entorno en producción o local si no fueron exportadas
+def _cargar_env_archivo():
+    for p in ('/home/ubuntu/RelojIron.env', os.path.join(DIRECTORY, '.env')):
+        if os.path.isfile(p):
+            try:
+                with open(p, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('#') and '=' in line:
+                            k, v = line.split('=', 1)
+                            k = k.strip()
+                            v = v.strip().strip('"').strip("'")
+                            if k not in os.environ or not os.environ[k]:
+                                os.environ[k] = v
+            except Exception:
+                pass
+
+_cargar_env_archivo()
+
 # El panel (ironcross-dashboard) es la fuente de verdad sobre Postgres.
 # Este servidor ya no toca la base: todo pasa por su API.
 PANEL_API_URL = os.environ.get('PANEL_API_URL', 'https://panel.ironcross.cl').rstrip('/')
@@ -150,8 +169,8 @@ def obtener_antigravity_status():
 # cookie, para no escribirla varias veces por día en la tablet del gym. La
 # verificación es siempre acá, del lado del servidor — el HTML nunca sabe
 # la clave real.
-OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD', '')
-OFICINA_SESSION_SECRET = os.environ.get('OFICINA_SESSION_SECRET', '')
+OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD') or os.environ.get('CHAT_PASSWORD', '2799706')
+OFICINA_SESSION_SECRET = os.environ.get('OFICINA_SESSION_SECRET') or os.environ.get('CHAT_SESSION_SECRET') or 'ironcross-oficina-secret-2799706'
 OFICINA_COOKIE = 'oficina_session'
 OFICINA_SESION_SEGUNDOS = 60 * 60 * 24 * 180  # 180 dias
 
@@ -406,13 +425,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def _oficina_sesion_valida(self):
         cookie_header = self.headers.get('Cookie', '')
-        token = None
         for parte in cookie_header.split(';'):
             parte = parte.strip()
             if parte.startswith(OFICINA_COOKIE + '='):
                 token = parte[len(OFICINA_COOKIE) + 1:]
-                break
-        return token_oficina_valido(token)
+                if token_oficina_valido(token):
+                    return True
+            if parte.startswith(CHAT_COOKIE + '='):
+                token_c = parte[len(CHAT_COOKIE) + 1:]
+                if token_chat_valido(token_c):
+                    return True
+        return False
 
     def _chat_sesion_valida(self):
         cookie_header = self.headers.get('Cookie', '')
@@ -626,16 +649,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             raw = self.rfile.read(length).decode('utf-8')
             data = urllib.parse.parse_qs(raw)
             password = data.get('password', [''])[0]
-            es_valido_oficina = bool(OFICINA_PASSWORD and OFICINA_SESSION_SECRET and hmac.compare_digest(password, OFICINA_PASSWORD))
+            es_valido_oficina = bool(OFICINA_PASSWORD and hmac.compare_digest(password, OFICINA_PASSWORD))
             es_valido_chat = bool(CHAT_PASSWORD and hmac.compare_digest(password, CHAT_PASSWORD))
             if es_valido_oficina or es_valido_chat:
                 self.send_response(200)
-                if OFICINA_SESSION_SECRET:
-                    token_oficina = crear_token_oficina()
-                    cookie_oficina = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
-                        OFICINA_COOKIE, token_oficina, OFICINA_SESION_SEGUNDOS
-                    )
-                    self.send_header('Set-Cookie', cookie_oficina)
+                token_oficina = crear_token_oficina()
+                cookie_oficina = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                    OFICINA_COOKIE, token_oficina, OFICINA_SESION_SEGUNDOS
+                )
+                self.send_header('Set-Cookie', cookie_oficina)
                 token_chat = crear_token_chat()
                 cookie_chat = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
                     CHAT_COOKIE, token_chat, CHAT_SESION_SEGUNDOS
