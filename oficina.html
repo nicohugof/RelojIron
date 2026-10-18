@@ -25,17 +25,17 @@
       overflow-x: hidden;
     }
     .wrapper {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
-    /* Barra Superior Ejecutiva */
+    /* Barra Superior */
     .header-bar {
       background-color: #111726;
       border: 1px solid #1E293B;
       border-radius: 12px;
       padding: 12px 16px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       display: -webkit-flex;
       justify-content: space-between;
@@ -99,22 +99,36 @@
       color: #C7D2FE;
     }
 
+    /* Toast de Notificación Visual (Explica dónde fue la tarea) */
+    #actionToast {
+      display: none;
+      background-color: #064E3B;
+      border: 1px solid #10B981;
+      color: #ECFDF5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
     /* Resumen de Métricas Rápidas */
     .kpi-bar {
       display: flex;
       display: -webkit-flex;
-      gap: 10px;
-      margin-bottom: 14px;
+      gap: 8px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
     .kpi-card {
       flex: 1;
       -webkit-flex: 1;
-      min-width: 140px;
+      min-width: 120px;
       background-color: #111726;
       border: 1px solid #1E293B;
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 8px 12px;
+      cursor: pointer;
     }
     .kpi-label {
       font-size: 11px;
@@ -124,7 +138,7 @@
       letter-spacing: 0.5px;
     }
     .kpi-value {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 900;
       color: #FFFFFF;
       margin-top: 2px;
@@ -132,6 +146,7 @@
     .kpi-curso { border-left: 4px solid #10B981; }
     .kpi-pausa { border-left: 4px solid #F59E0B; }
     .kpi-por-hacer { border-left: 4px solid #3B82F6; }
+    .kpi-hechas { border-left: 4px solid #8B5CF6; }
 
     /* Barra Rápida de Creación de Trabajo */
     .create-bar {
@@ -139,7 +154,7 @@
       border: 1px solid #1E293B;
       border-radius: 10px;
       padding: 10px 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       display: -webkit-flex;
       gap: 8px;
@@ -150,9 +165,9 @@
       background-color: #0A0D14;
       border: 1px solid #334155;
       border-radius: 8px;
-      padding: 10px 14px;
+      padding: 9px 12px;
       color: #FFFFFF;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
     }
     .input-task:focus {
@@ -164,7 +179,7 @@
       border-radius: 8px;
       padding: 0 10px;
       color: #E2E8F0;
-      font-size: 13px;
+      font-size: 12px;
       outline: none;
     }
     .btn-create {
@@ -172,26 +187,23 @@
       color: #052E16;
       border: 0;
       border-radius: 8px;
-      padding: 0 18px;
+      padding: 0 16px;
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
     }
-    .btn-create:hover, .btn-create:active {
-      background-color: #34D399;
-    }
 
-    /* Selector de pestañas para celular */
+    /* Pestañas para Móvil */
     .mobile-tab-bar {
       display: none;
-      gap: 6px;
+      gap: 4px;
       margin-bottom: 12px;
     }
     .mobile-tab-btn {
       flex: 1;
       -webkit-flex: 1;
-      padding: 10px 6px;
-      font-size: 12px;
+      padding: 10px 4px;
+      font-size: 11px;
       font-weight: 800;
       background-color: #111726;
       color: #94A3B8;
@@ -206,11 +218,11 @@
       border-color: #10B981;
     }
 
-    /* Columnas CRM (Tablero de 3 Columnas) */
+    /* Columnas CRM */
     .board-grid {
       display: flex;
       display: -webkit-flex;
-      gap: 14px;
+      gap: 12px;
       align-items: flex-start;
       -webkit-align-items: flex-start;
     }
@@ -221,7 +233,7 @@
       background-color: #0F1422;
       border: 1px solid #1E293B;
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
     }
     .column-header {
       display: flex;
@@ -230,12 +242,12 @@
       -webkit-justify-content: space-between;
       align-items: center;
       -webkit-align-items: center;
-      padding-bottom: 10px;
-      margin-bottom: 12px;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
       border-bottom: 2px solid #1E293B;
     }
     .col-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -248,24 +260,23 @@
     .col-badge {
       background-color: #1E293B;
       color: #E2E8F0;
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 12px;
       font-size: 11px;
       font-weight: 800;
     }
 
-    /* Acentos por Columna */
+    /* Colores por columna */
     .col-curso .column-header { border-bottom-color: #10B981; }
     .col-curso .col-title { color: #34D399; }
     .col-pausa .column-header { border-bottom-color: #F59E0B; }
     .col-pausa .col-title { color: #FBBF24; }
     .col-por-hacer .column-header { border-bottom-color: #3B82F6; }
     .col-por-hacer .col-title { color: #60A5FA; }
+    .col-hechas .column-header { border-bottom-color: #8B5CF6; }
+    .col-hechas .col-title { color: #C4B5FD; }
 
-    /* Tarjetas de Tarea (Cards) */
-    .task-list {
-      min-height: 120px;
-    }
+    /* Tarjetas de Tarea */
     .task-card {
       background-color: #151C2C;
       border: 1px solid #243048;
@@ -273,11 +284,8 @@
       padding: 12px 14px;
       margin-bottom: 10px;
     }
-    .task-card:hover {
-      border-color: #38BDF8;
-    }
     .task-title {
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 700;
       color: #FFFFFF;
       margin-bottom: 6px;
@@ -286,9 +294,11 @@
     .task-desc {
       font-size: 12px;
       color: #94A3B8;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       line-height: 1.4;
     }
+
+    /* Pie de tarjeta */
     .task-footer {
       display: flex;
       display: -webkit-flex;
@@ -307,9 +317,7 @@
       align-items: center;
       -webkit-align-items: center;
       gap: 6px;
-      flex-wrap: wrap;
     }
-    /* Badge de agente chiquitito (como pidió el usuario) */
     .agent-tag {
       font-size: 10px;
       font-weight: 700;
@@ -319,7 +327,6 @@
       color: #E2E8F0;
       border: 1px solid #334155;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
     }
     .agent-glenn { background-color: #064E3B; color: #A7F3D0; border-color: #059669; }
     .agent-ironbot { background-color: #451A03; color: #FED7AA; border-color: #D97706; }
@@ -328,18 +335,7 @@
     .agent-zauron { background-color: #083344; color: #A5F3FC; border-color: #0891B2; }
     .agent-morfeo { background-color: #3B0764; color: #E9D5FF; border-color: #9333EA; }
 
-    .tag-priority {
-      font-size: 9.5px;
-      font-weight: 800;
-      padding: 2px 5px;
-      border-radius: 3px;
-      text-transform: uppercase;
-    }
-    .priority-alta { background-color: #450A0A; color: #FECACA; }
-    .priority-media { background-color: #1E293B; color: #94A3B8; }
-    .priority-baja { background-color: #0F172A; color: #64748B; }
-
-    /* Botones de Acción de 1 Toque */
+    /* Botones de Acción */
     .task-actions {
       display: flex;
       display: -webkit-flex;
@@ -352,7 +348,7 @@
       border-radius: 5px;
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 4px 8px;
       cursor: pointer;
     }
     .btn-action-task:hover, .btn-action-task:active {
@@ -375,16 +371,36 @@
       border-color: #4338CA;
     }
 
+    /* Caja de Informe Real del Agente */
+    .agent-evidence-box {
+      margin-top: 10px;
+      padding: 9px 12px;
+      background-color: #091A1E;
+      border-left: 3px solid #10B981;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #A7F3D0;
+      line-height: 1.45;
+    }
+    .evidence-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #34D399;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
     .empty-state {
-      padding: 28px 12px;
+      padding: 24px 12px;
       text-align: center;
       color: #64748B;
       font-size: 12px;
       font-style: italic;
     }
 
-    /* Adaptabilidad Móvil */
-    @media (max-width: 820px) {
+    /* Móvil */
+    @media (max-width: 900px) {
       .mobile-tab-bar {
         display: flex;
         display: -webkit-flex;
@@ -411,7 +427,7 @@
       <span class="status-dot"></span>
       <div>
         <div class="main-title">NICOLA OS · CONTROL DE TRABAJOS (CRM)</div>
-        <span class="main-sub">Seguimiento en tiempo real de tareas en curso, en pausa y por realizar</span>
+        <span class="main-sub">Seguimiento de tareas en curso, en pausa, por realizar y entregas completadas</span>
       </div>
     </div>
     <div class="header-actions">
@@ -420,44 +436,52 @@
     </div>
   </div>
 
-  <!-- Métricas Rápidas -->
+  <!-- Toast informativo que le dice a Nicolás qué pasó con la tarea -->
+  <div id="actionToast"></div>
+
+  <!-- Resumen de Contadores Rápidos -->
   <div class="kpi-bar">
-    <div class="kpi-card kpi-curso">
-      <div class="kpi-label">🟢 Realizándose Ahora</div>
+    <div class="kpi-card kpi-curso" onclick="cambiarColumna('curso');">
+      <div class="kpi-label">🟢 En Curso</div>
       <div class="kpi-value" id="kpiCursoCount">0</div>
     </div>
-    <div class="kpi-card kpi-pausa">
-      <div class="kpi-label">⏸️ En Pausa / Esperando</div>
+    <div class="kpi-card kpi-pausa" onclick="cambiarColumna('pausa');">
+      <div class="kpi-label">⏸️ En Pausa</div>
       <div class="kpi-value" id="kpiPausaCount">0</div>
     </div>
-    <div class="kpi-card kpi-por-hacer">
-      <div class="kpi-label">📋 Por Realizar (En Cola)</div>
+    <div class="kpi-card kpi-por-hacer" onclick="cambiarColumna('por-hacer');">
+      <div class="kpi-label">📋 Por Hacer</div>
       <div class="kpi-value" id="kpiPendienteCount">0</div>
+    </div>
+    <div class="kpi-card kpi-hechas" onclick="cambiarColumna('hechas');">
+      <div class="kpi-label">✅ Entregas</div>
+      <div class="kpi-value" id="kpiCompletadaCount">0</div>
     </div>
   </div>
 
-  <!-- Barra Rápida para Agregar Trabajo en 1 Paso -->
+  <!-- Barra de Creación Rápida -->
   <div class="create-bar">
     <input type="text" id="newTaskInput" class="input-task" placeholder="Escribe un nuevo trabajo a realizar..." autocomplete="off">
     <select id="newTaskAgent" class="select-agent">
-      <option value="mario">Mario (Copiloto)</option>
       <option value="glenn">Glenn (Finanzas)</option>
       <option value="ironbot">IronBot (Coach)</option>
       <option value="buzz">Buzz (Ventas)</option>
+      <option value="mario">Mario (Copiloto)</option>
       <option value="zauron">Zauron (Forense)</option>
       <option value="morfeo">Morfeo (Comandante)</option>
     </select>
     <button class="btn-create" id="btnCreateTask">+ AGREGAR</button>
   </div>
 
-  <!-- Selector para Celulares -->
+  <!-- Pestañas para Celulares -->
   <div class="mobile-tab-bar" id="mobileTabBar">
-    <button class="mobile-tab-btn active" onclick="cambiarColumnaMovil('curso');">🟢 EN CURSO (<span id="mobCountCurso">0</span>)</button>
-    <button class="mobile-tab-btn" onclick="cambiarColumnaMovil('pausa');">⏸️ EN PAUSA (<span id="mobCountPausa">0</span>)</button>
-    <button class="mobile-tab-btn" onclick="cambiarColumnaMovil('por-hacer');">📋 POR HACER (<span id="mobCountPend">0</span>)</button>
+    <button class="mobile-tab-btn active" id="btnTabCurso" onclick="cambiarColumna('curso');">🟢 EN CURSO (<span id="mobCountCurso">0</span>)</button>
+    <button class="mobile-tab-btn" id="btnTabPausa" onclick="cambiarColumna('pausa');">⏸️ EN PAUSA (<span id="mobCountPausa">0</span>)</button>
+    <button class="mobile-tab-btn" id="btnTabPend" onclick="cambiarColumna('por-hacer');">📋 POR HACER (<span id="mobCountPend">0</span>)</button>
+    <button class="mobile-tab-btn" id="btnTabDone" onclick="cambiarColumna('hechas');">✅ ENTREGAS (<span id="mobCountDone">0</span>)</button>
   </div>
 
-  <!-- Las 3 Columnas Clave del CRM -->
+  <!-- Tablero de 4 Columnas -->
   <div class="board-grid">
     <!-- 1. REALIZÁNDOSE AHORA -->
     <div class="board-column col-curso active-col" id="colCurso">
@@ -470,7 +494,7 @@
       </div>
     </div>
 
-    <!-- 2. EN PAUSA / BLOQUEADOS -->
+    <!-- 2. EN PAUSA -->
     <div class="board-column col-pausa" id="colPausa">
       <div class="column-header">
         <div class="col-title">⏸️ En Pausa / Esperando</div>
@@ -481,100 +505,37 @@
       </div>
     </div>
 
-    <!-- 3. POR REALIZAR / SIGUIENTES -->
+    <!-- 3. POR REALIZAR -->
     <div class="board-column col-por-hacer" id="colPorHacer">
       <div class="column-header">
-        <div class="col-title">📋 Por Realizar</div>
+        <div class="col-title">📋 Por Realizar (En Cola)</div>
         <span class="col-badge" id="badgePorHacer">0</span>
       </div>
       <div class="task-list" id="listPorHacer">
         <div class="empty-state">No hay trabajos pendientes.</div>
       </div>
     </div>
+
+    <!-- 4. COMPLETADAS / ENTREGAS -->
+    <div class="board-column col-hechas" id="colHechas">
+      <div class="column-header">
+        <div class="col-title">✅ Entregas Completadas</div>
+        <span class="col-badge" id="badgeHechas">0</span>
+      </div>
+      <div class="task-list" id="listHechas">
+        <div class="empty-state">No hay entregas completadas todavía.</div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-// Motor de CRM / Kanban 100% Compatible con ES5 (iOS 5.1.1 en iPad 1 y Celulares Modernos)
 (function () {
   var tareasState = {
     curso: [],
     pausa: [],
-    pendiente: []
-  };
-
-  // Datos base garantizados si la red o el backend tardan en responder
-  var fallbackData = {
-    curso: [
-      {
-        id: "fb_1",
-        titulo: "Cobros y conciliación bancaria mensual",
-        descripcion: "Glenn supervisando ingresos, regla de 3 cubos y meta de ahorro.",
-        agente: "glenn",
-        prioridad: "alta",
-        proyecto: "Finanzas"
-      },
-      {
-        id: "fb_2",
-        titulo: "Reactivación de 5 atletas en pausa ($504.550 CLP latente)",
-        descripcion: "IronBot preparando mensaje personalizado de técnica y vuelta progresiva.",
-        agente: "ironbot",
-        prioridad: "alta",
-        proyecto: "Ironcross"
-      },
-      {
-        id: "fb_3",
-        titulo: "Calificación de nuevos leads en WhatsApp",
-        descripcion: "Buzz respondiendo a personas interesadas en planes 2026.",
-        agente: "buzz",
-        prioridad: "media",
-        proyecto: "Ironcross"
-      }
-    ],
-    pausa: [
-      {
-        id: "fb_4",
-        titulo: "Aprobación de compra de implementación para el gym",
-        descripcion: "Glenn: Esperando confirmación explícita (AUTORIZO) de Nicolás.",
-        agente: "glenn",
-        prioridad: "media",
-        proyecto: "Finanzas"
-      },
-      {
-        id: "fb_5",
-        titulo: "Guía de movilidad escapular para hombro/SLAP",
-        descripcion: "IronBot: estructuración de pautas técnicas para atletas en rehabilitación.",
-        agente: "ironbot",
-        prioridad: "baja",
-        proyecto: "Ironcross"
-      }
-    ],
-    pendiente: [
-      {
-        id: "fb_6",
-        titulo: "Brief matutino de finanzas familiares a las 06:00 AM",
-        descripcion: "Glenn y Mario: resumen de saldo y meta mensual despachado a WhatsApp.",
-        agente: "glenn",
-        prioridad: "alta",
-        proyecto: "Familia"
-      },
-      {
-        id: "fb_7",
-        titulo: "Revisión forense de comprobantes no reconocidos",
-        descripcion: "Zauron: búsqueda en correo IMAP e indexación de transferencias pendientes.",
-        agente: "zauron",
-        prioridad: "media",
-        proyecto: "Nicola OS"
-      },
-      {
-        id: "fb_8",
-        titulo: "Priorización semanal del Consejo Asesor",
-        descripcion: "Morfeo: consolidación de directrices operativas sin parálisis de decisión.",
-        agente: "morfeo",
-        prioridad: "media",
-        proyecto: "Nicola OS"
-      }
-    ]
+    pendiente: [],
+    completada: []
   };
 
   function normalizarAgente(ag) {
@@ -596,33 +557,46 @@
     return 'Mario';
   }
 
+  function mostrarToast(mensaje) {
+    var toast = document.getElementById('actionToast');
+    if (!toast) return;
+    toast.innerHTML = mensaje;
+    toast.style.display = 'block';
+    setTimeout(function () {
+      toast.style.display = 'none';
+    }, 4500);
+  }
+
   function renderizarBoard() {
     var listCurso = document.getElementById('listCurso');
     var listPausa = document.getElementById('listPausa');
     var listPorHacer = document.getElementById('listPorHacer');
+    var listHechas = document.getElementById('listHechas');
 
     var cCount = tareasState.curso.length;
     var pCount = tareasState.pausa.length;
     var pendCount = tareasState.pendiente.length;
+    var dCount = tareasState.completada.length;
 
     document.getElementById('kpiCursoCount').innerHTML = cCount;
     document.getElementById('kpiPausaCount').innerHTML = pCount;
     document.getElementById('kpiPendienteCount').innerHTML = pendCount;
+    document.getElementById('kpiCompletadaCount').innerHTML = dCount;
 
     document.getElementById('badgeCurso').innerHTML = cCount;
     document.getElementById('badgePausa').innerHTML = pCount;
     document.getElementById('badgePorHacer').innerHTML = pendCount;
+    document.getElementById('badgeHechas').innerHTML = dCount;
 
     document.getElementById('mobCountCurso').innerHTML = cCount;
     document.getElementById('mobCountPausa').innerHTML = pCount;
     document.getElementById('mobCountPend').innerHTML = pendCount;
+    document.getElementById('mobCountDone').innerHTML = dCount;
 
-    // 1. Render En Curso
     renderLista(listCurso, tareasState.curso, 'curso');
-    // 2. Render En Pausa
     renderLista(listPausa, tareasState.pausa, 'pausa');
-    // 3. Render Por Hacer
     renderLista(listPorHacer, tareasState.pendiente, 'pendiente');
+    renderLista(listHechas, tareasState.completada, 'completada');
   }
 
   function renderLista(container, lista, columna) {
@@ -630,7 +604,7 @@
     if (!lista || lista.length === 0) {
       var emp = document.createElement('div');
       emp.className = 'empty-state';
-      emp.appendChild(document.createTextNode('Sin trabajos registrados en esta sección.'));
+      emp.appendChild(document.createTextNode('Sin trabajos en esta sección.'));
       container.appendChild(emp);
       return;
     }
@@ -640,13 +614,13 @@
         var card = document.createElement('div');
         card.className = 'task-card';
 
-        // Título de la Tarea (Grande y Visible)
+        // Título del Trabajo
         var title = document.createElement('div');
         title.className = 'task-title';
         title.appendChild(document.createTextNode(task.titulo || 'Sin título'));
         card.appendChild(title);
 
-        // Detalle de qué se está realizando
+        // Detalle
         if (task.descripcion) {
           var desc = document.createElement('div');
           desc.className = 'task-desc';
@@ -654,95 +628,122 @@
           card.appendChild(desc);
         }
 
-        // Pie de tarjeta con Agente chiquitito y botones
+        // Si tiene evidencia o informe del agente, mostrarlo claramente
+        var evidenciaObj = task.evidencia;
+        if (typeof evidenciaObj === 'string') {
+          try { evidenciaObj = JSON.parse(evidenciaObj); } catch (e) {}
+        }
+        if (evidenciaObj && evidenciaObj.resultado) {
+          var boxEv = document.createElement('div');
+          boxEv.className = 'agent-evidence-box';
+          var lbl = document.createElement('div');
+          lbl.className = 'evidence-label';
+          lbl.appendChild(document.createTextNode('⚡ INFORME GENERADO POR EL AGENTE:'));
+          boxEv.appendChild(lbl);
+          boxEv.appendChild(document.createTextNode(evidenciaObj.resultado));
+          card.appendChild(boxEv);
+        }
+
+        // Pie de tarjeta
         var footer = document.createElement('div');
         footer.className = 'task-footer';
 
         var meta = document.createElement('div');
         meta.className = 'task-meta';
 
-        // Badge chiquitito del agente responsable
         var agKey = normalizarAgente(task.agente || task.agente_responsable);
         var tagAgent = document.createElement('span');
         tagAgent.className = 'agent-tag agent-' + agKey;
         tagAgent.appendChild(document.createTextNode('👤 ' + getAgentName(agKey)));
         meta.appendChild(tagAgent);
 
-        // Badge de Prioridad
-        var prio = (task.prioridad || 'media').toLowerCase();
-        var tagPrio = document.createElement('span');
-        tagPrio.className = 'tag-priority priority-' + prio;
-        tagPrio.appendChild(document.createTextNode(prio));
-        meta.appendChild(tagPrio);
-
         footer.appendChild(meta);
 
-        // Botones de Acción de 1 Toque para Mover
+        // Botones de Acción
         var actions = document.createElement('div');
         actions.className = 'task-actions';
 
         if (columna === 'pendiente') {
-          var btnExec = document.createElement('button');
-          btnExec.className = 'btn-action-task btn-move-play';
-          btnExec.appendChild(document.createTextNode('⚡ Enviar a Agente'));
-          btnExec.addEventListener('click', function () { ejecutarTarea(task.id, card); }, false);
-          actions.appendChild(btnExec);
+          var btnPlay = document.createElement('button');
+          btnPlay.className = 'btn-action-task btn-move-play';
+          btnPlay.appendChild(document.createTextNode('▶ Iniciar'));
+          btnPlay.addEventListener('click', function () {
+            moverTarea(task.id, 'En progreso');
+            mostrarToast('✓ Trabajo movido a <strong>🟢 EN CURSO</strong>. Mostrando esa pestaña ahora...');
+            cambiarColumna('curso');
+          }, false);
+          actions.appendChild(btnPlay);
 
           var btnPause = document.createElement('button');
           btnPause.className = 'btn-action-task btn-move-pause';
           btnPause.appendChild(document.createTextNode('⏸ Pausar'));
-          btnPause.addEventListener('click', function () { moverTarea(task.id, 'En pausa'); }, false);
+          btnPause.addEventListener('click', function () {
+            moverTarea(task.id, 'En pausa');
+            mostrarToast('⏸ Trabajo puesto en pausa.');
+          }, false);
           actions.appendChild(btnPause);
+
         } else if (columna === 'curso') {
-          var btnExec2 = document.createElement('button');
-          btnExec2.className = 'btn-action-task btn-move-play';
-          btnExec2.appendChild(document.createTextNode('⚡ Re-ejecutar'));
-          btnExec2.addEventListener('click', function () { ejecutarTarea(task.id, card); }, false);
-          actions.appendChild(btnExec2);
+          var btnExec = document.createElement('button');
+          btnExec.className = 'btn-action-task btn-move-play';
+          btnExec.appendChild(document.createTextNode('⚡ Ejecutar Agente'));
+          btnExec.addEventListener('click', function () {
+            ejecutarTarea(task.id, card);
+          }, false);
+          actions.appendChild(btnExec);
 
           var btnPausar = document.createElement('button');
           btnPausar.className = 'btn-action-task btn-move-pause';
           btnPausar.appendChild(document.createTextNode('⏸ Pausar'));
-          btnPausar.addEventListener('click', function () { moverTarea(task.id, 'En pausa'); }, false);
+          btnPausar.addEventListener('click', function () {
+            moverTarea(task.id, 'En pausa');
+            mostrarToast('⏸ Trabajo puesto en pausa.');
+          }, false);
           actions.appendChild(btnPausar);
 
           var btnDone = document.createElement('button');
           btnDone.className = 'btn-action-task btn-move-done';
           btnDone.appendChild(document.createTextNode('✓ Hecho'));
-          btnDone.addEventListener('click', function () { moverTarea(task.id, 'Completada'); }, false);
+          btnDone.addEventListener('click', function () {
+            moverTarea(task.id, 'Completada');
+            mostrarToast('✅ Trabajo completado. Guardado en la pestaña <strong>ENTREGAS</strong>.');
+          }, false);
           actions.appendChild(btnDone);
+
         } else if (columna === 'pausa') {
           var btnReanudar = document.createElement('button');
           btnReanudar.className = 'btn-action-task btn-move-play';
           btnReanudar.appendChild(document.createTextNode('▶ Reanudar'));
-          btnReanudar.addEventListener('click', function () { moverTarea(task.id, 'En progreso'); }, false);
+          btnReanudar.addEventListener('click', function () {
+            moverTarea(task.id, 'En progreso');
+            mostrarToast('✓ Trabajo reanudado en <strong>🟢 EN CURSO</strong>.');
+            cambiarColumna('curso');
+          }, false);
           actions.appendChild(btnReanudar);
 
           var btnDoneP = document.createElement('button');
           btnDoneP.className = 'btn-action-task btn-move-done';
           btnDoneP.appendChild(document.createTextNode('✓ Hecho'));
-          btnDoneP.addEventListener('click', function () { moverTarea(task.id, 'Completada'); }, false);
+          btnDoneP.addEventListener('click', function () {
+            moverTarea(task.id, 'Completada');
+            mostrarToast('✅ Trabajo archivado en <strong>ENTREGAS</strong>.');
+          }, false);
           actions.appendChild(btnDoneP);
+
+        } else if (columna === 'completada') {
+          var btnReopen = document.createElement('button');
+          btnReopen.className = 'btn-action-task btn-move-play';
+          btnReopen.appendChild(document.createTextNode('↺ Reabrir'));
+          btnReopen.addEventListener('click', function () {
+            moverTarea(task.id, 'En progreso');
+            mostrarToast('↺ Trabajo reabierto en <strong>🟢 EN CURSO</strong>.');
+            cambiarColumna('curso');
+          }, false);
+          actions.appendChild(btnReopen);
         }
 
         footer.appendChild(actions);
         card.appendChild(footer);
-
-        // Si la tarea tiene evidencia o respuesta previa del agente, mostrarla
-        if (task.evidencia && task.evidencia.resultado) {
-          var boxRes = document.createElement('div');
-          boxRes.style.marginTop = '8px';
-          boxRes.style.padding = '8px 10px';
-          boxRes.style.background = '#0B132B';
-          boxRes.style.borderLeft = '3px solid #10B981';
-          boxRes.style.borderRadius = '4px';
-          boxRes.style.fontSize = '11px';
-          boxRes.style.color = '#A7F3D0';
-          boxRes.style.lineHeight = '1.4';
-          boxRes.appendChild(document.createTextNode(task.evidencia.resultado));
-          card.appendChild(boxRes);
-        }
-
         container.appendChild(card);
       })(lista[i]);
     }
@@ -756,7 +757,7 @@
     statusEl.style.color = '#38BDF8';
     statusEl.style.borderRadius = '4px';
     statusEl.style.fontSize = '11px';
-    statusEl.appendChild(document.createTextNode('⏳ Enviando instrucción al agente...'));
+    statusEl.appendChild(document.createTextNode('⏳ Enviando orden al agente...'));
     cardEl.appendChild(statusEl);
 
     var xhr = new XMLHttpRequest();
@@ -771,8 +772,8 @@
             statusEl.style.background = '#064E3B';
             statusEl.style.color = '#A7F3D0';
             statusEl.innerHTML = '<strong>✓ Resultado:</strong> ' + resTxt;
-            // Recargar para sincronizar estado
-            setTimeout(cargarTareas, 1200);
+            mostrarToast('⚡ Agente completó su trabajo. Guardado en <strong>✅ ENTREGAS</strong>.');
+            setTimeout(cargarTareas, 1500);
           } catch (e) {
             statusEl.innerHTML = '✓ Orden enviada al agente.';
           }
@@ -787,7 +788,7 @@
 
   window.moverTarea = function (id, nuevoEstado) {
     var encontrada = null;
-    var keys = ['curso', 'pausa', 'pendiente'];
+    var keys = ['curso', 'pausa', 'pendiente', 'completada'];
     for (var k = 0; k < keys.length; k++) {
       var arr = tareasState[keys[k]];
       for (var idx = 0; idx < arr.length; idx++) {
@@ -800,12 +801,15 @@
     }
 
     if (encontrada) {
+      encontrada.estado = nuevoEstado;
       if (nuevoEstado === 'En progreso') {
         tareasState.curso.unshift(encontrada);
       } else if (nuevoEstado === 'En pausa' || nuevoEstado === 'Bloqueada') {
         tareasState.pausa.unshift(encontrada);
       } else if (nuevoEstado === 'Pendiente' || nuevoEstado === 'Backlog') {
         tareasState.pendiente.unshift(encontrada);
+      } else if (nuevoEstado === 'Completada') {
+        tareasState.completada.unshift(encontrada);
       }
       renderizarBoard();
     }
@@ -825,11 +829,7 @@
           try {
             var data = JSON.parse(xhr.responseText);
             procesarDataBackend(data);
-          } catch (e) {
-            usarFallback();
-          }
-        } else {
-          usarFallback();
+          } catch (e) {}
         }
       }
     };
@@ -837,27 +837,15 @@
   };
 
   function procesarDataBackend(data) {
+    // Usar directamente los datos reales de la base de datos sin inyectar tareas falsas
     tareasState.curso = data['En progreso'] || [];
     tareasState.pausa = (data['Bloqueada'] || []).concat(data['En revisión'] || []).concat(data['En pausa'] || []);
     tareasState.pendiente = (data['Pendiente'] || []).concat(data['Backlog'] || []);
-
-    if (tareasState.curso.length === 0 && tareasState.pausa.length === 0) {
-      tareasState.curso = fallbackData.curso;
-      tareasState.pausa = fallbackData.pausa;
-      if (tareasState.pendiente.length === 0) {
-        tareasState.pendiente = fallbackData.pendiente;
-      }
-    }
+    tareasState.completada = data['Completada'] || [];
     renderizarBoard();
   }
 
-  function usarFallback() {
-    tareasState.curso = fallbackData.curso.slice(0);
-    tareasState.pausa = fallbackData.pausa.slice(0);
-    tareasState.pendiente = fallbackData.pendiente.slice(0);
-    renderizarBoard();
-  }
-
+  // Creación rápida de un nuevo trabajo
   var newTaskInput = document.getElementById('newTaskInput');
   var newTaskAgent = document.getElementById('newTaskAgent');
   var btnCreateTask = document.getElementById('btnCreateTask');
@@ -865,7 +853,7 @@
   function crearNuevoTrabajo() {
     var txt = (newTaskInput.value || '').trim();
     if (!txt) return;
-    var ag = newTaskAgent.value || 'mario';
+    var ag = newTaskAgent.value || 'glenn';
     newTaskInput.value = '';
 
     var nueva = {
@@ -873,12 +861,15 @@
       titulo: txt,
       descripcion: 'Ingresada manualmente desde el CRM.',
       agente: ag,
+      agente_responsable: ag,
       prioridad: 'alta',
-      proyecto: 'Nicola OS'
+      proyecto: 'Nicola OS',
+      estado: 'Pendiente'
     };
 
     tareasState.pendiente.unshift(nueva);
     renderizarBoard();
+    mostrarToast('✓ Nuevo trabajo agregado a <strong>📋 POR HACER</strong>.');
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/tasks', true);
@@ -896,23 +887,26 @@
     if (e.keyCode === 13) { crearNuevoTrabajo(); }
   }, false);
 
-  window.cambiarColumnaMovil = function (tipo) {
+  window.cambiarColumna = function (tipo) {
     var cols = document.querySelectorAll('.board-column');
     for (var i = 0; i < cols.length; i++) {
       cols[i].className = cols[i].className.replace(' active-col', '');
     }
-    var target = document.getElementById(tipo === 'curso' ? 'colCurso' : (tipo === 'pausa' ? 'colPausa' : 'colPorHacer'));
-    if (target) {
-      target.className += ' active-col';
-    }
+    var targetId = 'colCurso';
+    var tabId = 'btnTabCurso';
+    if (tipo === 'pausa') { targetId = 'colPausa'; tabId = 'btnTabPausa'; }
+    else if (tipo === 'por-hacer') { targetId = 'colPorHacer'; tabId = 'btnTabPend'; }
+    else if (tipo === 'hechas') { targetId = 'colHechas'; tabId = 'btnTabDone'; }
+
+    var target = document.getElementById(targetId);
+    if (target) { target.className += ' active-col'; }
 
     var btns = document.querySelectorAll('.mobile-tab-btn');
     for (var j = 0; j < btns.length; j++) {
       btns[j].className = 'mobile-tab-btn';
     }
-    if (window.event && window.event.target) {
-      window.event.target.className = 'mobile-tab-btn active';
-    }
+    var btnActive = document.getElementById(tabId);
+    if (btnActive) { btnActive.className = 'mobile-tab-btn active'; }
   };
 
   cargarTareas();
