@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Oficina IA">
-  <title>Nicola OS — Sala de Mando Cenital 2.5D</title>
+  <meta name="apple-mobile-web-app-title" content="CRM Trabajos">
+  <title>Nicola OS — Tablero de Control de Trabajos (CRM)</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,26 +15,27 @@
       -webkit-tap-highlight-color: transparent;
     }
     body {
-      background-color: #080A10;
+      background-color: #0A0D14;
       color: #F1F5F9;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
       line-height: 1.4;
-      padding: 10px;
+      padding: 12px;
       margin: 0;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
     .wrapper {
-      max-width: 1080px;
+      max-width: 1200px;
       margin: 0 auto;
     }
-    /* Top Bar */
-    .top-nav {
-      background-color: #0F1420;
+
+    /* Barra Superior Ejecutiva */
+    .header-bar {
+      background-color: #111726;
       border: 1px solid #1E293B;
       border-radius: 12px;
-      padding: 8px 14px;
-      margin-bottom: 10px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
       display: flex;
       display: -webkit-flex;
       justify-content: space-between;
@@ -42,55 +43,55 @@
       align-items: center;
       -webkit-align-items: center;
       flex-wrap: wrap;
+      gap: 10px;
     }
-    .title-group {
+    .header-left {
       display: flex;
       display: -webkit-flex;
       align-items: center;
       -webkit-align-items: center;
+      gap: 10px;
     }
-    .status-pulse {
-      display: inline-block;
+    .status-dot {
       width: 10px;
       height: 10px;
       border-radius: 5px;
       background-color: #10B981;
-      margin-right: 8px;
       box-shadow: 0 0 8px #10B981;
+      display: inline-block;
     }
-    .nav-title {
-      font-size: 14px;
+    .main-title {
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.5px;
       color: #FFFFFF;
     }
-    .nav-sub {
-      font-size: 11px;
+    .main-sub {
+      font-size: 12px;
       color: #94A3B8;
-      margin-left: 6px;
-      font-weight: 400;
+      display: block;
     }
-    .btn-group {
+    .header-actions {
       display: flex;
       display: -webkit-flex;
-      gap: 6px;
+      gap: 8px;
     }
-    .btn-action {
+    .btn-nav {
       background-color: #1E293B;
       color: #E2E8F0;
       border: 1px solid #334155;
       border-radius: 8px;
-      padding: 6px 11px;
+      padding: 8px 14px;
       font-size: 12px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
       display: inline-block;
     }
-    .btn-action:hover, .btn-action:active {
+    .btn-nav:hover, .btn-nav:active {
       background-color: #2D3748;
-      border-color: #10B981;
       color: #FFFFFF;
+      border-color: #10B981;
     }
     .btn-gym {
       background-color: #1E1B4B;
@@ -98,43 +99,197 @@
       color: #C7D2FE;
     }
 
-    /* Canvas Frame */
-    .canvas-container {
-      background-color: #05070C;
-      border: 1px solid #1E293B;
-      border-radius: 12px;
-      padding: 4px;
-      position: relative;
-      margin-bottom: 10px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    /* Resumen de Métricas Rápidas */
+    .kpi-bar {
+      display: flex;
+      display: -webkit-flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
     }
-    #warRoomCanvas {
-      display: block;
-      width: 100%;
-      height: 380px;
+    .kpi-card {
+      flex: 1;
+      -webkit-flex: 1;
+      min-width: 140px;
+      background-color: #111726;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: #94A3B8;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .kpi-value {
+      font-size: 20px;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-top: 2px;
+    }
+    .kpi-curso { border-left: 4px solid #10B981; }
+    .kpi-pausa { border-left: 4px solid #F59E0B; }
+    .kpi-por-hacer { border-left: 4px solid #3B82F6; }
+
+    /* Barra Rápida de Creación de Trabajo */
+    .create-bar {
+      background-color: #111726;
+      border: 1px solid #1E293B;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      display: flex;
+      display: -webkit-flex;
+      gap: 8px;
+    }
+    .input-task {
+      flex: 1;
+      -webkit-flex: 1;
+      background-color: #0A0D14;
+      border: 1px solid #334155;
       border-radius: 8px;
-      background-color: #080A10;
+      padding: 10px 14px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+    }
+    .input-task:focus {
+      border-color: #10B981;
+    }
+    .select-agent {
+      background-color: #0A0D14;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0 10px;
+      color: #E2E8F0;
+      font-size: 13px;
+      outline: none;
+    }
+    .btn-create {
+      background-color: #10B981;
+      color: #052E16;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 18px;
+      font-size: 13px;
+      font-weight: 800;
       cursor: pointer;
     }
-    .canvas-hint {
-      position: absolute;
-      bottom: 8px;
-      right: 12px;
-      font-size: 10px;
-      color: #64748B;
-      pointer-events: none;
-      background-color: rgba(10, 14, 22, 0.8);
-      padding: 2px 6px;
-      border-radius: 4px;
+    .btn-create:hover, .btn-create:active {
+      background-color: #34D399;
     }
 
-    /* Agent Details Card */
-    .agent-card {
-      background-color: #0F1420;
+    /* Selector de pestañas para celular */
+    .mobile-tab-bar {
+      display: none;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .mobile-tab-btn {
+      flex: 1;
+      -webkit-flex: 1;
+      padding: 10px 6px;
+      font-size: 12px;
+      font-weight: 800;
+      background-color: #111726;
+      color: #94A3B8;
+      border: 1px solid #1E293B;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .mobile-tab-btn.active {
+      background-color: #1E293B;
+      color: #FFFFFF;
+      border-color: #10B981;
+    }
+
+    /* Columnas CRM (Tablero de 3 Columnas) */
+    .board-grid {
+      display: flex;
+      display: -webkit-flex;
+      gap: 14px;
+      align-items: flex-start;
+      -webkit-align-items: flex-start;
+    }
+    .board-column {
+      flex: 1;
+      -webkit-flex: 1;
+      min-width: 0;
+      background-color: #0F1422;
       border: 1px solid #1E293B;
       border-radius: 12px;
+      padding: 14px;
+    }
+    .column-header {
+      display: flex;
+      display: -webkit-flex;
+      justify-content: space-between;
+      -webkit-justify-content: space-between;
+      align-items: center;
+      -webkit-align-items: center;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #1E293B;
+    }
+    .col-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      display: -webkit-flex;
+      align-items: center;
+      -webkit-align-items: center;
+      gap: 6px;
+    }
+    .col-badge {
+      background-color: #1E293B;
+      color: #E2E8F0;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* Acentos por Columna */
+    .col-curso .column-header { border-bottom-color: #10B981; }
+    .col-curso .col-title { color: #34D399; }
+    .col-pausa .column-header { border-bottom-color: #F59E0B; }
+    .col-pausa .col-title { color: #FBBF24; }
+    .col-por-hacer .column-header { border-bottom-color: #3B82F6; }
+    .col-por-hacer .col-title { color: #60A5FA; }
+
+    /* Tarjetas de Tarea (Cards) */
+    .task-list {
+      min-height: 120px;
+    }
+    .task-card {
+      background-color: #151C2C;
+      border: 1px solid #243048;
+      border-radius: 10px;
       padding: 12px 14px;
       margin-bottom: 10px;
+    }
+    .task-card:hover {
+      border-color: #38BDF8;
+    }
+    .task-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+    .task-desc {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .task-footer {
       display: flex;
       display: -webkit-flex;
       justify-content: space-between;
@@ -142,144 +297,108 @@
       align-items: center;
       -webkit-align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-    }
-    .agent-header {
-      display: flex;
-      display: -webkit-flex;
-      align-items: center;
-      -webkit-align-items: center;
-      gap: 10px;
-    }
-    .agent-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      background-color: #1E293B;
-      display: flex;
-      display: -webkit-flex;
-      align-items: center;
-      -webkit-align-items: center;
-      justify-content: center;
-      -webkit-justify-content: center;
-      font-size: 20px;
-      border: 2px solid #334155;
-    }
-    .agent-name {
-      font-size: 15px;
-      font-weight: 800;
-      color: #FFFFFF;
-    }
-    .agent-role {
-      font-size: 11px;
-      font-weight: 600;
-      color: #10B981;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .agent-kpi {
-      background-color: #111A2E;
-      border: 1px solid #1E293B;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-family: monospace, Courier;
-      color: #38BDF8;
-    }
-
-    /* Quick Agent Selector Pills */
-    .pills-container {
-      display: flex;
-      display: -webkit-flex;
       gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 10px;
-      -webkit-overflow-scrolling: touch;
+      padding-top: 8px;
+      border-top: 1px solid #1F293D;
     }
-    .agent-pill {
-      background-color: #0F1420;
-      border: 1px solid #1E293B;
-      color: #94A3B8;
-      border-radius: 8px;
-      padding: 6px 10px;
+    .task-meta {
+      display: flex;
+      display: -webkit-flex;
+      align-items: center;
+      -webkit-align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    /* Badge de agente chiquitito (como pidió el usuario) */
+    .agent-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background-color: #1E293B;
+      color: #E2E8F0;
+      border: 1px solid #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .agent-glenn { background-color: #064E3B; color: #A7F3D0; border-color: #059669; }
+    .agent-ironbot { background-color: #451A03; color: #FED7AA; border-color: #D97706; }
+    .agent-buzz { background-color: #422006; color: #FEF08A; border-color: #CA8A04; }
+    .agent-mario { background-color: #172554; color: #BFDBFE; border-color: #2563EB; }
+    .agent-zauron { background-color: #083344; color: #A5F3FC; border-color: #0891B2; }
+    .agent-morfeo { background-color: #3B0764; color: #E9D5FF; border-color: #9333EA; }
+
+    .tag-priority {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .priority-alta { background-color: #450A0A; color: #FECACA; }
+    .priority-media { background-color: #1E293B; color: #94A3B8; }
+    .priority-baja { background-color: #0F172A; color: #64748B; }
+
+    /* Botones de Acción de 1 Toque */
+    .task-actions {
+      display: flex;
+      display: -webkit-flex;
+      gap: 4px;
+    }
+    .btn-action-task {
+      background-color: #1E293B;
+      border: 1px solid #334155;
+      color: #E2E8F0;
+      border-radius: 5px;
       font-size: 11px;
       font-weight: 700;
-      white-space: nowrap;
+      padding: 3px 8px;
       cursor: pointer;
     }
-    .agent-pill.active {
-      border-color: #10B981;
+    .btn-action-task:hover, .btn-action-task:active {
+      background-color: #334155;
+      color: #FFFFFF;
+    }
+    .btn-move-play {
       background-color: #064E3B;
       color: #A7F3D0;
+      border-color: #059669;
+    }
+    .btn-move-pause {
+      background-color: #451A03;
+      color: #FED7AA;
+      border-color: #D97706;
+    }
+    .btn-move-done {
+      background-color: #1E1B4B;
+      color: #C7D2FE;
+      border-color: #4338CA;
     }
 
-    /* Chat / Command Panel */
-    .command-box {
-      background-color: #0F1420;
-      border: 1px solid #1E293B;
-      border-radius: 12px;
-      padding: 12px;
-    }
-    .chat-history {
-      max-height: 140px;
-      overflow-y: auto;
-      margin-bottom: 10px;
+    .empty-state {
+      padding: 28px 12px;
+      text-align: center;
+      color: #64748B;
       font-size: 12px;
-      -webkit-overflow-scrolling: touch;
+      font-style: italic;
     }
-    .chat-msg {
-      margin-bottom: 6px;
-      padding: 6px 8px;
-      border-radius: 6px;
-    }
-    .msg-user {
-      background-color: #1E293B;
-      color: #F8FAFC;
-      text-align: right;
-    }
-    .msg-bot {
-      background-color: #111827;
-      border-left: 3px solid #10B981;
-      color: #E2E8F0;
-    }
-    .msg-author {
-      font-size: 10px;
-      font-weight: 800;
-      color: #10B981;
-      margin-bottom: 2px;
-    }
-    .input-row {
-      display: flex;
-      display: -webkit-flex;
-      gap: 8px;
-    }
-    .cmd-input {
-      flex: 1;
-      -webkit-flex: 1;
-      background-color: #080A10;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 13px;
-      color: #FFFFFF;
-      outline: none;
-    }
-    .cmd-input:focus {
-      border-color: #10B981;
-    }
-    .btn-send {
-      background-color: #10B981;
-      border: 0;
-      border-radius: 8px;
-      color: #052E16;
-      font-weight: 800;
-      padding: 0 16px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .btn-send:hover, .btn-send:active {
-      background-color: #34D399;
+
+    /* Adaptabilidad Móvil */
+    @media (max-width: 820px) {
+      .mobile-tab-bar {
+        display: flex;
+        display: -webkit-flex;
+      }
+      .board-grid {
+        display: block;
+      }
+      .board-column {
+        display: none;
+        margin-bottom: 12px;
+      }
+      .board-column.active-col {
+        display: block;
+      }
     }
   </style>
 </head>
@@ -287,561 +406,457 @@
 
 <div class="wrapper">
   <!-- Barra Superior -->
-  <div class="top-nav">
-    <div class="title-group">
-      <span class="status-pulse"></span>
-      <span class="nav-title">NICOLA OS</span>
-      <span class="nav-sub">Sala de Mando Cenital 2.5D</span>
-    </div>
-    <div class="btn-group">
-      <a href="/" class="btn-action btn-gym">⏱️ IR A RELOJ / GYM</a>
-      <button id="btnRefresh" class="btn-action" onclick="location.reload();">⟳ REFRESCAR</button>
-    </div>
-  </div>
-
-  <!-- Vista Isométrica 2.5D (Canvas) -->
-  <div class="canvas-container">
-    <canvas id="warRoomCanvas" width="960" height="380"></canvas>
-    <div class="canvas-hint">Toca cualquier estación para darle una instrucción directa</div>
-  </div>
-
-  <!-- Botones Rápidos de Agentes -->
-  <div class="pills-container" id="pillsBar"></div>
-
-  <!-- Ficha del Agente Activo -->
-  <div class="agent-card" id="agentCard">
-    <div class="agent-header">
-      <div class="agent-avatar" id="agentAvatar">👑</div>
+  <div class="header-bar">
+    <div class="header-left">
+      <span class="status-dot"></span>
       <div>
-        <div class="agent-name" id="agentName">Mario</div>
-        <div class="agent-role" id="agentRole">Copiloto Personal & Fast Path</div>
+        <div class="main-title">NICOLA OS · CONTROL DE TRABAJOS (CRM)</div>
+        <span class="main-sub">Seguimiento en tiempo real de tareas en curso, en pausa y por realizar</span>
       </div>
     </div>
-    <div class="agent-kpi" id="agentKpi">Fast Path Activo · Enlace Voz/WhatsApp</div>
+    <div class="header-actions">
+      <a href="/" class="btn-nav btn-gym">⏱️ IR A RELOJ / GYM</a>
+      <button class="btn-nav" onclick="cargarTareas();">⟳ ACTUALIZAR</button>
+    </div>
   </div>
 
-  <!-- Consola de Comandos y Chat Directo -->
-  <div class="command-box">
-    <div class="chat-history" id="chatHistory">
-      <div class="chat-msg msg-bot">
-        <div class="msg-author">NICOLA OS · SISTEMA CENTRAL</div>
-        Sala de Mando Cenital 2.5D en línea. Puedes tocar cualquier estación en el plano o seleccionarla arriba para consultar métricas o enviar instrucciones.
+  <!-- Métricas Rápidas -->
+  <div class="kpi-bar">
+    <div class="kpi-card kpi-curso">
+      <div class="kpi-label">🟢 Realizándose Ahora</div>
+      <div class="kpi-value" id="kpiCursoCount">0</div>
+    </div>
+    <div class="kpi-card kpi-pausa">
+      <div class="kpi-label">⏸️ En Pausa / Esperando</div>
+      <div class="kpi-value" id="kpiPausaCount">0</div>
+    </div>
+    <div class="kpi-card kpi-por-hacer">
+      <div class="kpi-label">📋 Por Realizar (En Cola)</div>
+      <div class="kpi-value" id="kpiPendienteCount">0</div>
+    </div>
+  </div>
+
+  <!-- Barra Rápida para Agregar Trabajo en 1 Paso -->
+  <div class="create-bar">
+    <input type="text" id="newTaskInput" class="input-task" placeholder="Escribe un nuevo trabajo a realizar..." autocomplete="off">
+    <select id="newTaskAgent" class="select-agent">
+      <option value="mario">Mario (Copiloto)</option>
+      <option value="glenn">Glenn (Finanzas)</option>
+      <option value="ironbot">IronBot (Coach)</option>
+      <option value="buzz">Buzz (Ventas)</option>
+      <option value="zauron">Zauron (Forense)</option>
+      <option value="morfeo">Morfeo (Comandante)</option>
+    </select>
+    <button class="btn-create" id="btnCreateTask">+ AGREGAR</button>
+  </div>
+
+  <!-- Selector para Celulares -->
+  <div class="mobile-tab-bar" id="mobileTabBar">
+    <button class="mobile-tab-btn active" onclick="cambiarColumnaMovil('curso');">🟢 EN CURSO (<span id="mobCountCurso">0</span>)</button>
+    <button class="mobile-tab-btn" onclick="cambiarColumnaMovil('pausa');">⏸️ EN PAUSA (<span id="mobCountPausa">0</span>)</button>
+    <button class="mobile-tab-btn" onclick="cambiarColumnaMovil('por-hacer');">📋 POR HACER (<span id="mobCountPend">0</span>)</button>
+  </div>
+
+  <!-- Las 3 Columnas Clave del CRM -->
+  <div class="board-grid">
+    <!-- 1. REALIZÁNDOSE AHORA -->
+    <div class="board-column col-curso active-col" id="colCurso">
+      <div class="column-header">
+        <div class="col-title">🟢 Realizándose Ahora</div>
+        <span class="col-badge" id="badgeCurso">0</span>
+      </div>
+      <div class="task-list" id="listCurso">
+        <div class="empty-state">No hay trabajos en curso.</div>
       </div>
     </div>
-    <div class="input-row">
-      <input type="text" id="cmdInput" class="cmd-input" placeholder="Escribe una instrucción para el equipo..." autocomplete="off">
-      <button id="btnSend" class="btn-send">ENVIAR</button>
+
+    <!-- 2. EN PAUSA / BLOQUEADOS -->
+    <div class="board-column col-pausa" id="colPausa">
+      <div class="column-header">
+        <div class="col-title">⏸️ En Pausa / Esperando</div>
+        <span class="col-badge" id="badgePausa">0</span>
+      </div>
+      <div class="task-list" id="listPausa">
+        <div class="empty-state">No hay trabajos en pausa.</div>
+      </div>
+    </div>
+
+    <!-- 3. POR REALIZAR / SIGUIENTES -->
+    <div class="board-column col-por-hacer" id="colPorHacer">
+      <div class="column-header">
+        <div class="col-title">📋 Por Realizar</div>
+        <span class="col-badge" id="badgePorHacer">0</span>
+      </div>
+      <div class="task-list" id="listPorHacer">
+        <div class="empty-state">No hay trabajos pendientes.</div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// Motor Isométrico 2.5D — 100% Compatible con ES5 (iOS 5.1.1 / iPad 1 y iPhone Moderno)
+// Motor de CRM / Kanban 100% Compatible con ES5 (iOS 5.1.1 en iPad 1 y Celulares Modernos)
 (function () {
-  var canvas = document.getElementById('warRoomCanvas');
-  if (!canvas) { return; }
-  var ctx = canvas.getContext('2d');
-  var tick = 0;
-  var selectedId = 'mario';
+  var tareasState = {
+    curso: [],
+    pausa: [],
+    pendiente: []
+  };
 
-  var agentes = [
-    {
-      id: 'morfeo', nombre: 'Morfeo', rol: 'Comandante CAO',
-      gx: 2.8, gy: 2.8,
-      color: '#942EE0', halo: 'rgba(148, 46, 224, 0.35)',
-      hair: '#E6E6E6', suit: '#1A1526', skin: '#E8BA95',
-      avatar: '🛡️',
-      metrica: '3 Misiones Activas · Cadena de Mando',
-      detalle: 'Chief Agent Officer: Orquestando especialistas y backlog.'
-    },
-    {
-      id: 'glenn', nombre: 'Glenn', rol: 'CFO & Tesorero',
-      gx: 5.8, gy: 1.8,
-      color: '#26CC73', halo: 'rgba(38, 204, 115, 0.35)',
-      hair: '#4A3525', suit: '#12261B', skin: '#E5B892',
-      avatar: '💵',
-      metrica: 'Meta Ahorro 2.5M CLP · Techo Diario 64k CLP',
-      detalle: 'CFO: Flujo de caja libre, cobros y presupuestos de 3 cubos.'
-    },
-    {
-      id: 'ironbot', nombre: 'IronBot', rol: 'Head Coach Ironcross',
-      gx: 1.8, gy: 5.8,
-      color: '#FF730D', halo: 'rgba(255, 115, 13, 0.35)',
-      hair: '#1E1E28', suit: '#2E1D12', skin: '#E8BA95',
-      avatar: '🏋️',
-      metrica: '5 Pausados ($504.550 CLP) · Plan SLAP Activo',
-      detalle: 'Head Coach: Calistenia, fuerza, rehabilitación y retención.'
-    },
-    {
-      id: 'mario', nombre: 'Mario', rol: 'Copiloto Personal',
-      gx: 4.8, gy: 4.8,
-      color: '#2563EB', halo: 'rgba(37, 99, 235, 0.35)',
-      hair: '#2B1A09', suit: '#111D36', skin: '#F2C5A0',
-      avatar: '👑',
-      metrica: 'Fast Path Activo · Enlace Voz/WhatsApp',
-      detalle: 'Copiloto: Extracción de intenciones y asistencia continua.'
-    },
-    {
-      id: 'zauron', nombre: 'Zauron', rol: 'Forense & Tech Radar',
-      gx: 1.2, gy: 2.2,
-      color: '#00E6E6', halo: 'rgba(0, 230, 230, 0.35)',
-      hair: '#0A2540', suit: '#0D2130', skin: '#C8E6C9',
-      avatar: '🔍',
-      metrica: 'Indexación 100% · IMAP Al Día',
-      detalle: 'Forense: Búsqueda profunda de comprobantes y vigilancia tecnológica.'
-    },
-    {
-      id: 'buzz', nombre: 'Buzz', rol: 'Comercial & Leads',
-      gx: 5.8, gy: 4.5,
-      color: '#E6B800', halo: 'rgba(230, 184, 0, 0.35)',
-      hair: '#66331A', suit: '#292411', skin: '#F0C29E',
-      avatar: '⚡',
-      metrica: 'Leads WhatsApp 2026 · Captación Activa',
-      detalle: 'Comercial: Calificación y prospección en tiempo real.'
+  // Datos base garantizados si la red o el backend tardan en responder
+  var fallbackData = {
+    curso: [
+      {
+        id: "fb_1",
+        titulo: "Cobros y conciliación bancaria mensual",
+        descripcion: "Glenn supervisando ingresos, regla de 3 cubos y meta de ahorro.",
+        agente: "glenn",
+        prioridad: "alta",
+        proyecto: "Finanzas"
+      },
+      {
+        id: "fb_2",
+        titulo: "Reactivación de 5 atletas en pausa ($504.550 CLP latente)",
+        descripcion: "IronBot preparando mensaje personalizado de técnica y vuelta progresiva.",
+        agente: "ironbot",
+        prioridad: "alta",
+        proyecto: "Ironcross"
+      },
+      {
+        id: "fb_3",
+        titulo: "Calificación de nuevos leads en WhatsApp",
+        descripcion: "Buzz respondiendo a personas interesadas en planes 2026.",
+        agente: "buzz",
+        prioridad: "media",
+        proyecto: "Ironcross"
+      }
+    ],
+    pausa: [
+      {
+        id: "fb_4",
+        titulo: "Aprobación de compra de implementación para el gym",
+        descripcion: "Glenn: Esperando confirmación explícita (AUTORIZO) de Nicolás.",
+        agente: "glenn",
+        prioridad: "media",
+        proyecto: "Finanzas"
+      },
+      {
+        id: "fb_5",
+        titulo: "Guía de movilidad escapular para hombro/SLAP",
+        descripcion: "IronBot: estructuración de pautas técnicas para atletas en rehabilitación.",
+        agente: "ironbot",
+        prioridad: "baja",
+        proyecto: "Ironcross"
+      }
+    ],
+    pendiente: [
+      {
+        id: "fb_6",
+        titulo: "Brief matutino de finanzas familiares a las 06:00 AM",
+        descripcion: "Glenn y Mario: resumen de saldo y meta mensual despachado a WhatsApp.",
+        agente: "glenn",
+        prioridad: "alta",
+        proyecto: "Familia"
+      },
+      {
+        id: "fb_7",
+        titulo: "Revisión forense de comprobantes no reconocidos",
+        descripcion: "Zauron: búsqueda en correo IMAP e indexación de transferencias pendientes.",
+        agente: "zauron",
+        prioridad: "media",
+        proyecto: "Nicola OS"
+      },
+      {
+        id: "fb_8",
+        titulo: "Priorización semanal del Consejo Asesor",
+        descripcion: "Morfeo: consolidación de directrices operativas sin parálisis de decisión.",
+        agente: "morfeo",
+        prioridad: "media",
+        proyecto: "Nicola OS"
+      }
+    ]
+  };
+
+  function normalizarAgente(ag) {
+    var raw = (ag || '').toLowerCase();
+    if (raw.indexOf('glenn') !== -1) return 'glenn';
+    if (raw.indexOf('iron') !== -1) return 'ironbot';
+    if (raw.indexOf('buzz') !== -1) return 'buzz';
+    if (raw.indexOf('zauron') !== -1) return 'zauron';
+    if (raw.indexOf('morfeo') !== -1) return 'morfeo';
+    return 'mario';
+  }
+
+  function getAgentName(agKey) {
+    if (agKey === 'glenn') return 'Glenn';
+    if (agKey === 'ironbot') return 'IronBot';
+    if (agKey === 'buzz') return 'Buzz';
+    if (agKey === 'zauron') return 'Zauron';
+    if (agKey === 'morfeo') return 'Morfeo';
+    return 'Mario';
+  }
+
+  function renderizarBoard() {
+    var listCurso = document.getElementById('listCurso');
+    var listPausa = document.getElementById('listPausa');
+    var listPorHacer = document.getElementById('listPorHacer');
+
+    var cCount = tareasState.curso.length;
+    var pCount = tareasState.pausa.length;
+    var pendCount = tareasState.pendiente.length;
+
+    document.getElementById('kpiCursoCount').innerHTML = cCount;
+    document.getElementById('kpiPausaCount').innerHTML = pCount;
+    document.getElementById('kpiPendienteCount').innerHTML = pendCount;
+
+    document.getElementById('badgeCurso').innerHTML = cCount;
+    document.getElementById('badgePausa').innerHTML = pCount;
+    document.getElementById('badgePorHacer').innerHTML = pendCount;
+
+    document.getElementById('mobCountCurso').innerHTML = cCount;
+    document.getElementById('mobCountPausa').innerHTML = pCount;
+    document.getElementById('mobCountPend').innerHTML = pendCount;
+
+    // 1. Render En Curso
+    renderLista(listCurso, tareasState.curso, 'curso');
+    // 2. Render En Pausa
+    renderLista(listPausa, tareasState.pausa, 'pausa');
+    // 3. Render Por Hacer
+    renderLista(listPorHacer, tareasState.pendiente, 'pendiente');
+  }
+
+  function renderLista(container, lista, columna) {
+    container.innerHTML = '';
+    if (!lista || lista.length === 0) {
+      var emp = document.createElement('div');
+      emp.className = 'empty-state';
+      emp.appendChild(document.createTextNode('Sin trabajos registrados en esta sección.'));
+      container.appendChild(emp);
+      return;
     }
-  ];
 
-  function resizeCanvas() {
-    var rect = canvas.getBoundingClientRect();
-    var w = rect.width || canvas.parentElement.clientWidth || 960;
-    canvas.width = w;
-    canvas.height = Math.max(340, Math.min(480, Math.round(w * 0.42)));
-  }
-  window.addEventListener('resize', resizeCanvas, false);
-  resizeCanvas();
+    for (var i = 0; i < lista.length; i++) {
+      (function (task) {
+        var card = document.createElement('div');
+        card.className = 'task-card';
 
-  // Proyección Isométrica 2:1 limpia
-  function toIso(gx, gy, gz, cw, ch) {
-    var tileW = Math.max(50, Math.min(84, cw / 11.5));
-    var tileH = tileW * 0.5;
-    var originX = cw * 0.5;
-    var originY = 32;
-    return {
-      x: originX + (gx - gy) * (tileW * 0.5),
-      y: originY + (gx + gy) * (tileH * 0.5) - (gz || 0),
-      tw: tileW,
-      th: tileH
-    };
-  }
+        // Título de la Tarea (Grande y Visible)
+        var title = document.createElement('div');
+        title.className = 'task-title';
+        title.appendChild(document.createTextNode(task.titulo || 'Sin título'));
+        card.appendChild(title);
 
-  function drawIsoTile(gx, gy, fillCol, strokeCol, cw, ch) {
-    var p = toIso(gx, gy, 0, cw, ch);
-    var hw = p.tw * 0.5;
-    var hh = p.th * 0.5;
-    ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
-    ctx.lineTo(p.x + hw, p.y + hh);
-    ctx.lineTo(p.x, p.y + p.th);
-    ctx.lineTo(p.x - hw, p.y + hh);
-    ctx.closePath();
-    ctx.fillStyle = fillCol;
-    ctx.fill();
-    if (strokeCol) {
-      ctx.strokeStyle = strokeCol;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    }
-  }
-
-  function drawIsoBlock(gx, gy, gz, wGrid, hGrid, heightPx, topCol, leftCol, rightCol, strokeCol, cw, ch) {
-    var pTop = toIso(gx, gy, gz + heightPx, cw, ch);
-    var pBot = toIso(gx, gy, gz, cw, ch);
-    var hw = (pTop.tw * 0.5) * wGrid;
-    var hh = (pTop.th * 0.5) * hGrid;
-
-    // Cara lateral izquierda
-    ctx.beginPath();
-    ctx.moveTo(pTop.x - hw, pTop.y + hh);
-    ctx.lineTo(pTop.x, pTop.y + hh * 2);
-    ctx.lineTo(pBot.x, pBot.y + hh * 2);
-    ctx.lineTo(pBot.x - hw, pBot.y + hh);
-    ctx.closePath();
-    ctx.fillStyle = leftCol;
-    ctx.fill();
-    if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.lineWidth = 1; ctx.stroke(); }
-
-    // Cara lateral derecha
-    ctx.beginPath();
-    ctx.moveTo(pTop.x, pTop.y + hh * 2);
-    ctx.lineTo(pTop.x + hw, pTop.y + hh);
-    ctx.lineTo(pBot.x + hw, pBot.y + hh);
-    ctx.lineTo(pBot.x, pBot.y + hh * 2);
-    ctx.closePath();
-    ctx.fillStyle = rightCol;
-    ctx.fill();
-    if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.lineWidth = 1; ctx.stroke(); }
-
-    // Cara superior
-    ctx.beginPath();
-    ctx.moveTo(pTop.x, pTop.y);
-    ctx.lineTo(pTop.x + hw, pTop.y + hh);
-    ctx.lineTo(pTop.x, pTop.y + hh * 2);
-    ctx.lineTo(pTop.x - hw, pTop.y + hh);
-    ctx.closePath();
-    ctx.fillStyle = topCol;
-    ctx.fill();
-    if (strokeCol) { ctx.strokeStyle = strokeCol; ctx.lineWidth = 1; ctx.stroke(); }
-  }
-
-  function render() {
-    tick++;
-    var cw = canvas.width;
-    var ch = canvas.height;
-    if (!cw || !ch) { return; }
-
-    // Fondo Sala de Operaciones
-    ctx.fillStyle = '#080A10';
-    ctx.fillRect(0, 0, cw, ch);
-
-    // Paredes Isométricas del fondo
-    var pCorner = toIso(0, 0, 0, cw, ch);
-    var pLeftEnd = toIso(0, 7.5, 0, cw, ch);
-    var pRightEnd = toIso(7.5, 0, 0, cw, ch);
-    var wallH = 50;
-
-    // Pared Noroeste
-    ctx.beginPath();
-    ctx.moveTo(pCorner.x, pCorner.y - wallH);
-    ctx.lineTo(pLeftEnd.x, pLeftEnd.y - wallH);
-    ctx.lineTo(pLeftEnd.x, pLeftEnd.y);
-    ctx.lineTo(pCorner.x, pCorner.y);
-    ctx.closePath();
-    ctx.fillStyle = '#0E1420';
-    ctx.fill();
-    ctx.strokeStyle = '#1E293B';
-    ctx.stroke();
-
-    // Pared Noreste
-    ctx.beginPath();
-    ctx.moveTo(pCorner.x, pCorner.y - wallH);
-    ctx.lineTo(pRightEnd.x, pRightEnd.y - wallH);
-    ctx.lineTo(pRightEnd.x, pRightEnd.y);
-    ctx.lineTo(pCorner.x, pCorner.y);
-    ctx.closePath();
-    ctx.fillStyle = '#121826';
-    ctx.fill();
-    ctx.strokeStyle = '#1E293B';
-    ctx.stroke();
-
-    // Cuadrícula de suelo 8x8 con baldosas por departamento
-    for (var gx = 0; gx < 8; gx++) {
-      for (var gy = 0; gy < 8; gy++) {
-        var isOdd = (gx + gy) % 2 === 1;
-        var fCol = isOdd ? '#111724' : '#0D121D';
-
-        if (gx >= 2 && gx <= 3 && gy >= 2 && gy <= 3) {
-          fCol = '#201233'; // Morfeo (Púrpura)
-        } else if (gx >= 5 && gy <= 2) {
-          fCol = '#10241A'; // Glenn (Esmeralda)
-        } else if (gx <= 2 && gy >= 5) {
-          fCol = '#29180C'; // IronBot (Naranja)
-        } else if (gx >= 4 && gy >= 5) {
-          fCol = '#101B2E'; // Mario (Zafiro)
+        // Detalle de qué se está realizando
+        if (task.descripcion) {
+          var desc = document.createElement('div');
+          desc.className = 'task-desc';
+          desc.appendChild(document.createTextNode(task.descripcion));
+          card.appendChild(desc);
         }
 
-        drawIsoTile(gx, gy, fCol, '#1A2333', cw, ch);
+        // Pie de tarjeta con Agente chiquitito y botones
+        var footer = document.createElement('div');
+        footer.className = 'task-footer';
+
+        var meta = document.createElement('div');
+        meta.className = 'task-meta';
+
+        // Badge chiquitito del agente responsable
+        var agKey = normalizarAgente(task.agente || task.agente_responsable);
+        var tagAgent = document.createElement('span');
+        tagAgent.className = 'agent-tag agent-' + agKey;
+        tagAgent.appendChild(document.createTextNode('👤 ' + getAgentName(agKey)));
+        meta.appendChild(tagAgent);
+
+        // Badge de Prioridad
+        var prio = (task.prioridad || 'media').toLowerCase();
+        var tagPrio = document.createElement('span');
+        tagPrio.className = 'tag-priority priority-' + prio;
+        tagPrio.appendChild(document.createTextNode(prio));
+        meta.appendChild(tagPrio);
+
+        footer.appendChild(meta);
+
+        // Botones de Acción de 1 Toque para Mover
+        var actions = document.createElement('div');
+        actions.className = 'task-actions';
+
+        if (columna === 'pendiente') {
+          var btnPlay = document.createElement('button');
+          btnPlay.className = 'btn-action-task btn-move-play';
+          btnPlay.appendChild(document.createTextNode('▶ Iniciar'));
+          btnPlay.addEventListener('click', function () { moverTarea(task.id, 'En progreso'); }, false);
+          actions.appendChild(btnPlay);
+
+          var btnPause = document.createElement('button');
+          btnPause.className = 'btn-action-task btn-move-pause';
+          btnPause.appendChild(document.createTextNode('⏸ Pausar'));
+          btnPause.addEventListener('click', function () { moverTarea(task.id, 'En pausa'); }, false);
+          actions.appendChild(btnPause);
+        } else if (columna === 'curso') {
+          var btnPausar = document.createElement('button');
+          btnPausar.className = 'btn-action-task btn-move-pause';
+          btnPausar.appendChild(document.createTextNode('⏸ Pausar'));
+          btnPausar.addEventListener('click', function () { moverTarea(task.id, 'En pausa'); }, false);
+          actions.appendChild(btnPausar);
+
+          var btnDone = document.createElement('button');
+          btnDone.className = 'btn-action-task btn-move-done';
+          btnDone.appendChild(document.createTextNode('✓ Hecho'));
+          btnDone.addEventListener('click', function () { moverTarea(task.id, 'Completada'); }, false);
+          actions.appendChild(btnDone);
+        } else if (columna === 'pausa') {
+          var btnReanudar = document.createElement('button');
+          btnReanudar.className = 'btn-action-task btn-move-play';
+          btnReanudar.appendChild(document.createTextNode('▶ Reanudar'));
+          btnReanudar.addEventListener('click', function () { moverTarea(task.id, 'En progreso'); }, false);
+          actions.appendChild(btnReanudar);
+
+          var btnDoneP = document.createElement('button');
+          btnDoneP.className = 'btn-action-task btn-move-done';
+          btnDoneP.appendChild(document.createTextNode('✓ Hecho'));
+          btnDoneP.addEventListener('click', function () { moverTarea(task.id, 'Completada'); }, false);
+          actions.appendChild(btnDoneP);
+        }
+
+        footer.appendChild(actions);
+        card.appendChild(footer);
+        container.appendChild(card);
+      })(lista[i]);
+    }
+  }
+
+  window.moverTarea = function (id, nuevoEstado) {
+    var encontrada = null;
+    var keys = ['curso', 'pausa', 'pendiente'];
+    for (var k = 0; k < keys.length; k++) {
+      var arr = tareasState[keys[k]];
+      for (var idx = 0; idx < arr.length; idx++) {
+        if (arr[idx].id === id) {
+          encontrada = arr.splice(idx, 1)[0];
+          break;
+        }
       }
+      if (encontrada) break;
     }
 
-    // Mesa Holográfica Central (Council Table)
-    var pHolo = toIso(3.8, 3.8, 0, cw, ch);
-    ctx.save();
-    ctx.translate(pHolo.x, pHolo.y + 12);
-    ctx.scale(1, 0.5);
-    ctx.beginPath();
-    ctx.arc(0, 0, pHolo.tw * 0.55, 0, Math.PI * 2, false);
-    ctx.fillStyle = 'rgba(16, 185, 129, 0.12)';
-    ctx.fill();
-    ctx.strokeStyle = '#10B981';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.fillStyle = '#3CD070';
-    ctx.font = 'bold 9px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('WAR ROOM · NICOLA OS', pHolo.x, pHolo.y + 16);
-
-    // Servidores Forenses de Zauron en la pared izquierda
-    drawIsoBlock(0.3, 0.6, 0, 0.8, 1.4, 30, '#26334D', '#161F2E', '#0E1520', '#00CCCC', cw, ch);
-    var pLed = toIso(0.3, 0.6, 20, cw, ch);
-    ctx.fillStyle = (tick % 6 < 3) ? '#00E6E6' : '#3CD070';
-    ctx.fillRect(pLed.x - 4, pLed.y, 3, 3);
-    ctx.fillStyle = (tick % 4 < 2) ? '#FF9900' : '#00E6E6';
-    ctx.fillRect(pLed.x + 3, pLed.y + 2, 3, 3);
-
-    // Render ordenado por profundidad (gx + gy)
-    var ordenados = agentes.slice(0).sort(function (a, b) {
-      return (a.gx + a.gy) - (b.gx + b.gy);
-    });
-
-    for (var i = 0; i < ordenados.length; i++) {
-      dibujarEstacion(ordenados[i], cw, ch);
-    }
-
-    // Loop a 30 FPS
-    setTimeout(render, 33);
-  }
-
-  function dibujarEstacion(est, cw, ch) {
-    var esSel = (est.id === selectedId);
-    var pBase = toIso(est.gx, est.gy, 0, cw, ch);
-
-    // Halo en suelo si está seleccionado
-    if (esSel) {
-      ctx.beginPath();
-      var rhw = pBase.tw * 0.75;
-      var rhh = pBase.th * 0.75;
-      ctx.moveTo(pBase.x, pBase.y - 2);
-      ctx.lineTo(pBase.x + rhw, pBase.y + rhh - 2);
-      ctx.lineTo(pBase.x, pBase.y + rhh * 2 - 2);
-      ctx.lineTo(pBase.x - rhw, pBase.y + rhh - 2);
-      ctx.closePath();
-      ctx.fillStyle = est.halo;
-      ctx.fill();
-      ctx.strokeStyle = '#3CD070';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    // Escritorio Ejecutivo Isométrico
-    drawIsoBlock(
-      est.gx, est.gy, 0, 1.25, 0.85, 14,
-      esSel ? '#2D3748' : '#1F2937',
-      '#111827',
-      '#0B0F17',
-      esSel ? '#3CD070' : '#374151',
-      cw, ch
-    );
-
-    // Monitor sobre el escritorio
-    var pDeskTop = toIso(est.gx, est.gy, 14, cw, ch);
-    drawIsoBlock(
-      est.gx + 0.1, est.gy - 0.15, 14, 0.6, 0.25, 10,
-      '#1E293B', '#0F172A', '#020617',
-      est.color,
-      cw, ch
-    );
-
-    // Resplandor del monitor
-    ctx.fillStyle = est.color;
-    ctx.fillRect(pDeskTop.x - 6, pDeskTop.y - 4, 10, 4);
-
-    // Silueta Ejecutiva Adulta (Top-Down 3/4)
-    var pAgente = toIso(est.gx + 0.45, est.gy + 0.35, 10, cw, ch);
-    var pulse = Math.sin(tick * 0.08 + est.gx) * 0.8;
-
-    // Sombra del cuerpo
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.beginPath();
-    ctx.arc(pAgente.x, pAgente.y + 4, 7, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Hombros / Espalda en diagonal
-    ctx.save();
-    ctx.translate(pAgente.x, pAgente.y - 2 + pulse);
-    ctx.scale(1, 0.65);
-    ctx.beginPath();
-    ctx.arc(0, 0, 8, 0, Math.PI * 2, false);
-    ctx.fillStyle = est.suit;
-    ctx.fill();
-    ctx.strokeStyle = est.color;
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.restore();
-
-    // Cabeza vista desde arriba
-    ctx.fillStyle = est.hair;
-    ctx.beginPath();
-    ctx.arc(pAgente.x - 2, pAgente.y - 9 + pulse, 5.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Rostro / ángulo visible
-    ctx.fillStyle = est.skin;
-    ctx.beginPath();
-    ctx.arc(pAgente.x - 1, pAgente.y - 7 + pulse, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Accesorio representativo
-    if (est.id === 'morfeo') {
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(pAgente.x - 3, pAgente.y - 8 + pulse, 4, 2);
-    } else if (est.id === 'zauron') {
-      ctx.fillStyle = '#00FFFF';
-      ctx.fillRect(pAgente.x - 4, pAgente.y - 8 + pulse, 5, 1.8);
-    } else if (est.id === 'ironbot') {
-      ctx.fillStyle = '#FF730D';
-      ctx.fillRect(pAgente.x - 4, pAgente.y - 11 + pulse, 6, 2);
-    }
-
-    // Píldora HUD Flotante con métrica de negocio real
-    var tagText = est.nombre.toUpperCase() + ' · ' + est.metrica;
-    ctx.font = 'bold 9px monospace, Courier';
-    var txtW = ctx.measureText(tagText).width;
-    var pillW = txtW + 14;
-    var pillH = 14;
-    var pillX = pDeskTop.x - pillW * 0.5;
-    var pillY = pDeskTop.y - 26 + pulse;
-
-    ctx.fillStyle = esSel ? 'rgba(5, 20, 14, 0.94)' : 'rgba(10, 14, 22, 0.88)';
-    ctx.fillRect(pillX, pillY, pillW, pillH);
-    ctx.strokeStyle = esSel ? '#3CD070' : est.color;
-    ctx.lineWidth = esSel ? 1.5 : 1;
-    ctx.strokeRect(pillX, pillY, pillW, pillH);
-
-    ctx.fillStyle = esSel ? '#3CD070' : est.color;
-    ctx.fillRect(pillX + 3.5, pillY + 5, 4, 4);
-
-    ctx.fillStyle = esSel ? '#3CD070' : '#F1F5F9';
-    ctx.textAlign = 'left';
-    ctx.fillText(tagText, pillX + 11, pillY + 10.5);
-  }
-
-  // Selección de Agente por Clic o Toque en Canvas
-  function handleClick(evt) {
-    var rect = canvas.getBoundingClientRect();
-    var clientX = evt.clientX;
-    var clientY = evt.clientY;
-    if (clientX === undefined && evt.touches && evt.touches[0]) {
-      clientX = evt.touches[0].clientX;
-      clientY = evt.touches[0].clientY;
-    }
-    if (clientX === undefined) { return; }
-    var clickX = clientX - rect.left;
-    var clickY = clientY - rect.top;
-
-    var cw = canvas.width;
-    var ch = canvas.height;
-    var minDist = 9999;
-    var nearest = null;
-
-    for (var k = 0; k < agentes.length; k++) {
-      var a = agentes[k];
-      var p = toIso(a.gx, a.gy, 10, cw, ch);
-      var dx = p.x - clickX;
-      var dy = p.y - clickY;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 55 && dist < minDist) {
-        minDist = dist;
-        nearest = a;
+    if (encontrada) {
+      if (nuevoEstado === 'En progreso') {
+        tareasState.curso.unshift(encontrada);
+      } else if (nuevoEstado === 'En pausa' || nuevoEstado === 'Bloqueada') {
+        tareasState.pausa.unshift(encontrada);
+      } else if (nuevoEstado === 'Pendiente' || nuevoEstado === 'Backlog') {
+        tareasState.pendiente.unshift(encontrada);
       }
+      renderizarBoard();
     }
-
-    if (nearest) {
-      seleccionarAgente(nearest.id);
-    }
-  }
-
-  canvas.addEventListener('click', handleClick, false);
-  canvas.addEventListener('touchstart', handleClick, false);
-
-  function seleccionarAgente(id) {
-    selectedId = id;
-    var ag = null;
-    for (var i = 0; i < agentes.length; i++) {
-      if (agentes[i].id === id) { ag = agentes[i]; break; }
-    }
-    if (!ag) { return; }
-
-    // Actualizar ficha
-    document.getElementById('agentAvatar').innerHTML = ag.avatar;
-    document.getElementById('agentName').innerHTML = ag.nombre;
-    document.getElementById('agentRole').innerHTML = ag.rol;
-    document.getElementById('agentKpi').innerHTML = ag.metrica;
-    document.getElementById('cmdInput').placeholder = 'Instruir a ' + ag.nombre + ' (' + ag.rol + ')...';
-
-    // Actualizar pills
-    var pills = document.querySelectorAll('.agent-pill');
-    for (var j = 0; j < pills.length; j++) {
-      if (pills[j].getAttribute('data-id') === id) {
-        pills[j].className = 'agent-pill active';
-      } else {
-        pills[j].className = 'agent-pill';
-      }
-    }
-  }
-
-  // Generar Pills de Navegación Rápida
-  var pillsBar = document.getElementById('pillsBar');
-  for (var m = 0; m < agentes.length; m++) {
-    (function (a) {
-      var pill = document.createElement('button');
-      pill.className = 'agent-pill' + (a.id === selectedId ? ' active' : '');
-      pill.setAttribute('data-id', a.id);
-      pill.innerHTML = a.avatar + ' ' + a.nombre;
-      pill.addEventListener('click', function () {
-        seleccionarAgente(a.id);
-      }, false);
-      pillsBar.appendChild(pill);
-    })(agentes[m]);
-  }
-
-  // Chat y Envío de Comandos a Nicola OS (/api/chat)
-  var cmdInput = document.getElementById('cmdInput');
-  var btnSend = document.getElementById('btnSend');
-  var chatHistory = document.getElementById('chatHistory');
-
-  function appendMsg(author, text, isUser) {
-    var div = document.createElement('div');
-    div.className = 'chat-msg ' + (isUser ? 'msg-user' : 'msg-bot');
-    var aut = document.createElement('div');
-    aut.className = 'msg-author';
-    aut.appendChild(document.createTextNode(author));
-    div.appendChild(aut);
-    div.appendChild(document.createTextNode(text));
-    chatHistory.appendChild(div);
-    chatHistory.scrollTop = chatHistory.scrollHeight;
-  }
-
-  function enviarComando() {
-    var txt = (cmdInput.value || '').trim();
-    if (!txt) { return; }
-    cmdInput.value = '';
-
-    var currentAgent = null;
-    for (var i = 0; i < agentes.length; i++) {
-      if (agentes[i].id === selectedId) { currentAgent = agentes[i]; break; }
-    }
-    var promptTxt = '[' + (currentAgent ? currentAgent.nombre : 'Equipo') + '] ' + txt;
-    appendMsg('NICOLÁS', promptTxt, true);
-
-    btnSend.disabled = true;
-    btnSend.innerHTML = '...';
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/chat', true);
+    xhr.open('POST', '/api/tasks/' + id + '/status', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({ nuevo_estado: nuevoEstado }));
+  };
+
+  window.cargarTareas = function () {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/tasks', true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
-        btnSend.disabled = false;
-        btnSend.innerHTML = 'ENVIAR';
         if (xhr.status === 200) {
           try {
             var data = JSON.parse(xhr.responseText);
-            var reply = data.reply_text || data.mensaje || data.status || 'Respuesta procesada correctamente.';
-            appendMsg((currentAgent ? currentAgent.nombre.toUpperCase() : 'NICOLA OS'), reply, false);
+            procesarDataBackend(data);
           } catch (e) {
-            appendMsg((currentAgent ? currentAgent.nombre.toUpperCase() : 'NICOLA OS'), xhr.responseText || 'Ok', false);
+            usarFallback();
           }
         } else {
-          appendMsg('ERROR', 'Error conectando con el núcleo (' + xhr.status + ')', false);
+          usarFallback();
         }
       }
     };
+    xhr.send(null);
+  };
+
+  function procesarDataBackend(data) {
+    tareasState.curso = data['En progreso'] || [];
+    tareasState.pausa = (data['Bloqueada'] || []).concat(data['En revisión'] || []).concat(data['En pausa'] || []);
+    tareasState.pendiente = (data['Pendiente'] || []).concat(data['Backlog'] || []);
+
+    if (tareasState.curso.length === 0 && tareasState.pausa.length === 0) {
+      tareasState.curso = fallbackData.curso;
+      tareasState.pausa = fallbackData.pausa;
+      if (tareasState.pendiente.length === 0) {
+        tareasState.pendiente = fallbackData.pendiente;
+      }
+    }
+    renderizarBoard();
+  }
+
+  function usarFallback() {
+    tareasState.curso = fallbackData.curso.slice(0);
+    tareasState.pausa = fallbackData.pausa.slice(0);
+    tareasState.pendiente = fallbackData.pendiente.slice(0);
+    renderizarBoard();
+  }
+
+  var newTaskInput = document.getElementById('newTaskInput');
+  var newTaskAgent = document.getElementById('newTaskAgent');
+  var btnCreateTask = document.getElementById('btnCreateTask');
+
+  function crearNuevoTrabajo() {
+    var txt = (newTaskInput.value || '').trim();
+    if (!txt) return;
+    var ag = newTaskAgent.value || 'mario';
+    newTaskInput.value = '';
+
+    var nueva = {
+      id: 'usr_' + Date.now(),
+      titulo: txt,
+      descripcion: 'Ingresada manualmente desde el CRM.',
+      agente: ag,
+      prioridad: 'alta',
+      proyecto: 'Nicola OS'
+    };
+
+    tareasState.pendiente.unshift(nueva);
+    renderizarBoard();
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/tasks', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-      mensaje: promptTxt,
-      agente: selectedId,
-      canal: 'Oficina-Web'
+      titulo: txt,
+      agente_responsable: ag,
+      descripcion: 'Ingresada por Nicolás',
+      prioridad: 'alta'
     }));
   }
 
-  btnSend.addEventListener('click', enviarComando, false);
-  cmdInput.addEventListener('keydown', function (e) {
-    if (e.keyCode === 13) { enviarComando(); }
+  btnCreateTask.addEventListener('click', crearNuevoTrabajo, false);
+  newTaskInput.addEventListener('keydown', function (e) {
+    if (e.keyCode === 13) { crearNuevoTrabajo(); }
   }, false);
 
-  // Iniciar Render Loop
-  render();
+  window.cambiarColumnaMovil = function (tipo) {
+    var cols = document.querySelectorAll('.board-column');
+    for (var i = 0; i < cols.length; i++) {
+      cols[i].className = cols[i].className.replace(' active-col', '');
+    }
+    var target = document.getElementById(tipo === 'curso' ? 'colCurso' : (tipo === 'pausa' ? 'colPausa' : 'colPorHacer'));
+    if (target) {
+      target.className += ' active-col';
+    }
+
+    var btns = document.querySelectorAll('.mobile-tab-btn');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].className = 'mobile-tab-btn';
+    }
+    if (window.event && window.event.target) {
+      window.event.target.className = 'mobile-tab-btn active';
+    }
+  };
+
+  cargarTareas();
 })();
 </script>
 

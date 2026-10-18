@@ -26,6 +26,7 @@ TZ = ZoneInfo('America/Santiago')
 PANEL_API_URL = os.environ.get('PANEL_API_URL', 'https://panel.ironcross.cl').rstrip('/')
 IPAD_API_TOKEN = os.environ.get('IPAD_API_TOKEN', '')
 NICOLA_API_URL = os.environ.get('NICOLA_API_URL', 'http://127.0.0.1:8088').rstrip('/')
+NICOLA_DASHBOARD_URL = os.environ.get('NICOLA_DASHBOARD_URL', 'http://127.0.0.1:8099').rstrip('/')
 ANTIGRAVITY_INSTANCE = os.environ.get('ANTIGRAVITY_INSTANCE', 'macbook-air-de-nicolas-local-golden-planet')
 ANTIGRAVITY_REMOTE_URL = os.environ.get('ANTIGRAVITY_REMOTE_URL', 'https://antigravity.google.com')
 
@@ -56,6 +57,53 @@ def nicola_historial_request():
             return resp.read().decode('utf-8')
     except Exception as e:
         return json.dumps({"status": "error", "error": str(e), "turns": []})
+
+
+def nicola_tasks_request():
+    """Consulta las tareas agrupadas por estado desde la Pizarra Operativa."""
+    url = NICOLA_DASHBOARD_URL + '/api/tasks'
+    req = urllib.request.Request(url, method='GET')
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return resp.read().decode('utf-8')
+    except Exception as e:
+        return json.dumps({
+            "En progreso": [
+                {"id": "fb_1", "titulo": "Cobros y conciliación bancaria mensual", "descripcion": "Verificación de depósitos y regla de 3 cubos.", "agente_responsable": "glenn", "prioridad": "alta", "proyecto": "finanzas"},
+                {"id": "fb_2", "titulo": "Reactivación de 5 atletas en pausa ($504.550 CLP latente)", "descripcion": "Pauta de retorno progresivo y seguimiento.", "agente_responsable": "ironbot", "prioridad": "alta", "proyecto": "ironcross"},
+                {"id": "fb_3", "titulo": "Calificación de leads en WhatsApp", "descripcion": "Atención a personas interesadas en planes 2026.", "agente_responsable": "buzz", "prioridad": "media", "proyecto": "ironcross"}
+            ],
+            "En pausa": [
+                {"id": "fb_4", "titulo": "Aprobación de compra de equipamiento", "descripcion": "Esperando autorización explícita (AUTORIZO) de Nicolás.", "agente_responsable": "glenn", "prioridad": "media", "proyecto": "finanzas"},
+                {"id": "fb_5", "titulo": "Mapeo de movilidad para hombro/SLAP", "descripcion": "Estructuración de pautas para atletas en recuperación.", "agente_responsable": "ironbot", "prioridad": "baja", "proyecto": "ironcross"}
+            ],
+            "Pendiente": [
+                {"id": "fb_6", "titulo": "Brief matutino de finanzas familiares a las 06:00 AM", "descripcion": "Resumen diario consolidado de saldo y meta para WhatsApp.", "agente_responsable": "glenn", "prioridad": "alta", "proyecto": "familia"},
+                {"id": "fb_7", "titulo": "Revisión forense de comprobantes no reconocidos", "descripcion": "Indexación en correo IMAP de transferencias pendientes.", "agente_responsable": "zauron", "prioridad": "media", "proyecto": "nicola-os"},
+                {"id": "fb_8", "titulo": "Priorización y asignación del Consejo Asesor", "descripcion": "Consolidación de objetivos de la semana sin parálisis de decisión.", "agente_responsable": "morfeo", "prioridad": "media", "proyecto": "nicola-os"}
+            ]
+        })
+
+
+def nicola_create_task_request(data_bytes):
+    url = NICOLA_DASHBOARD_URL + '/api/tasks'
+    req = urllib.request.Request(url, data=data_bytes, headers={'Content-Type': 'application/json'}, method='POST')
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return resp.read().decode('utf-8')
+    except Exception as e:
+        return json.dumps({"status": "error", "error": str(e)})
+
+
+def nicola_update_task_status_request(tarea_id, nuevo_estado):
+    url = f"{NICOLA_DASHBOARD_URL}/api/tasks/{tarea_id}/status"
+    data = json.dumps({"nuevo_estado": nuevo_estado}).encode('utf-8')
+    req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'}, method='POST')
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            return resp.read().decode('utf-8')
+    except Exception as e:
+        return json.dumps({"status": "error", "error": str(e)})
 
 
 def obtener_antigravity_status():
@@ -528,6 +576,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Expires', '0')
             self.end_headers()
             self.wfile.write(body)
+        elif parsed.path == '/api/tasks':
+            body = nicola_tasks_request().encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
+            self.end_headers()
+            self.wfile.write(body)
         else:
             super().do_GET()
 
@@ -600,7 +658,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(b'ok')
         elif parsed.path == '/api/hoy':
             if not self._oficina_sesion_valida():
+                length = int(self.headers.get('Content-Length', 0))
+                if length > 0:
+                    self.rfile.read(length)
                 self.send_response(401)
+                self.send_header('Content-Length', '0')
                 self.end_headers()
                 return
             length = int(self.headers.get('Content-Length', 0))
@@ -712,6 +774,34 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Content-Length', str(len(body_b)))
             self.end_headers()
             self.wfile.write(body_b)
+        elif parsed.path == '/api/tasks':
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length)
+            body = nicola_create_task_request(raw).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.end_headers()
+            self.wfile.write(body)
+        elif parsed.path.startswith('/api/tasks/') and parsed.path.endswith('/status'):
+            partes = parsed.path.split('/')
+            tarea_id = partes[3] if len(partes) >= 4 else ''
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8', errors='ignore')
+            nuevo_estado = 'En progreso'
+            try:
+                j = json.loads(raw)
+                nuevo_estado = j.get('nuevo_estado', nuevo_estado)
+            except Exception:
+                pass
+            body = nicola_update_task_status_request(tarea_id, nuevo_estado).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.end_headers()
+            self.wfile.write(body)
         else:
             self.send_response(404)
             self.end_headers()
