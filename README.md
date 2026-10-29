@@ -78,6 +78,14 @@ curl -sS -b /tmp/ri.jar -d "alumno_id=12&accion=si&horario=PM" http://127.0.0.1:
 
 También existe **GET `/rutina`** (y `/rutina.html`): un HTML aparte (~1.5 KB, título `Ironcross - Rutina`) para editar y guardar con un form clásico a `POST /guardar`. Esa página la genera el backend (la fecha va rellena al pedirla). `rutina.html` en este repo es una captura de esa respuesta, no un archivo estático en el Oracle.
 
+## Rutinas AM / PM
+
+La pestaña RUTINAS separa el borrador por fecha y jornada. El iPad usa `GET /api/rutina?fecha=YYYY-MM-DD&jornada=AM|PM` y guarda con `POST /guardar` incluyendo `fecha`, `jornada` y `rutina`. AM y PM son versiones append-only independientes. `GET ...&jornada=legacy` muestra en modo de solo lectura las rutinas antiguas sin jornada; copiar a AM o PM es una acción explícita y crea una versión nueva sin alterar el original.
+
+Los clientes antiguos que omiten `jornada` conservan el comportamiento por fecha; sus guardados quedan como legacy (columna `jornada IS NULL`). El proxy exige que Ironcross confirme la jornada antes y después de guardar. Si el panel aún tiene una API antigua, el guardado AM/PM falla cerrado para no clasificar una rutina histórica como una jornada.
+
+La preparación requiere `ironcross-dashboard/db/migrations/005_rutinas_jornada.sql` y el endpoint actualizado de Ironcross. La migración 005 requiere primero `001_historial_rutinas.sql`, no reasigna datos existentes y no se ha ejecutado en producción. **Orden de publicación:** aprobar/aplicar la migración y actualizar Ironcross primero; luego publicar RelojIron. No publicar solo un lado.
+
 ## Backend Python
 
 El proceso que corre en el Oracle (`:8090`) es `rutina_server.py` (versionado en este repo), Python 3.12.3, banner `SimpleHTTP/0.6`. En esa máquina el archivo vive en `/home/ubuntu/rutina_server.py`.
@@ -105,7 +113,7 @@ Para desplegar un cambio ya mergeado a `main`, desde `/home/ubuntu/RelojIron` en
 
 Hace `git fetch` + fast-forward, valida que `rutina_server.py` compile, reinicia el proceso y comprueba `GET /api/oficina` antes de darlo por bueno. Si algo falla, vuelve solo al commit anterior y reinicia con ese. Si el checkout tiene cambios sin commitear, aborta sin tocar nada — evita repetir el problema de ediciones hechas directo en el servidor que nunca vuelven a GitHub. `./deploy.sh --force` reinicia igual aunque no haya commits nuevos (útil después de tocar `RelojIron.env`).
 
-Un cron en el servidor corre `./deploy.sh` cada pocos minutos, así que normalmente no hace falta correrlo a mano — mergear a `main` alcanza.
+Un cron en el servidor corre `./deploy.sh` cada pocos minutos; el intervalo exacto no está en este repositorio y no se consultó el crontab remoto. El cron puede desplegar automáticamente cualquier actualización de `main`; por eso no hacer push/merge de esta versión antes de aprobar la migración/API compatible de Ironcross. El script no se ejecutó.
 
 **Secretos:** `PANEL_API_URL` e `IPAD_API_TOKEN` viven en `/home/ubuntu/RelojIron.env`, fuera de este repo. Para rotar `IPAD_API_TOKEN`: generar uno nuevo, actualizarlo ahí y en `IPAD_API_TOKEN` del `docker-compose.yml` del panel (mismo valor en los dos lados), y `./deploy.sh --force`.
 

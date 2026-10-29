@@ -20,6 +20,7 @@ PORT = 8090
 # en el servidor), no de una carpeta separada — así "git pull" alcanza.
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 TZ = ZoneInfo('America/Santiago')
+PLANTILLA_RUTINA = 'PREPARACION\n\nCALENTAMIENTO\n\nPIERNAS\n\nELONGACION\n\nCORE\n\nPOSTURAS\n\nSUPER SET\n\nELONGACION\n'
 
 # Carga defensiva del archivo de entorno en producción o local si no fueron exportadas
 def _cargar_env_archivo():
@@ -233,7 +234,10 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
   #topbar {{ padding:16px 20px; }}
   #back {{ color:#7A7568; text-decoration:none; font-size:16px; letter-spacing:2px; }}
   #brand {{ color:#C23B22; font-weight:bold; font-size:22px; letter-spacing:6px; margin-top:8px; text-transform:uppercase; }}
-  form {{ position:absolute; top:90px; left:0; right:0; bottom:0; padding:0 20px 20px 20px; }}
+  form {{ left:0; right:0; padding:0 20px 20px 20px; }}
+  #jornadaForm {{ position:absolute; top:88px; height:54px; }}
+  #rutinaForm {{ position:absolute; top:148px; bottom:0; }}
+  select {{ width:65%; height:42px; background:#141412; color:#EDE9DF; border:1px solid #2A2A26; font-size:18px; }}
   textarea {{
     width:100%;
     height:78%;
@@ -255,17 +259,30 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
     letter-spacing:3px;
     border:0;
   }}
+  #jornadaForm button {{ width:32%; height:42px; margin-top:0; font-size:15px; letter-spacing:1px; }}
+  #historialNotice {{ color:#C29A22; font-size:13px; margin:6px 0; }}
 </style>
 </head>
 <body>
   <div id="topbar">
     <a id="back" href="/">&larr; RELOJ</a>
-    <div id="brand">Rutina de {fecha}</div>
+    <div id="brand">Rutina {jornada_etiqueta} de {fecha}</div>
   </div>
-  <form method="POST" action="/guardar">
+  <form id="jornadaForm" method="GET" action="/rutina">
     <input type="hidden" name="fecha" value="{fecha}">
-    <textarea name="rutina">{rutina}</textarea>
-    <button type="submit">GUARDAR</button>
+    <select name="jornada">
+      <option value="" {seleccion_sin_jornada}>Última / histórica</option>
+      <option value="AM" {seleccion_am}>AM</option>
+      <option value="PM" {seleccion_pm}>PM</option>
+    </select>
+    <button type="submit">ABRIR</button>
+  </form>
+  <form id="rutinaForm" method="POST" action="/guardar">
+    <input type="hidden" name="fecha" value="{fecha}">
+    <input type="hidden" name="jornada" value="{jornada_form}">
+    {aviso_legacy}
+    <textarea name="rutina" {solo_lectura}>{rutina}</textarea>
+    <button type="submit" {guardar_deshabilitado}>GUARDAR EN {jornada_etiqueta}</button>
   </form>
 </body>
 </html>
@@ -317,18 +334,41 @@ def panel_request(method, path, params=None, json_body=None, form_body=None):
         raise PanelError(502, str(e.reason))
 
 
-def leer_rutina(fecha):
-    """Trae la rutina del día desde el panel (ya incluye la plantilla si está vacía)."""
-    _, body = panel_request('GET', '/api/rutina', params={'fecha': fecha})
+def leer_rutina_datos(fecha, jornada=None):
+    """Lee una jornada concreta o mantiene la lectura histórica sin jornada."""
+    params = {'fecha': fecha}
+    if jornada:
+        params['jornada'] = jornada
+    _, body = panel_request('GET', '/api/rutina', params=params)
     try:
         data = json.loads(body)
     except ValueError:
         raise PanelError(502, 'respuesta no-JSON de /api/rutina')
-    return data.get('contenido', '')
+    if not isinstance(data, dict) or not isinstance(data.get('contenido', ''), str):
+        raise PanelError(502, 'respuesta inválida de /api/rutina')
+    if jornada and data.get('jornada') != jornada:
+        raise PanelError(409, 'la API de Ironcross todavía no confirma jornada AM/PM')
+    return data
 
 
-def guardar_rutina(fecha, contenido):
-    panel_request('POST', '/api/rutina', json_body={'fecha': fecha, 'contenido': contenido})
+def leer_rutina(fecha, jornada=None):
+    return leer_rutina_datos(fecha, jornada).get('contenido', '')
+
+
+def guardar_rutina(fecha, contenido, jornada=None):
+    payload = {'fecha': fecha, 'contenido': contenido}
+    if jornada:
+        # Fail closed if Ironcross still runs an older API that ignores jornada.
+        leer_rutina_datos(fecha, jornada)
+        payload['jornada'] = jornada
+    _, response = panel_request('POST', '/api/rutina', json_body=payload)
+    if jornada:
+        try:
+            saved = json.loads(response)
+        except ValueError:
+            raise PanelError(502, 'respuesta no-JSON al guardar jornada')
+        if not isinstance(saved, dict) or saved.get('jornada') != jornada:
+            raise PanelError(502, 'Ironcross no confirmó la jornada guardada')
 
 
 def dias_disponibles():
@@ -497,15 +537,33 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         if parsed.path == '/rutina.html' or parsed.path == '/rutina':
             fecha = qs.get('fecha', [hoy()])[0]
+            jornada = qs.get('jornada', [None])[0]
             if not es_fecha_valida(fecha):
                 fecha = hoy()
+            if jornada not in (None, 'AM', 'PM'):
+                self.send_response(400)
+                self.end_headers()
+                return
             try:
-                rutina = leer_rutina(fecha)
+                rutina = leer_rutina(fecha, jornada)
             except PanelError:
                 self.send_response(502)
                 self.end_headers()
                 return
-            body = PAGE_TEMPLATE.format(fecha=fecha, rutina=html.escape(rutina)).encode('utf-8')
+            jornada_label = jornada or 'HISTÓRICA'
+            template_values = {
+                'fecha': fecha,
+                'rutina': html.escape(rutina),
+                'jornada_etiqueta': jornada_label,
+                'jornada_form': jornada or '',
+                'seleccion_sin_jornada': 'selected' if jornada is None else '',
+                'seleccion_am': 'selected' if jornada == 'AM' else '',
+                'seleccion_pm': 'selected' if jornada == 'PM' else '',
+                'aviso_legacy': '<div id="historialNotice">Vista histórica. Elige AM o PM y pulsa ABRIR antes de guardar.</div>' if jornada is None else '',
+                'solo_lectura': 'readonly' if jornada is None else '',
+                'guardar_deshabilitado': 'disabled' if jornada is None else '',
+            }
+            body = PAGE_TEMPLATE.format(**template_values).encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'text/html; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
@@ -513,12 +571,24 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
         elif parsed.path == '/api/rutina':
             fecha = qs.get('fecha', [hoy()])[0]
+            jornada = qs.get('jornada', [None])[0]
             if not es_fecha_valida(fecha):
                 self.send_response(400)
                 self.end_headers()
                 return
+            if jornada not in (None, 'AM', 'PM', 'legacy'):
+                self.send_response(400)
+                self.end_headers()
+                return
             try:
-                body = leer_rutina(fecha).encode('utf-8')
+                datos = leer_rutina_datos(fecha, jornada)
+                encontrada = bool(datos.get('encontrada', bool(datos.get('contenido', '').strip())))
+                contenido = datos.get('contenido', '')
+                if jornada == 'legacy' and not encontrada:
+                    contenido = ''
+                elif jornada in ('AM', 'PM') and not encontrada:
+                    contenido = PLANTILLA_RUTINA
+                body = contenido.encode('utf-8')
             except PanelError:
                 self.send_response(502)
                 self.end_headers()
@@ -526,6 +596,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
+            self.send_header('X-Rutina-Encontrada', '1' if encontrada else '0')
+            self.send_header('X-Rutina-Jornada', jornada or 'compatibilidad')
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             self.end_headers()
             self.wfile.write(body)
         elif parsed.path == '/api/rutina/dias':
@@ -620,10 +693,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             data = urllib.parse.parse_qs(raw)
             rutina = data.get('rutina', [''])[0]
             fecha = data.get('fecha', [hoy()])[0]
+            jornada = data.get('jornada', [None])[0]
             if not es_fecha_valida(fecha):
                 fecha = hoy()
+            if jornada not in (None, 'AM', 'PM'):
+                self.send_response(400)
+                self.end_headers()
+                return
             try:
-                guardar_rutina(fecha, rutina)
+                guardar_rutina(fecha, rutina, jornada)
             except PanelError:
                 self.send_response(502)
                 if self.headers.get('X-Requested-With') != 'XMLHttpRequest':
@@ -642,7 +720,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(body)
             else:
                 self.send_response(303)
-                self.send_header('Location', '/rutina.html?fecha=' + fecha)
+                self.send_header('Location', '/rutina.html?fecha=' + fecha + ('&jornada=' + jornada if jornada else ''))
                 self.end_headers()
         elif parsed.path == '/api/oficina-login':
             length = int(self.headers.get('Content-Length', 0))
@@ -761,12 +839,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             raw = self.rfile.read(length).decode('utf-8', errors='ignore')
             data = urllib.parse.parse_qs(raw)
             fecha = data.get('fecha', [hoy()])[0]
+            jornada = data.get('jornada', [None])[0]
             if not es_fecha_valida(fecha):
                 fecha = hoy()
+            if jornada not in (None, 'AM', 'PM'):
+                self.send_response(400)
+                self.end_headers()
+                return
 
             # 1. Intentar generar vía API de ironcross-dashboard
             try:
-                status, body = panel_request('POST', '/api/rutina/generar', json_body={'fecha': fecha})
+                payload = {'fecha': fecha}
+                if jornada:
+                    payload['jornada'] = jornada
+                status, body = panel_request('POST', '/api/rutina/generar', json_body=payload)
                 if status == 200:
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -779,10 +865,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 pass
 
             # 2. Fallback: solicitar a Nicola OS / IronBot
-            prompt = f"IronBot, crea la rutina de la clase del {fecha} basada en los entrenamientos registrados"
+            prompt = f"IronBot, crea la rutina de la clase del {fecha}" + (f" jornada {jornada}" if jornada else "") + " basada en los entrenamientos registrados"
             reply = nicola_chat_request(prompt)
             try:
-                rutina_guardada = leer_rutina(fecha)
+                rutina_guardada = leer_rutina(fecha, jornada)
                 if rutina_guardada and 'CALENTAMIENTO' in rutina_guardada:
                     resp_json = json.dumps({'ok': True, 'rutina': rutina_guardada, 'fuente': 'Nicola OS / IronBot'})
                 else:
