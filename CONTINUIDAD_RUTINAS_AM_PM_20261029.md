@@ -57,3 +57,13 @@ Implementación local lista para revisión/publicación coordinada; **no publica
 4. Verificación presencial en el iPad y evidencia de AM/PM/historial después del despliegue.
 
 Checkpoint final recuperable guardado en `/Users/nigoku/Nicola OS/checkpoints/relojiron-ampm-publish-20261029-final-r4/`; el hash está en el manifiesto del checkpoint. Checkpoint previo de preparación en `/Users/nigoku/Nicola OS/checkpoints/relojiron-ampm-publish-20261029/`.
+
+## Addendum — simplificación de jornadas y arquitectura (2026-10-30)
+
+- La afirmación anterior de que AM/PM aún no estaba publicado quedó superada por el acta de publicación del 2026-10-30: Ironcross `81e2bc1` y RelojIron `ba7818f` están publicados. La migración 005 está aplicada; el cron de RelojIron se verificó activo cada cinco minutos y el servidor respondió HTTP 200. La validación física en iPad sigue pendiente.
+- Architecture Preflight reconciliado con `ARCHITECTURE_REGISTRY.json`: RelojIron clasificado `VIGENTE`, checkout oficial `/Users/nigoku/Proyectos/RelojIron`, remoto `https://github.com/nicohugof/RelojIron.git`, HEAD `ba7818fd84ec7cbf98be9a82f4e918047ab9b419`, igual a `origin/main` y al commit de producción. La rama de trabajo local es `codex/relojiron-am-pm-20261029`; no se hizo push ni despliegue.
+- La interfaz ya no ofrece una tercera pestaña/botón «Historial». Al seleccionar una fecha desde el calendario, AM/PM se consultan independientemente. Si no existe la jornada elegida pero hay un registro antiguo sin jornada, se muestra en solo lectura desde esa fecha; «EDITAR COPIA AM/PM» crea un borrador nuevo sin alterar el original. Las rutinas AM/PM anteriores se recuperan por fecha y jornada.
+- Se muestran los horarios habituales: AM martes/jueves 07:00 y PM lunes a viernes 19:30. La selección inicial usa AM en martes/jueves antes del mediodía y PM en días hábiles; otros días/horas conservan una opción explícita de excepción desde calendario. No se añadieron columnas ni se cambiaron registros.
+- Pruebas: `python3 -m unittest discover -v` **31/31 aprobadas**, incluida la regresión de UI y las pruebas de proxy AM/PM; `git diff --check` aprobado. Falta validar navegador/iPad físico.
+- Checkpoints recuperables: previo `/Users/nigoku/Nicola OS/checkpoints/relojiron-simplification-20261030-pre/`; posterior `/Users/nigoku/Nicola OS/checkpoints/relojiron-simplification-20261030-post-final/`. Ambos incluyen manifiestos SHA-256 verificados.
+- Próximo paso: inspección visual local si se requiere; después, que Nico pruebe en iPad la misma fecha con AM y PM, abra una rutina histórica, confirme aislamiento al editar AM y valide horarios. No autorizar publicación de estos cambios locales hasta esa revisión; el cron despliega desde `main` cada cinco minutos.

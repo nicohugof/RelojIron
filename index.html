@@ -201,8 +201,8 @@
   }
   .rutinaJornadaBtn {
     display: table-cell;
-    height: 38px;
-    line-height: 38px;
+    height: 42px;
+    line-height: 18px;
     text-align: center;
     background: #141412;
     color: #7A7568;
@@ -217,7 +217,13 @@
     background: #C23B22;
     color: #EDE9DF;
   }
-  #rutinaJornadaLegacy.active { background: #5A5030; }
+  .rutinaJornadaBtn span {
+    display: block;
+    font-size: 9px;
+    line-height: 12px;
+    letter-spacing: 0;
+    font-weight: normal;
+  }
   .dayPill {
     display: inline-block;
     padding: 0 14px;
@@ -1820,9 +1826,8 @@
       <div id="rutinaTitle">RUTINAS</div>
       <div id="rutinaDays"></div>
       <div id="rutinaJornadas" aria-label="Jornada de la rutina">
-        <div id="rutinaJornadaAM" class="rutinaJornadaBtn">AM</div>
-        <div id="rutinaJornadaPM" class="rutinaJornadaBtn">PM</div>
-        <div id="rutinaJornadaLegacy" class="rutinaJornadaBtn">HISTORIAL</div>
+        <div id="rutinaJornadaAM" class="rutinaJornadaBtn" aria-label="AM martes y jueves a las 07:00">AM<span>MAR / JUE · 07:00</span></div>
+        <div id="rutinaJornadaPM" class="rutinaJornadaBtn" aria-label="PM lunes a viernes a las 19:30">PM<span>LUN–VIE · 19:30</span></div>
       </div>
     </div>
     <div id="rutinaSubBar">
@@ -1837,8 +1842,8 @@
         <div id="rutinaSaveBtn" class="rutinaBtn">GUARDAR</div>
       </div>
       <div id="rutinaLegacyActionRow" style="display:none; position:absolute; left:16px; right:16px; bottom:10px; height:44px;">
-        <div id="rutinaLegacyCopyAmBtn" class="rutinaBtn" style="width:49%; background:#5A5030; margin-right:2%;">COPIAR A AM</div>
-        <div id="rutinaLegacyCopyPmBtn" class="rutinaBtn" style="width:49%; background:#5A5030;">COPIAR A PM</div>
+        <div id="rutinaLegacyCopyAmBtn" class="rutinaBtn" style="width:49%; background:#5A5030; margin-right:2%;">EDITAR COPIA AM</div>
+        <div id="rutinaLegacyCopyPmBtn" class="rutinaBtn" style="width:49%; background:#5A5030;">EDITAR COPIA PM</div>
       </div>
       <div id="rutinaStatus">&nbsp;</div>
     </div>
@@ -3031,6 +3036,12 @@
   var rutinaStatus = document.getElementById('rutinaStatus');
   var rutinaDays = document.getElementById('rutinaDays');
   var rutinaBody = document.getElementById('rutinaBody');
+  var rutinaJornadaAM = document.getElementById('rutinaJornadaAM');
+  var rutinaJornadaPM = document.getElementById('rutinaJornadaPM');
+  var rutinaLegacyActionRow = document.getElementById('rutinaLegacyActionRow');
+  var rutinaLegacyCopyAmBtn = document.getElementById('rutinaLegacyCopyAmBtn');
+  var rutinaLegacyCopyPmBtn = document.getElementById('rutinaLegacyCopyPmBtn');
+  var rutinaBtnRow = document.getElementById('rutinaBtnRow');
   var rutinaCalcPane = document.getElementById('rutinaCalcPane');
   var rutinaSubDia = document.getElementById('rutinaSubDia');
   var rutinaSubCalc = document.getElementById('rutinaSubCalc');
@@ -3056,19 +3067,28 @@
   var diasCache = [];
   var hoyGlobal = null;
   var manianaGlobal = null;
-  var jornadaSeleccionada = (new Date().getHours() >= 12) ? 'PM' : 'AM';
+  function jornadaHabitualPorDia(dia, hora) {
+    if (dia === 2 || dia === 4) { return hora < 12 ? 'AM' : 'PM'; }
+    if (dia >= 1 && dia <= 5) { return 'PM'; }
+    return hora < 12 ? 'AM' : 'PM';
+  }
+
+  function jornadaInicial() {
+    var ahora = new Date();
+    return jornadaHabitualPorDia(ahora.getDay(), ahora.getHours());
+  }
+  var jornadaSeleccionada = jornadaInicial();
   var rutinaLegacyEncontrada = false;
   var rutinaLegacyContenido = '';
+  var rutinaViendoLegacy = false;
   var rutinaSinGuardar = false;
 
   function pintarJornadas() {
-    rutinaJornadaAM.className = 'rutinaJornadaBtn' + (jornadaSeleccionada === 'AM' ? ' active' : '');
-    rutinaJornadaPM.className = 'rutinaJornadaBtn' + (jornadaSeleccionada === 'PM' ? ' active' : '');
-    rutinaJornadaLegacy.className = 'rutinaJornadaBtn' + (jornadaSeleccionada === 'legacy' ? ' active' : '');
-    var esLegacy = jornadaSeleccionada === 'legacy';
-    rutinaText.readOnly = esLegacy;
-    rutinaBtnRow.style.display = esLegacy ? 'none' : 'block';
-    rutinaLegacyActionRow.style.display = esLegacy && rutinaLegacyEncontrada ? 'block' : 'none';
+    rutinaJornadaAM.className = 'rutinaJornadaBtn' + (!rutinaViendoLegacy && jornadaSeleccionada === 'AM' ? ' active' : '');
+    rutinaJornadaPM.className = 'rutinaJornadaBtn' + (!rutinaViendoLegacy && jornadaSeleccionada === 'PM' ? ' active' : '');
+    rutinaText.readOnly = rutinaViendoLegacy;
+    rutinaBtnRow.style.display = rutinaViendoLegacy ? 'none' : 'block';
+    rutinaLegacyActionRow.style.display = rutinaViendoLegacy && rutinaLegacyEncontrada ? 'block' : 'none';
   }
 
   function aceptarCambioRutina() {
@@ -3080,28 +3100,29 @@
   function seleccionarJornada(jornada) {
     if (jornadaSeleccionada === jornada || !aceptarCambioRutina()) { return; }
     jornadaSeleccionada = jornada;
+    rutinaViendoLegacy = false;
     pintarJornadas();
     if (fechaSeleccionada) { cargarRutinaFecha(fechaSeleccionada); }
   }
 
   rutinaJornadaAM.addEventListener('click', function () { seleccionarJornada('AM'); }, false);
   rutinaJornadaPM.addEventListener('click', function () { seleccionarJornada('PM'); }, false);
-  rutinaJornadaLegacy.addEventListener('click', function () { seleccionarJornada('legacy'); }, false);
 
   function copiarHistoricoSinJornada(jornada) {
     if (!rutinaLegacyEncontrada || !rutinaLegacyContenido || !window.confirm('Copiar esta rutina histórica al borrador ' + jornada + '? El original sin jornada se conservará.')) { return; }
     jornadaSeleccionada = jornada;
+    rutinaViendoLegacy = false;
     rutinaSinGuardar = true;
     rutinaText.value = rutinaLegacyContenido;
     pintarJornadas();
     fitRutinaText();
-    rutinaStatus.innerHTML = 'Borrador copiado a ' + jornada + ' · pulsa GUARDAR para crear su versión';
+    rutinaStatus.innerHTML = 'Copia editable en ' + jornada + ' · guarda para crear una rutina nueva; el original se conserva';
   }
 
   rutinaLegacyCopyAmBtn.addEventListener('click', function () { copiarHistoricoSinJornada('AM'); }, false);
   rutinaLegacyCopyPmBtn.addEventListener('click', function () { copiarHistoricoSinJornada('PM'); }, false);
-  rutinaText.addEventListener('keyup', function () { if (jornadaSeleccionada !== 'legacy') { rutinaSinGuardar = true; } }, false);
-  rutinaText.addEventListener('change', function () { if (jornadaSeleccionada !== 'legacy') { rutinaSinGuardar = true; } }, false);
+  rutinaText.addEventListener('keyup', function () { if (!rutinaViendoLegacy) { rutinaSinGuardar = true; } }, false);
+  rutinaText.addEventListener('change', function () { if (!rutinaViendoLegacy) { rutinaSinGuardar = true; } }, false);
 
   function pillLabel(fecha) {
     if (fecha === hoyGlobal) { return 'HOY'; }
@@ -3137,6 +3158,8 @@
   function cargarRutinaFecha(fecha) {
     rutinaLegacyEncontrada = false;
     rutinaLegacyContenido = '';
+    rutinaViendoLegacy = false;
+    rutinaText.value = '';
     pintarJornadas();
     rutinaStatus.innerHTML = 'Cargando jornada ' + jornadaSeleccionada.toUpperCase() + '...';
     var xhr = new XMLHttpRequest();
@@ -3146,24 +3169,44 @@
         if (xhr.status === 200) {
           var t = xhr.responseText;
           var existe = xhr.getResponseHeader('X-Rutina-Encontrada') === '1';
-          if (jornadaSeleccionada === 'legacy') {
-            rutinaLegacyEncontrada = existe;
-            rutinaLegacyContenido = existe ? t : '';
-            if (!existe) { t = ''; }
-          } else if (!t || !String(t).replace(/^\s+|\s+$/g, '')) {
-            t = PLANTILLA_RUTINA;
-          }
-          rutinaText.value = t;
-          rutinaSinGuardar = false;
-          if (jornadaSeleccionada === 'legacy') {
-            rutinaStatus.innerHTML = existe ? 'Historial sin jornada · solo lectura · original conservado' : 'No hay rutina histórica sin jornada para esta fecha';
+          if (existe) {
+            mostrarRutinaCargada(t, false);
           } else {
-            rutinaStatus.innerHTML = 'Jornada ' + jornadaSeleccionada + (existe ? ' · rutina guardada' : ' · borrador nuevo');
+            cargarRutinaAntigua(fecha);
           }
-          pintarJornadas();
-          fitRutinaText();
         } else {
           rutinaStatus.innerHTML = 'No se pudo cargar la rutina';
+        }
+      }
+    };
+    xhr.send(null);
+  }
+
+  function mostrarRutinaCargada(contenido, esLegacy) {
+    rutinaViendoLegacy = esLegacy;
+    rutinaLegacyEncontrada = esLegacy;
+    rutinaLegacyContenido = esLegacy ? contenido : '';
+    rutinaText.value = esLegacy ? contenido : (contenido || PLANTILLA_RUTINA);
+    rutinaSinGuardar = false;
+    rutinaStatus.innerHTML = esLegacy
+      ? 'Rutina antigua sin jornada · solo lectura · puedes crear una copia AM o PM'
+      : 'Jornada ' + jornadaSeleccionada + ' · rutina guardada · el calendario conserva las versiones anteriores';
+    pintarJornadas();
+    fitRutinaText();
+  }
+
+  function cargarRutinaAntigua(fecha) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/rutina?fecha=' + encodeURIComponent(fecha) + '&jornada=legacy', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200 && xhr.getResponseHeader('X-Rutina-Encontrada') === '1') {
+          mostrarRutinaCargada(xhr.responseText, true);
+        } else if (xhr.status === 200) {
+          mostrarRutinaCargada('', false);
+          rutinaStatus.innerHTML = 'Jornada ' + jornadaSeleccionada + ' · borrador nuevo';
+        } else {
+          rutinaStatus.innerHTML = 'No se pudo cargar la rutina antigua';
         }
       }
     };
@@ -3199,7 +3242,7 @@
   }
 
   function guardarRutina() {
-    if (jornadaSeleccionada === 'legacy') { return; }
+    if (rutinaViendoLegacy) { return; }
     rutinaStatus.innerHTML = 'Guardando...';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/guardar', true);
@@ -3229,7 +3272,7 @@
   rutinaCopyBtn.addEventListener('click', copiarRutina, false);
 
   function generarRutinaConIronBot() {
-    if (!fechaSeleccionada || jornadaSeleccionada === 'legacy') { return; }
+    if (!fechaSeleccionada || rutinaViendoLegacy) { return; }
     if (rutinaIronbotBtn) {
       rutinaIronbotBtn.style.opacity = '0.5';
       rutinaIronbotBtn.innerHTML = 'GENERANDO...';

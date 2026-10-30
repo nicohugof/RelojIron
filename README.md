@@ -80,11 +80,13 @@ También existe **GET `/rutina`** (y `/rutina.html`): un HTML aparte (~1.5 KB, t
 
 ## Rutinas AM / PM
 
-La pestaña RUTINAS separa el borrador por fecha y jornada. El iPad usa `GET /api/rutina?fecha=YYYY-MM-DD&jornada=AM|PM` y guarda con `POST /guardar` incluyendo `fecha`, `jornada` y `rutina`. AM y PM son versiones append-only independientes. `GET ...&jornada=legacy` muestra en modo de solo lectura las rutinas antiguas sin jornada; copiar a AM o PM es una acción explícita y crea una versión nueva sin alterar el original.
+La pestaña RUTINAS separa las rutinas por fecha y jornada. El iPad usa `GET /api/rutina?fecha=YYYY-MM-DD&jornada=AM|PM` y guarda con `POST /guardar` incluyendo `fecha`, `jornada` y `rutina`. AM y PM son versiones independientes y los guardados conservan las versiones anteriores. El horario habitual se muestra en pantalla: **AM martes y jueves a las 07:00; PM lunes a viernes a las 19:30**. El calendario permite excepciones en otras fechas sin reescribir el historial.
+
+Al abrir desde el calendario una fecha que solo tiene una rutina antigua sin jornada, aparece en solo lectura. Para editarla, el profesor crea explícitamente una copia AM o PM; el original se conserva. Las rutinas AM/PM anteriores se recuperan seleccionando la fecha y la jornada correspondiente.
 
 Los clientes antiguos que omiten `jornada` conservan el comportamiento por fecha; sus guardados quedan como legacy (columna `jornada IS NULL`). El proxy exige que Ironcross confirme la jornada antes y después de guardar. Si el panel aún tiene una API antigua, el guardado AM/PM falla cerrado para no clasificar una rutina histórica como una jornada.
 
-La preparación requiere `ironcross-dashboard/db/migrations/005_rutinas_jornada.sql` y el endpoint actualizado de Ironcross. La migración 005 requiere primero `001_historial_rutinas.sql`, no reasigna datos existentes y no se ha ejecutado en producción. **Orden de publicación:** aprobar/aplicar la migración y actualizar Ironcross primero; luego publicar RelojIron. No publicar solo un lado.
+**Estado de producción al 2026-10-30:** la migración 005 y la API AM/PM de Ironcross están publicadas; las filas históricas siguen sin jornada. RelojIron `main` en `ba7818f` fue actualizado por el cron y respondió HTTP 200. La evidencia detallada quedó en el acta local de publicación del 2026-10-30. La comprobación física de la interfaz en iPad sigue pendiente.
 
 ## Backend Python
 
@@ -113,7 +115,7 @@ Para desplegar un cambio ya mergeado a `main`, desde `/home/ubuntu/RelojIron` en
 
 Hace `git fetch` + fast-forward, valida que `rutina_server.py` compile, reinicia el proceso y comprueba `GET /api/oficina` antes de darlo por bueno. Si algo falla, vuelve solo al commit anterior y reinicia con ese. Si el checkout tiene cambios sin commitear, aborta sin tocar nada — evita repetir el problema de ediciones hechas directo en el servidor que nunca vuelven a GitHub. `./deploy.sh --force` reinicia igual aunque no haya commits nuevos (útil después de tocar `RelojIron.env`).
 
-Un cron en el servidor corre `./deploy.sh` cada pocos minutos; el intervalo exacto no está en este repositorio y no se consultó el crontab remoto. El cron puede desplegar automáticamente cualquier actualización de `main`; por eso no hacer push/merge de esta versión antes de aprobar la migración/API compatible de Ironcross. El script no se ejecutó.
+El cron de producción fue verificado el 2026-10-30 con intervalo de cinco minutos. Actualiza automáticamente desde `main`, por lo que cualquier publicación a esa rama puede desplegarse en Oracle sin ejecutar `deploy.sh` manualmente. La interfaz simplificada actual es solo local y no se ha publicado; requiere autorización específica para push/merge porque eso puede activar el cron.
 
 **Secretos:** `PANEL_API_URL` e `IPAD_API_TOKEN` viven en `/home/ubuntu/RelojIron.env`, fuera de este repo. Para rotar `IPAD_API_TOKEN`: generar uno nuevo, actualizarlo ahí y en `IPAD_API_TOKEN` del `docker-compose.yml` del panel (mismo valor en los dos lados), y `./deploy.sh --force`.
 

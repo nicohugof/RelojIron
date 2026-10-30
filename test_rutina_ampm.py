@@ -153,14 +153,23 @@ class RutinaAmPmTest(unittest.TestCase):
         self.assertEqual(status, 400)
         panel.assert_not_called()
 
-    def test_ui_expone_am_pm_y_historial_legacy_solo_lectura(self):
+    def test_ui_simplifica_jornadas_y_recupera_legacy_desde_calendario(self):
         source = Path(rutina_server.DIRECTORY, 'index.html').read_text(encoding='utf-8')
         self.assertIn('id="rutinaJornadaAM"', source)
         self.assertIn('id="rutinaJornadaPM"', source)
-        self.assertIn('id="rutinaJornadaLegacy"', source)
+        self.assertNotIn('id="rutinaJornadaLegacy"', source)
+        self.assertNotIn('>HISTORIAL</div>', source)
+        self.assertIn('MAR / JUE · 07:00', source)
+        self.assertIn('LUN–VIE · 19:30', source)
+        self.assertIn('function jornadaHabitualPorDia(dia, hora)', source)
+        self.assertIn('if (dia === 2 || dia === 4)', source)
+        self.assertIn('if (dia >= 1 && dia <= 5)', source)
         self.assertIn("'&jornada=' + encodeURIComponent(jornadaSeleccionada)", source)
-        self.assertIn("jornadaSeleccionada === 'legacy'", source)
-        self.assertIn('rutinaText.readOnly = esLegacy', source)
+        self.assertIn("'&jornada=legacy'", source)
+        self.assertIn('function cargarRutinaAntigua(fecha)', source)
+        self.assertIn('rutinaText.readOnly = rutinaViendoLegacy', source)
+        self.assertIn('EDITAR COPIA AM', source)
+        self.assertIn('EDITAR COPIA PM', source)
 
 
 if __name__ == '__main__':
