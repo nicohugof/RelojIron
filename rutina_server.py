@@ -392,6 +392,57 @@ def dias_disponibles():
     return sorted(dias, reverse=True)
 
 
+def preparar_borrador_ironbot(fecha, jornada):
+    """Genera un borrador usando solo rutinas guardadas anteriores; nunca persiste."""
+    _, body = panel_request('GET', '/api/rutina/dias')
+    try:
+        data = json.loads(body)
+        fechas = data.get('dias', []) if isinstance(data, dict) else []
+    except (ValueError, AttributeError):
+        raise PanelError(502, 'respuesta inválida al consultar historial de rutinas')
+    if not isinstance(fechas, list):
+        raise PanelError(502, 'la lista de fechas del historial no es válida')
+    anteriores = sorted(set(f for f in fechas if es_fecha_valida(f) and f < fecha), reverse=True)
+    sesiones = []
+    for fecha_anterior in anteriores:
+        for jornada_anterior in ('AM', 'PM'):
+            try:
+                datos = leer_rutina_datos(fecha_anterior, jornada_anterior)
+            except PanelError as exc:
+                raise PanelError(502, 'no se pudo verificar el historial AM/PM: {}'.format(exc.detail))
+            contenido = datos.get('contenido', '').strip()
+            if datos.get('encontrada') and contenido:
+                sesiones.append((fecha_anterior, jornada_anterior, contenido[:5000]))
+                if len(sesiones) >= 5:
+                    break
+        if len(sesiones) >= 5:
+            break
+
+    if sesiones:
+        contexto = '\n\n'.join(
+            'RUTINA GUARDADA {0} {1} (plan; no confirma que la clase se haya realizado):\n{2}'.format(*sesion)
+            for sesion in sesiones
+        )
+        nota_historial = 'Hay {0} rutinas guardadas previas disponibles; su realización no está verificada.'.format(len(sesiones))
+    else:
+        contexto = 'No se encontraron rutinas guardadas anteriores verificables. No inventes antecedentes.'
+        nota_historial = 'Sin historial guardado verificable.'
+
+    prompt = (
+        'Propón un borrador de rutina de clase IRONCROSS para {0}, jornada {1}. '
+        'Analiza estas rutinas guardadas recientes para variar ejercicios y distribución muscular, '
+        'sin usar una rutina antigua como plantilla fija. Prioriza cardio dinámico en el calentamiento; '
+        'evita calentamientos estáticos o bloques iniciales de fuerza. Mantén el estilo funcional de Ironcross. '
+        'Distingue siempre planificación de realización: el historial siguiente son planes guardados, '
+        'no sesiones confirmadas. Si falta historial, dilo y usa solo el objetivo disponible; no inventes resultados, '
+        'cargas ni antecedentes. Devuelve únicamente la propuesta editable. No la guardes ni la publiques.\n\n{2}'
+    ).format(fecha, jornada, contexto)
+    respuesta = nicola_chat_request(prompt)
+    if not respuesta or respuesta.startswith('Error conectando'):
+        raise PanelError(502, 'IronBot no está disponible para generar el borrador')
+    return {'ok': True, 'rutina': respuesta, 'fuente': 'Nicola OS / IronBot', 'rutinas_revisadas': len(sesiones), 'historial': nota_historial}
+
+
 def leer_oficina():
     """Texto para la pestaña GYM del iPad. Mismo formato de antes, ahora vía panel."""
     _, body = panel_request('GET', '/api/oficina')
@@ -569,7 +620,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             jornada = qs.get('jornada', [None])[0]
             if not es_fecha_valida(fecha):
                 fecha = hoy()
-            if jornada not in (None, 'AM', 'PM'):
+            if jornada not in ('AM', 'PM'):
                 self.send_response(400)
                 self.end_headers()
                 return
@@ -932,41 +983,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 return
 
-            # 1. Intentar generar vía API de ironcross-dashboard
             try:
-                payload = {'fecha': fecha}
-                if jornada:
-                    payload['jornada'] = jornada
-                status, body = panel_request('POST', '/api/rutina/generar', json_body=payload)
-                if status == 200:
-                    self.send_response(200)
-                    self.send_header('Content-Type', 'application/json; charset=utf-8')
-                    body_b = body.encode('utf-8')
-                    self.send_header('Content-Length', str(len(body_b)))
-                    self.end_headers()
-                    self.wfile.write(body_b)
-                    return
-            except Exception:
-                pass
-
-            # 2. Fallback: solicitar a Nicola OS / IronBot
-            prompt = f"IronBot, crea la rutina de la clase del {fecha}" + (f" jornada {jornada}" if jornada else "") + " basada en los entrenamientos registrados"
-            reply = nicola_chat_request(prompt)
-            try:
-                rutina_guardada = leer_rutina(fecha, jornada)
-                if rutina_guardada and 'CALENTAMIENTO' in rutina_guardada:
-                    resp_json = json.dumps({'ok': True, 'rutina': rutina_guardada, 'fuente': 'Nicola OS / IronBot'})
-                else:
-                    resp_json = json.dumps({'ok': True, 'rutina': reply, 'fuente': 'Nicola OS / IronBot'})
-            except Exception:
-                resp_json = json.dumps({'ok': True, 'rutina': reply, 'fuente': 'Nicola OS / IronBot'})
-
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json; charset=utf-8')
-            body_b = resp_json.encode('utf-8')
-            self.send_header('Content-Length', str(len(body_b)))
-            self.end_headers()
-            self.wfile.write(body_b)
+                # No llamar /api/rutina/generar: la API publicada puede guardar
+                # la rutina sin respetar jornada y reemplazar el contenido existente.
+                result = preparar_borrador_ironbot(fecha, jornada)
+                body_b = json.dumps(result, ensure_ascii=False).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Cache-Control', 'no-store')
+                self.send_header('Content-Length', str(len(body_b)))
+                self.end_headers()
+                self.wfile.write(body_b)
+            except PanelError as exc:
+                _responder_texto(self, exc.status, 'ERROR|' + exc.detail)
         elif parsed.path == '/api/tasks':
             length = int(self.headers.get('Content-Length', 0))
             raw = self.rfile.read(length)

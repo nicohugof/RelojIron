@@ -67,3 +67,38 @@ Checkpoint final recuperable guardado en `/Users/nigoku/Nicola OS/checkpoints/re
 - Pruebas: `python3 -m unittest discover -v` **31/31 aprobadas**, incluida la regresión de UI y las pruebas de proxy AM/PM; `git diff --check` aprobado. Falta validar navegador/iPad físico.
 - Checkpoints recuperables: previo `/Users/nigoku/Nicola OS/checkpoints/relojiron-simplification-20261030-pre/`; posterior `/Users/nigoku/Nicola OS/checkpoints/relojiron-simplification-20261030-post-final/`. Ambos incluyen manifiestos SHA-256 verificados.
 - Próximo paso: inspección visual local si se requiere; después, que Nico pruebe en iPad la misma fecha con AM y PM, abra una rutina histórica, confirme aislamiento al editar AM y valide horarios. No autorizar publicación de estos cambios locales hasta esa revisión; el cron despliega desde `main` cada cinco minutos.
+
+## RelojIron 2.0 — continuación local (2026-10-30)
+
+### Arquitectura y límites
+
+- Preflight: `RelojIron` sigue `VIGENTE`; checkout oficial `/Users/nigoku/Proyectos/RelojIron`, remoto `https://github.com/nicohugof/RelojIron.git`, rama `codex/relojiron-am-pm-20261029`, HEAD y `origin/main` `0a4fee3822250f41d22d785b12c23dee25fe16e3`. Ese commit está desplegado según la evidencia previa del registro. Esta tarea no hizo consultas ni cambios en producción.
+- No se editaron Ironcross, IronBot ni el servicio de encuestas. La API vigente de asistencia solo recibe jornada, no fecha; por eso la pestaña declara HOY y no ofrece calendario histórico. El endpoint tampoco expone salud de la conexión WhatsApp: la interfaz dice cuando la API no devuelve respuestas, sin afirmar si el servicio está conectado.
+- Las filas `U` sin ID canónico se cuentan, pero no se muestran ni asocian por nombre. La vista inicial solo incluye `si` con origen de encuesta WhatsApp; no presenta esas respuestas como asistencia efectiva. El padrón canónico se filtra solo después de buscar. Los botones PRESENTE/AUSENTE/LIMPIAR siguen siendo una acción manual.
+- El registro de arquitectura previo reporta que el servicio de encuestas de WhatsApp estaba desconectado (`connected=false`) al verificarse. No se volvió a consultar ni se simuló una conexión en este trabajo.
+
+### Cambios locales
+
+- Selector semanal de una sola semana, con AM solo martes/jueves y PM lunes-viernes; AM/PM aparecen sin subtítulos. Se conserva navegación a rutinas históricas y registros sin jornada en solo lectura. El calendario mensual habilita días habituales y fechas con rutinas históricas del endpoint actual.
+- IronBot solicita confirmación antes de generar; usa hasta cinco rutinas guardadas previas obtenidas por GET y advierte que son planes, no sesiones realizadas. Se eliminó del flujo RelojIron la llamada a `/api/rutina/generar`, porque el código publicado previamente podía guardar sin AM/PM. El resultado se trata como borrador; GUARDAR pide confirmación si ya existe una rutina. El generador real de Nicola no fue invocado en pruebas.
+- Temporizadores: controles táctiles mayores y cierre superior en cada tarjeta y en el selector. El reloj principal conserva su diseño y el logotipo tiene un barrido rojo CSS lento con fallback.
+- No se alteró el modelo ni se borraron rutinas.
+
+### Evidencias y pruebas
+
+- Checkpoint previo: `/Users/nigoku/Nicola OS/checkpoints/relojiron-2-pre-20261030/`, hash del manifiesto verificado. Incluye parche y archivos locales que ya existían antes del trabajo; recuperar con el HEAD anotado `0a4fee3`.
+- `python3 -m unittest discover -v`: **35/35 aprobadas** (incluye 4 regresiones IronBot, proxy de asistencia, AM/PM, auth y la prueba preexistente de ingresos). `python3 -m py_compile` aprobado; `node --check` del JavaScript inline aprobado; `git diff --check` aprobado.
+- Revisión visual local aislada con datos ficticios: iPad 768×1024 y 1024×768. Se recorrieron calendario, padrón buscado, respuesta WhatsApp sintética y temporizador. Ningún endpoint de producción fue contactado desde la vista. No sustituye la comprobación en un iPad físico.
+- IronBot no se conectó al servicio de generación; la prueba de su capa de servidor fue mockeada. No hay afirmación de calidad de respuesta de modelo ni de integración operativa.
+
+### Riesgos y pendiente
+
+- La API actual de asistencia no admite fecha y no informa estado de sincronización. Para asistencia de otra fecha o confirmar estado WhatsApp se requiere un contrato/API vigente en Ironcross, que deberá revisarse antes de tocar ese repo.
+- Los orígenes de encuesta se aceptan solo si contienen `WHATSAPP`, `ENCUESTA` o `POLL`; otras etiquetas quedan fuera de confirmados hasta confirmar el contrato.
+- Al generar, Nicola OS se invoca cuando el docente confirma; disponibilidad, salida y estilo real no se probaron sin llamar a un servicio externo.
+- La validación del cron de Oracle e iPad físico sigue fuera del alcance. No hubo push, commit, merge, despliegue, migración ni modificación de servicio.
+- Cambios ajenos preexistentes (`AGENTS.md`, `README.md`, el bloque de `index.html` para ingresos y `test_oficina_income_sentinel.py`) permanecen preservados y no deben entrar en commits de esta entrega.
+
+### Próximo paso exacto
+
+Revisar el diff de RelojIron 2.0 y sus pruebas; preparar commits locales solo con los archivos/hunks de esta entrega, dejando fuera los cambios previos señalados. No publicar. Resolver el endpoint de asistencia con fecha en una tarea separada con preflight de Ironcross antes de prometer historial/estado WhatsApp.
