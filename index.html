@@ -176,7 +176,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 132px;
+    height: 155px;
     padding: 10px 16px 0 16px;
   }
   #rutinaTitle {
@@ -188,10 +188,29 @@
     margin-bottom: 8px;
   }
   #rutinaDays {
-    white-space: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    display: none;
   }
+  #rutinaWeekNav { display: table; width: 100%; table-layout: fixed; height: 34px; margin-top: 4px; }
+  #rutinaWeekNav > div { display: table-cell; vertical-align: middle; text-align: center; color: #EDE9DF; background: #1E1D19; border: 1px solid #2A2A26; font-weight: bold; }
+  #rutinaWeekLabel { font-size: 12px; letter-spacing: 1px; }
+  #rutinaWeekPrev, #rutinaWeekNext, #rutinaCalendarOpen { width: 40px; font-size: 20px; color: #F0C36D !important; }
+  #rutinaWeekDays { display: table; width: 100%; table-layout: fixed; margin-top: 3px; }
+  .rutinaWeekDay { display: table-cell; height: 30px; text-align: center; vertical-align: middle; color: #B8B3A8; background: #141412; border: 1px solid #222; font-size: 11px; font-weight: bold; }
+  .rutinaWeekDay.active { color: #FFF; background: #C23B22; }
+  .rutinaWeekDay.hasRoutine:after { content: ' •'; color: #F0C36D; }
+  #rutinaCalendar { position: absolute; display: none; top: 116px; left: 12px; right: 12px; z-index: 60; padding: 8px; background: #141412; border: 1px solid #4A473F; box-shadow: 0 4px 14px #000; }
+  #rutinaCalendarHead { display: table; width: 100%; table-layout: fixed; height: 38px; }
+  #rutinaCalendarHead > div { display: table-cell; text-align: center; vertical-align: middle; color: #EDE9DF; font-weight: bold; }
+  #rutinaCalendarMonth { font-size: 13px; }
+  .calendarMonthBtn, #rutinaCalendarClose { width: 44px; background: #222; font-size: 22px; color: #F0C36D !important; }
+  #rutinaCalendarGrid { width: 100%; }
+  .calendarWeek, .calendarDates { display: table; width: 100%; table-layout: fixed; }
+  .calendarWeek div, .calendarDay { display: table-cell; height: 34px; line-height: 34px; text-align: center; color: #7A7568; font-size: 13px; }
+  .calendarDay { color: #EDE9DF; background: #20201D; border: 1px solid #141412; }
+  .calendarDay.hasRoutine { color: #F0C36D; font-weight: bold; }
+  .calendarDay.selected { background: #C23B22; color: #FFF; }
+  .calendarDay.disabled { color: #3A3830; background: transparent; }
+  .calendarDay.empty { background: transparent; border: 0; }
   #rutinaJornadas {
     display: table;
     width: 100%;
@@ -243,7 +262,7 @@
   }
   #rutinaSubBar {
     position: absolute;
-    top: 132px;
+    top: 155px;
     left: 0;
     right: 0;
     height: 52px;
@@ -273,7 +292,7 @@
   }
   #rutinaBody, #rutinaCalcPane {
     position: absolute;
-    top: 184px;
+    top: 207px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -1826,8 +1845,24 @@
       <div id="rutinaTitle">RUTINAS</div>
       <div id="rutinaDays"></div>
       <div id="rutinaJornadas" aria-label="Jornada de la rutina">
-        <div id="rutinaJornadaAM" class="rutinaJornadaBtn" aria-label="AM martes y jueves a las 07:00">AM<span>MAR / JUE · 07:00</span></div>
-        <div id="rutinaJornadaPM" class="rutinaJornadaBtn" aria-label="PM lunes a viernes a las 19:30">PM<span>LUN–VIE · 19:30</span></div>
+        <div id="rutinaJornadaAM" class="rutinaJornadaBtn" aria-label="Jornada AM">AM</div>
+        <div id="rutinaJornadaPM" class="rutinaJornadaBtn" aria-label="Jornada PM">PM</div>
+      </div>
+      <div id="rutinaWeekNav">
+        <div id="rutinaWeekPrev" role="button" aria-label="Semana anterior">‹</div>
+        <div id="rutinaWeekLabel">SEMANA ACTUAL</div>
+        <div id="rutinaWeekNext" role="button" aria-label="Semana siguiente">›</div>
+        <div id="rutinaCalendarOpen" role="button" aria-label="Abrir calendario">▦</div>
+      </div>
+      <div id="rutinaWeekDays"></div>
+      <div id="rutinaCalendar" style="display:none;">
+        <div id="rutinaCalendarHead">
+          <div id="rutinaCalendarPrev" class="calendarMonthBtn" role="button" aria-label="Mes anterior">‹</div>
+          <div id="rutinaCalendarMonth">MES</div>
+          <div id="rutinaCalendarNext" class="calendarMonthBtn" role="button" aria-label="Mes siguiente">›</div>
+          <div id="rutinaCalendarClose" role="button" aria-label="Cerrar calendario">×</div>
+        </div>
+        <div id="rutinaCalendarGrid"></div>
       </div>
     </div>
     <div id="rutinaSubBar">
@@ -3035,6 +3070,11 @@
   var rutinaIronbotBtn = document.getElementById('rutinaIronbotBtn');
   var rutinaStatus = document.getElementById('rutinaStatus');
   var rutinaDays = document.getElementById('rutinaDays');
+  var rutinaWeekDays = document.getElementById('rutinaWeekDays');
+  var rutinaWeekLabel = document.getElementById('rutinaWeekLabel');
+  var rutinaCalendar = document.getElementById('rutinaCalendar');
+  var rutinaCalendarGrid = document.getElementById('rutinaCalendarGrid');
+  var rutinaCalendarMonth = document.getElementById('rutinaCalendarMonth');
   var rutinaBody = document.getElementById('rutinaBody');
   var rutinaJornadaAM = document.getElementById('rutinaJornadaAM');
   var rutinaJornadaPM = document.getElementById('rutinaJornadaPM');
@@ -3065,6 +3105,10 @@
 
   var fechaSeleccionada = null;
   var diasCache = [];
+  var diasGuardadosCache = [];
+  var rutinaWeekStart = null;
+  var rutinaCalendarYear = 0;
+  var rutinaCalendarMonthIndex = 0;
   var hoyGlobal = null;
   var manianaGlobal = null;
   function jornadaHabitualPorDia(dia, hora) {
@@ -3100,8 +3144,10 @@
   function seleccionarJornada(jornada) {
     if (jornadaSeleccionada === jornada || !aceptarCambioRutina()) { return; }
     jornadaSeleccionada = jornada;
+    if (rutinaWeekStart && fechaSeleccionada) { rutinaWeekStart = fechaLunes(fechaDesdeISO(fechaSeleccionada)); }
     rutinaViendoLegacy = false;
     pintarJornadas();
+    pintarPills();
     if (fechaSeleccionada) { cargarRutinaFecha(fechaSeleccionada); }
   }
 
@@ -3124,25 +3170,115 @@
   rutinaText.addEventListener('keyup', function () { if (!rutinaViendoLegacy) { rutinaSinGuardar = true; } }, false);
   rutinaText.addEventListener('change', function () { if (!rutinaViendoLegacy) { rutinaSinGuardar = true; } }, false);
 
-  function pillLabel(fecha) {
-    if (fecha === hoyGlobal) { return 'HOY'; }
-    if (fecha === manianaGlobal) { return 'MAÑANA'; }
-    var partes = fecha.split('-');
-    return partes[2] + '/' + partes[1];
+  function fechaAISO(fecha) {
+    return fecha.getFullYear() + '-' + pad(fecha.getMonth() + 1) + '-' + pad(fecha.getDate());
+  }
+
+  function fechaDesdeISO(texto) {
+    var partes = texto.split('-');
+    return new Date(parseInt(partes[0], 10), parseInt(partes[1], 10) - 1, parseInt(partes[2], 10));
+  }
+
+  function fechaLunes(fecha) {
+    var inicio = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+    inicio.setDate(inicio.getDate() - ((inicio.getDay() + 6) % 7));
+    return inicio;
+  }
+
+  function rutinaDiaConClase(fecha) {
+    var date = fecha instanceof Date ? fecha : fechaDesdeISO(fecha);
+    var dow = date.getDay();
+    var habitual = jornadaSeleccionada === 'AM' ? (dow === 2 || dow === 4) : (dow >= 1 && dow <= 5);
+    return habitual || diasGuardadosCache.indexOf(fechaAISO(date)) !== -1 || (fechaAISO(date) === hoyGlobal || fechaAISO(date) === manianaGlobal);
+  }
+
+  function diasDeSemana(inicio) {
+    var out = [];
+    for (var i = 0; i < 7; i++) {
+      var dia = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate() + i);
+      if (rutinaDiaConClase(dia)) { out.push(dia); }
+    }
+    return out;
   }
 
   function pintarPills() {
-    rutinaDays.innerHTML = '';
-    for (var i = 0; i < diasCache.length; i++) {
-      (function (fecha) {
-        var pill = document.createElement('div');
-        pill.className = 'dayPill' + (fecha === fechaSeleccionada ? ' active' : '');
-        pill.innerHTML = pillLabel(fecha);
-        pill.addEventListener('click', function () { seleccionarDia(fecha); }, false);
-        rutinaDays.appendChild(pill);
-      })(diasCache[i]);
+    if (!rutinaWeekStart) { rutinaWeekStart = fechaLunes(fechaDesdeISO(fechaSeleccionada || hoyGlobal)); }
+    var fin = new Date(rutinaWeekStart.getFullYear(), rutinaWeekStart.getMonth(), rutinaWeekStart.getDate() + 6);
+    rutinaWeekLabel.innerHTML = rutinaWeekStart.getDate() + '/' + pad(rutinaWeekStart.getMonth() + 1) + ' — ' + fin.getDate() + '/' + pad(fin.getMonth() + 1);
+    rutinaWeekDays.innerHTML = '';
+    var labels = ['D','L','M','M','J','V','S'];
+    var days = diasDeSemana(rutinaWeekStart);
+    for (var i = 0; i < days.length; i++) {
+      (function (date) {
+        var iso = fechaAISO(date);
+        var btn = document.createElement('div');
+        btn.className = 'rutinaWeekDay' + (iso === fechaSeleccionada ? ' active' : '') + (diasGuardadosCache.indexOf(iso) !== -1 ? ' hasRoutine' : '');
+        btn.appendChild(document.createTextNode(labels[date.getDay()] + ' ' + date.getDate()));
+        btn.addEventListener('click', function () { seleccionarDia(iso); }, false);
+        rutinaWeekDays.appendChild(btn);
+      })(days[i]);
+    }
+    if (rutinaCalendar.style.display === 'block') { pintarCalendario(); }
+  }
+
+  function pintarCalendario() {
+    var meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+    rutinaCalendarMonth.innerHTML = meses[rutinaCalendarMonthIndex] + ' ' + rutinaCalendarYear;
+    rutinaCalendarGrid.innerHTML = '';
+    var week = document.createElement('div'); week.className = 'calendarWeek';
+    var labels = ['L','M','X','J','V','S','D'];
+    for (var w = 0; w < 7; w++) { var label = document.createElement('div'); label.appendChild(document.createTextNode(labels[w])); week.appendChild(label); }
+    rutinaCalendarGrid.appendChild(week);
+    var offset = (new Date(rutinaCalendarYear, rutinaCalendarMonthIndex, 1).getDay() + 6) % 7;
+    var count = new Date(rutinaCalendarYear, rutinaCalendarMonthIndex + 1, 0).getDate();
+    for (var row = 0; row < 6; row++) {
+      var line = document.createElement('div'); line.className = 'calendarDates';
+      for (var col = 0; col < 7; col++) {
+        var n = row * 7 + col - offset + 1;
+        var cell = document.createElement('div');
+        if (n < 1 || n > count) { cell.className = 'calendarDay empty'; cell.innerHTML = '&nbsp;'; }
+        else {
+          var date = new Date(rutinaCalendarYear, rutinaCalendarMonthIndex, n);
+          var iso = fechaAISO(date);
+          var enabled = rutinaDiaConClase(date);
+          cell.className = 'calendarDay' + (enabled ? '' : ' disabled') + (enabled && diasGuardadosCache.indexOf(iso) !== -1 ? ' hasRoutine' : '') + (iso === fechaSeleccionada ? ' selected' : '');
+          cell.appendChild(document.createTextNode(String(n)));
+          if (enabled) { (function (selected) { cell.addEventListener('click', function () { seleccionarDia(selected); rutinaCalendar.style.display = 'none'; }, false); })(iso); }
+        }
+        line.appendChild(cell);
+      }
+      rutinaCalendarGrid.appendChild(line);
     }
   }
+
+  function mostrarCalendario() {
+    var date = fechaDesdeISO(fechaSeleccionada || hoyGlobal);
+    rutinaCalendarYear = date.getFullYear(); rutinaCalendarMonthIndex = date.getMonth();
+    pintarCalendario(); rutinaCalendar.style.display = 'block';
+  }
+
+  function moverMesCalendario(delta) {
+    rutinaCalendarMonthIndex += delta;
+    if (rutinaCalendarMonthIndex < 0) { rutinaCalendarMonthIndex = 11; rutinaCalendarYear--; }
+    if (rutinaCalendarMonthIndex > 11) { rutinaCalendarMonthIndex = 0; rutinaCalendarYear++; }
+    pintarCalendario();
+  }
+
+  function moverSemana(delta) {
+    if (!rutinaWeekStart || !aceptarCambioRutina()) { return; }
+    var next = new Date(rutinaWeekStart.getFullYear(), rutinaWeekStart.getMonth(), rutinaWeekStart.getDate() + delta * 7);
+    rutinaWeekStart = next;
+    var days = diasDeSemana(next);
+    if (days.length) { seleccionarDia(fechaAISO(days[0])); }
+    else { pintarPills(); }
+  }
+
+  document.getElementById('rutinaWeekPrev').addEventListener('click', function () { moverSemana(-1); }, false);
+  document.getElementById('rutinaWeekNext').addEventListener('click', function () { moverSemana(1); }, false);
+  document.getElementById('rutinaCalendarOpen').addEventListener('click', mostrarCalendario, false);
+  document.getElementById('rutinaCalendarPrev').addEventListener('click', function () { moverMesCalendario(-1); }, false);
+  document.getElementById('rutinaCalendarNext').addEventListener('click', function () { moverMesCalendario(1); }, false);
+  document.getElementById('rutinaCalendarClose').addEventListener('click', function () { rutinaCalendar.style.display = 'none'; }, false);
 
   function fitRutinaText() {
     var size = 18;
@@ -3229,6 +3365,12 @@
         hoyGlobal = lineas[0].split(':')[1];
         manianaGlobal = lineas[1].split(':')[1];
         diasCache = lineas[2].substring('DIAS:'.length).split(',');
+        var guardados = null;
+        for (var i = 3; i < lineas.length; i++) {
+          if (lineas[i].indexOf('GUARDADOS:') === 0) { guardados = lineas[i].substring('GUARDADOS:'.length); break; }
+        }
+        diasGuardadosCache = guardados === null ? diasCache.filter(function (dia) { return dia !== hoyGlobal && dia !== manianaGlobal; }) : guardados.split(',').filter(function (dia) { return !!dia; });
+        rutinaWeekStart = fechaLunes(fechaDesdeISO(fechaSeleccionada || hoyGlobal));
         if (fechaSeleccionada === null || diasCache.indexOf(fechaSeleccionada) === -1) {
           fechaSeleccionada = hoyGlobal;
           pintarPills();

@@ -371,15 +371,22 @@ def guardar_rutina(fecha, contenido, jornada=None):
             raise PanelError(502, 'Ironcross no confirmó la jornada guardada')
 
 
-def dias_disponibles():
-    """DIAS: hoy + mañana (calculados acá, sin red) + los que ya tienen rutina (del panel)."""
-    dias = set()
+def dias_rutinas_guardadas():
+    """Devuelve únicamente fechas con rutina guardada según Ironcross."""
     try:
         _, body = panel_request('GET', '/api/rutina/dias')
         data = json.loads(body)
-        dias.update(data.get('dias', []))
+        guardados = data.get('dias', [])
+        if not isinstance(guardados, list):
+            return []
+        return sorted({dia for dia in guardados if isinstance(dia, str) and es_fecha_valida(dia)}, reverse=True)
     except (PanelError, ValueError):
-        pass  # degradar a solo hoy/mañana antes que romper la pestaña RUTINA
+        return []
+
+
+def dias_disponibles():
+    """DIAS: hoy + mañana (calculados acá) + fechas con rutina (del panel)."""
+    dias = set(dias_rutinas_guardadas())
     dias.add(hoy())
     dias.add(maniana())
     return sorted(dias, reverse=True)
@@ -604,7 +611,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path == '/api/rutina/dias':
             hoy_str = hoy()
             man_str = maniana()
-            texto = 'HOY:' + hoy_str + '\n' + 'MANIANA:' + man_str + '\n' + 'DIAS:' + ','.join(dias_disponibles())
+            texto = 'HOY:' + hoy_str + '\n' + 'MANIANA:' + man_str + '\n' + 'DIAS:' + ','.join(dias_disponibles()) + '\n' + 'GUARDADOS:' + ','.join(dias_rutinas_guardadas())
             body = texto.encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain; charset=utf-8')
