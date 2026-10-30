@@ -54,7 +54,7 @@
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 20px;
     letter-spacing: 2px;
     cursor: pointer;
   }
@@ -125,11 +125,21 @@
     color: #C23B22;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 34px;
-    letter-spacing: 14px;
+    font-size: 38px;
+    letter-spacing: 10px;
     margin-top: 30px;
     text-transform: uppercase;
   }
+  @supports (-webkit-background-clip: text) {
+    #brand {
+      background: linear-gradient(105deg, #8B2211 0%, #C23B22 38%, #FFD0C6 50%, #C23B22 62%, #8B2211 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: ironcrossLogoSweep 9s linear infinite;
+    }
+  }
+  @keyframes ironcrossLogoSweep { from { background-position: 100% 0; } to { background-position: -120% 0; } }
 
   /* tab bar */
   #tabBar {
@@ -1182,6 +1192,10 @@
     line-height: 40px;
     text-align: center;
   }
+  .swTimer .swStart, .swTimer .swReset { min-width: 116px; height: 56px; line-height: 56px; font-size: 17px; }
+  .swTimer .swRemove { position: absolute; top: 4px; right: 4px; z-index: 3; width: 48px; height: 44px; line-height: 44px; padding: 0; font-size: 22px; }
+  .swTimer .swBtn { min-width: 108px; height: 56px; line-height: 56px; font-size: 17px; }
+  .swTimer .swRemove { position: absolute; top: 4px; right: 4px; z-index: 3; min-width: 48px; width: 48px; height: 44px; line-height: 44px; padding: 0; font-size: 22px; }
   .swStart { background: #2E6B3E; }
   .swPause { background: #C29A22; }
   .swReset { background: #2A2A26; }
@@ -1199,10 +1213,11 @@
     top: 16px; left: 16px; right: 16px; bottom: 16px;
     background: #141412;
     border: 1px solid #2A2A26;
-    padding: 16px;
+    padding: 52px 16px 16px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
+  #presetCloseBtn { position: absolute; top: 8px; right: 8px; width: 48px; height: 44px; line-height: 44px; text-align: center; color: #FFF; background: #5A1E14; font-size: 26px; font-weight: bold; z-index: 2; }
   #presetTitle {
     color: #7A7568;
     font-family: Helvetica, Arial, sans-serif;
@@ -1810,6 +1825,7 @@
 
     <div id="presetOverlay" style="display:none;">
       <div id="presetCard">
+        <div id="presetCloseBtn" role="button" aria-label="Cerrar temporizador">×</div>
         <div id="presetTitle">ELEGIR TIEMPO</div>
         <div id="presetGrid"></div>
         <div id="presetCustomTitle">PERSONALIZADO</div>
@@ -1831,7 +1847,7 @@
     </div>
   </div>
   <div id="hoyView" style="display:none;">
-    <div id="hoyTitle">HOY — QUIÉN VIENE</div>
+    <div id="hoyTitle">ASISTENCIA · HOY</div>
     <div id="hoyLogin">
       <div id="hoyLoginTitle">HOY — INGRESAR CLAVE</div>
       <input type="password" id="hoyPassword" placeholder="Clave" autocomplete="off">
@@ -1845,7 +1861,7 @@
           <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
         </div>
       </div>
-      <input type="text" id="hoySearch" placeholder="Buscar..." autocomplete="off">
+      <input type="text" id="hoySearch" placeholder="Buscar alumno para registrar asistencia" autocomplete="off">
       <div id="hoyCounts"></div>
       <div id="hoyMain">
         <div id="hoyListWrap">
@@ -2013,7 +2029,7 @@
   <div id="tabClock" class="tab">RELOJ</div>
   <div id="tabStopwatch" class="tab">TIMERS</div>
   <div id="tabPersonalizados" class="tab">PERSONAL</div>
-  <div id="tabHoy" class="tab">HOY</div>
+  <div id="tabHoy" class="tab">ASISTENCIA</div>
   <div id="tabDashboard" class="tab">PANEL</div>
   <div id="tabAlumnos" class="tab">ALUMNOS</div>
   <div id="tabPagos" class="tab">PAGOS</div>
@@ -2712,6 +2728,9 @@
   var hoyBusy = false;
   var hoyFilas = [];
   var hoyCountsData = { si: '0', no: '0', sin: '0' };
+  var hoyConfirmados = 0;
+  var hoySinIdentidad = 0;
+  var hoyHayRespuesta = false;
   var HOY_HORARIO_COOKIE = 'hoy_horario';
   var HOY_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var hoyHorario = 'AM';
@@ -2846,6 +2865,11 @@
     return origen;
   }
 
+  function hoyEsEncuesta(origen) {
+    var valor = hoyDoblar(origen || '');
+    return valor.indexOf('WHATSAPP') !== -1 || valor.indexOf('ENCUESTA') !== -1 || valor.indexOf('POLL') !== -1;
+  }
+
   function hoyDoblar(s) {
     s = String(s || '').toUpperCase();
     var from = 'ÁÀÄÂÃÉÈËÊÍÌÏÎÓÒÖÔÕÚÙÜÛÝÑÇ';
@@ -2909,7 +2933,7 @@
     return btn;
   }
 
-  function hoyPintarFilaR(parts) {
+  function hoyPintarFilaR(parts, confirmado) {
     var alumnoId = parts[1] || '';
     var nombre = parts[2] || '';
     var resp = parts[3] || '';
@@ -2924,17 +2948,21 @@
     hoyTextoNodo(name, nombre);
     var meta = document.createElement('div');
     meta.className = 'hoyMeta';
-    hoyTextoNodo(meta, hoyEtiqueta(resp) + (origen ? ' · ' + origen : ''));
+    var detalle = confirmado
+      ? 'CONFIRMÓ · ' + (origen || 'encuesta') + ' · no marca asistencia efectiva'
+      : (origen ? 'RESPUESTA: ' + hoyEtiqueta(resp) + ' · ' + origen : 'Padrón canónico · registrar solo al confirmar asistencia');
+    hoyTextoNodo(meta, detalle);
     nameCol.appendChild(name);
     nameCol.appendChild(meta);
     row.appendChild(nameCol);
 
+    if (confirmado) { hoyList.appendChild(row); return; }
     var btns = document.createElement('div');
     btns.className = 'hoyBtns';
     var inner = document.createElement('div');
     inner.className = 'hoyBtnsInner';
-    inner.appendChild(hoyBoton('SÍ', 'si', resp === 'si', alumnoId, 'si'));
-    inner.appendChild(hoyBoton('NO', 'no', resp === 'no', alumnoId, 'no'));
+    inner.appendChild(hoyBoton('PRESENTE', 'si', false, alumnoId, 'si'));
+    inner.appendChild(hoyBoton('AUSENTE', 'no', false, alumnoId, 'no'));
     inner.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
     btns.appendChild(inner);
     row.appendChild(btns);
@@ -2967,12 +2995,20 @@
     function countBox(cls, label, val) {
       var d = document.createElement('div');
       d.className = 'hoyCount ' + cls;
-      d.innerHTML = '<b>' + val + '</b><span>' + label + '</span>';
+      var b = document.createElement('b'); b.appendChild(document.createTextNode(String(val)));
+      var span = document.createElement('span'); span.appendChild(document.createTextNode(label));
+      d.appendChild(b); d.appendChild(span);
       hoyCounts.appendChild(d);
     }
-    countBox('si', 'VAN', hoyCountsData.si);
-    countBox('no', 'NO', hoyCountsData.no);
-    countBox('sin', 'SIN', hoyCountsData.sin);
+    var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
+    if (q) {
+      var matches = 0;
+      for (var i = 0; i < hoyFilas.length; i++) { if (hoyFilas[i].kind === 'R' && hoyDoblar(hoyFilas[i].nombre).indexOf(q) !== -1) { matches++; } }
+      countBox('sin', 'PADRÓN', matches);
+    } else {
+      countBox('si', 'CONFIRMADOS', hoyConfirmados);
+      if (hoySinIdentidad) { countBox('sin', 'SIN VINCULAR', hoySinIdentidad); }
+    }
   }
 
   function hoySaltarLetra(letra) {
@@ -3005,6 +3041,7 @@
 
   function hoyPintarLista() {
     var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
+    hoyPintarCounts();
     hoyList.innerHTML = '';
     var activas = {};
     var ultima = '';
@@ -3012,6 +3049,9 @@
     var vistos = 0;
     for (i = 0; i < hoyFilas.length; i++) {
       var fila = hoyFilas[i];
+      if (fila.kind !== 'R') { continue; }
+      var encuesta = fila.resp === 'si' && hoyEsEncuesta(fila.origen);
+      if (!q && !encuesta) { continue; }
       if (q && hoyDoblar(fila.nombre).indexOf(q) === -1) { continue; }
       vistos += 1;
       if (fila.letra !== ultima) {
@@ -3026,17 +3066,19 @@
         hoyList.appendChild(sec);
       }
       if (fila.kind === 'R') {
-        hoyPintarFilaR(fila.parts);
-      } else {
-        hoyPintarFilaU(fila.parts);
+        hoyPintarFilaR(fila.parts, !q && encuesta);
       }
     }
     hoyPintarLetras(activas);
-    if (!hoyFilas.length) {
-      return;
-    }
     if (!vistos) {
-      hoySetStatus('Sin resultados');
+      if (q) { hoySetStatus('No se encontraron alumnos del padrón'); }
+      else if (hoySinIdentidad) { hoySetStatus(hoySinIdentidad + ' respuesta(s) no se pueden vincular con seguridad. Busca un alumno para registrar asistencia manual.'); }
+      else if (!hoyHayRespuesta) { hoySetStatus('La API no devolvió respuestas para esta jornada; el estado de conexión de WhatsApp no está disponible.'); }
+      else { hoySetStatus('No hay confirmaciones vinculadas para esta jornada. Busca un alumno para registrar asistencia manual.'); }
+    } else if (q) {
+      hoySetStatus('Resultados del padrón. Registrar asistencia requiere una acción manual.');
+    } else {
+      hoySetStatus('Confirmaciones de encuesta · no equivalen a asistencia efectiva.');
     }
   }
 
@@ -3080,6 +3122,8 @@
       var lines = t.split('\n');
       var counts = { si: '0', no: '0', sin: '0' };
       var filas = [];
+      var sinIdentidad = 0;
+      var hayRespuesta = false;
       var i;
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
@@ -3090,9 +3134,13 @@
             counts[parts[1]] = parts[2];
           }
         } else if (parts[0] === 'R' && parts.length >= 3) {
-          filas.push({ kind: 'R', parts: parts, nombre: parts[2] || '', letra: hoyLetraDeNombre(parts[2] || '') });
+          var respuesta = parts[3] || '';
+          var origenFila = parts[4] || '';
+          if (respuesta === 'si' || respuesta === 'no') { hayRespuesta = true; }
+          filas.push({ kind: 'R', parts: parts, nombre: parts[2] || '', resp: respuesta, origen: origenFila, letra: hoyLetraDeNombre(parts[2] || '') });
         } else if (parts[0] === 'U' && parts.length >= 2) {
-          filas.push({ kind: 'U', parts: parts, nombre: parts[1] || '', letra: hoyLetraDeNombre(parts[1] || '') });
+          var respuestaU = parts[2] || '';
+          if (respuestaU === 'si' || respuestaU === 'no') { hayRespuesta = true; sinIdentidad++; }
         }
       }
       filas.sort(function (a, b) {
@@ -3104,7 +3152,10 @@
       });
       hoyFilas = filas;
       hoyCountsData = counts;
-      hoyPintarCounts();
+      hoySinIdentidad = sinIdentidad;
+      hoyHayRespuesta = hayRespuesta;
+      hoyConfirmados = 0;
+      for (var c = 0; c < filas.length; c++) { if (filas[c].resp === 'si' && hoyEsEncuesta(filas[c].origen)) { hoyConfirmados++; } }
       hoyPintarLista();
     };
     xhr.send(null);
@@ -3173,6 +3224,7 @@
   var rutinaLegacyContenido = '';
   var rutinaViendoLegacy = false;
   var rutinaSinGuardar = false;
+  var rutinaGuardadaExiste = false;
 
   function pintarJornadas() {
     rutinaJornadaAM.className = 'rutinaJornadaBtn' + (!rutinaViendoLegacy && jornadaSeleccionada === 'AM' ? ' active' : '');
@@ -3191,6 +3243,10 @@
   function seleccionarJornada(jornada) {
     if (jornadaSeleccionada === jornada || !aceptarCambioRutina()) { return; }
     jornadaSeleccionada = jornada;
+    if (fechaSeleccionada && !rutinaDiaConClase(fechaSeleccionada)) {
+      var alternativas = diasDeSemana(fechaLunes(fechaDesdeISO(fechaSeleccionada)));
+      if (alternativas.length) { fechaSeleccionada = fechaAISO(alternativas[0]); }
+    }
     if (rutinaWeekStart && fechaSeleccionada) { rutinaWeekStart = fechaLunes(fechaDesdeISO(fechaSeleccionada)); }
     rutinaViendoLegacy = false;
     pintarJornadas();
@@ -3236,7 +3292,8 @@
     var date = fecha instanceof Date ? fecha : fechaDesdeISO(fecha);
     var dow = date.getDay();
     var habitual = jornadaSeleccionada === 'AM' ? (dow === 2 || dow === 4) : (dow >= 1 && dow <= 5);
-    return habitual || diasGuardadosCache.indexOf(fechaAISO(date)) !== -1 || (fechaAISO(date) === hoyGlobal || fechaAISO(date) === manianaGlobal);
+    var iso = fechaAISO(date);
+    return habitual || diasGuardadosCache.indexOf(iso) !== -1;
   }
 
   function diasDeSemana(inicio) {
@@ -3339,6 +3396,7 @@
   var PLANTILLA_RUTINA = 'PREPARACION\n\nCALENTAMIENTO\n\nPIERNAS\n\nELONGACION\n\nCORE\n\nPOSTURAS\n\nSUPER SET\n\nELONGACION\n';
 
   function cargarRutinaFecha(fecha) {
+    rutinaGuardadaExiste = false;
     rutinaLegacyEncontrada = false;
     rutinaLegacyContenido = '';
     rutinaViendoLegacy = false;
@@ -3352,6 +3410,7 @@
         if (xhr.status === 200) {
           var t = xhr.responseText;
           var existe = xhr.getResponseHeader('X-Rutina-Encontrada') === '1';
+          rutinaGuardadaExiste = existe;
           if (existe) {
             mostrarRutinaCargada(t, false);
           } else {
@@ -3399,6 +3458,7 @@
   function seleccionarDia(fecha) {
     if (fechaSeleccionada !== fecha && !aceptarCambioRutina()) { return; }
     fechaSeleccionada = fecha;
+    rutinaWeekStart = fechaLunes(fechaDesdeISO(fecha));
     pintarPills();
     cargarRutinaFecha(fecha);
   }
@@ -3418,13 +3478,20 @@
         }
         diasGuardadosCache = guardados === null ? diasCache.filter(function (dia) { return dia !== hoyGlobal && dia !== manianaGlobal; }) : guardados.split(',').filter(function (dia) { return !!dia; });
         rutinaWeekStart = fechaLunes(fechaDesdeISO(fechaSeleccionada || hoyGlobal));
-        if (fechaSeleccionada === null || diasCache.indexOf(fechaSeleccionada) === -1) {
+        if (fechaSeleccionada === null || !rutinaDiaConClase(fechaSeleccionada)) {
+          rutinaWeekStart = fechaLunes(fechaDesdeISO(hoyGlobal));
+          var primeras = diasDeSemana(rutinaWeekStart);
           fechaSeleccionada = hoyGlobal;
-          pintarPills();
-          cargarRutinaFecha(fechaSeleccionada);
-        } else {
-          pintarPills();
-        }
+          if (!rutinaDiaConClase(fechaSeleccionada) && primeras.length) {
+            var hoyDate = fechaDesdeISO(hoyGlobal);
+            fechaSeleccionada = fechaAISO(primeras[0]);
+            for (var p = 0; p < primeras.length; p++) {
+              if (fechaAISO(primeras[p]) >= hoyGlobal) { fechaSeleccionada = fechaAISO(primeras[p]); break; }
+              if (p === primeras.length - 1 && primeras[p] < hoyDate) { fechaSeleccionada = fechaAISO(primeras[p]); }
+            }
+          }
+          pintarPills(); cargarRutinaFecha(fechaSeleccionada);
+        } else { rutinaWeekStart = fechaLunes(fechaDesdeISO(fechaSeleccionada)); pintarPills(); }
       }
     };
     xhr.send(null);
@@ -3432,6 +3499,7 @@
 
   function guardarRutina() {
     if (rutinaViendoLegacy) { return; }
+    if (rutinaGuardadaExiste && !window.confirm('Ya existe una rutina guardada para ' + fechaSeleccionada + ' ' + jornadaSeleccionada + '. ¿Confirmas reemplazarla?')) { return; }
     rutinaStatus.innerHTML = 'Guardando...';
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/guardar', true);
@@ -3441,6 +3509,7 @@
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           rutinaSinGuardar = false;
+          rutinaGuardadaExiste = true;
           rutinaStatus.innerHTML = 'Guardado';
           cargarDias();
         } else {
@@ -3462,6 +3531,7 @@
 
   function generarRutinaConIronBot() {
     if (!fechaSeleccionada || rutinaViendoLegacy) { return; }
+    if (!window.confirm('IronBot consultará hasta cinco rutinas guardadas anteriores y generará solo un borrador para ' + jornadaSeleccionada + '. No confirma que esas clases se hayan realizado ni guardará la propuesta. Si el editor contiene cambios, serán reemplazados. ¿Continuar?')) { return; }
     if (rutinaIronbotBtn) {
       rutinaIronbotBtn.style.opacity = '0.5';
       rutinaIronbotBtn.innerHTML = 'GENERANDO...';
@@ -3484,8 +3554,7 @@
               rutinaText.value = data.rutina;
               rutinaSinGuardar = true;
               fitRutinaText();
-              rutinaStatus.innerHTML = '⚡ Rutina generada (' + (data.fuente || 'IronBot') + ')';
-              cargarDias();
+              rutinaStatus.innerHTML = '⚡ Borrador generado · ' + (data.historial || 'sin historial verificable');
               return;
             }
           } catch (e) {}
@@ -3494,8 +3563,7 @@
             rutinaText.value = resp;
             rutinaSinGuardar = true;
             fitRutinaText();
-            rutinaStatus.innerHTML = '⚡ Rutina generada';
-            cargarDias();
+            rutinaStatus.innerHTML = '⚡ Borrador generado · revisa antes de guardar';
           } else {
             rutinaStatus.innerHTML = 'Respuesta recibida';
           }
@@ -3803,6 +3871,7 @@
   var presetOverlay = document.getElementById('presetOverlay');
   var presetGrid = document.getElementById('presetGrid');
   var presetCancelBtn = document.getElementById('presetCancelBtn');
+  var presetCloseBtn = document.getElementById('presetCloseBtn');
   var presetStartBtn = document.getElementById('presetStartBtn');
   var presetMinVal = document.getElementById('presetMinVal');
   var presetSecVal = document.getElementById('presetSecVal');
@@ -3873,6 +3942,7 @@
   presetCancelBtn.addEventListener('click', function () {
     presetOverlay.style.display = 'none';
   }, false);
+  presetCloseBtn.addEventListener('click', function () { presetOverlay.style.display = 'none'; }, false);
 
   function addTimer() {
     customMin = 0;
