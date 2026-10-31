@@ -11,4 +11,4 @@ Se agregó una pestaña Personal para operar entrenamientos individuales usando 
 
 Pruebas añadidas en `test_personalizados_proxy.py`: autenticación de Oficina, acciones permitidas, validación del identificador y redacción de errores upstream. Validación actual: 33 pruebas Python aprobadas. La integración remota real no se ejecutó; el proxy se verifica con mocks. No hubo push, migración ni despliegue.
 
-Worktree: `codex/personalized-training-e2e-20261030`. Sintaxis Python y las 33 pruebas locales pasaron. Checkpoint y commit local quedan por registrar. La conexión entre servicios productivos y publicación requieren autorización específica.
+Worktree: `codex/personalized-training-e2e-20261030`, commit local `eafe1de57acdebdf96ed784937c57208e6c83c30`. Sintaxis Python y las 33 pruebas locales pasaron. Checkpoint: `/Users/nigoku/Nicola OS/checkpoints/training-integration-e2e-20261030` (integridad verificada). La conexión entre servicios productivos y publicación requieren autorización específica.
