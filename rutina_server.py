@@ -861,7 +861,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 _responder_json(self, 400, {'ok': False, 'error': 'JSON inválido.'})
                 return
             if not isinstance(payload, dict) or payload.get('action') not in (
-                'crear_y_iniciar', 'iniciar_rutina', 'editar_ejercicios_sesion', 'registrar_serie', 'finalizar_sesion'
+                'preparar_alumno', 'crear_y_iniciar', 'iniciar_rutina', 'editar_ejercicios_sesion', 'registrar_serie', 'finalizar_sesion'
             ):
                 _responder_json(self, 400, {'ok': False, 'error': 'Acción no válida.'})
                 return

@@ -69,6 +69,15 @@ class PersonalizadosProxyTest(unittest.TestCase):
         panel.assert_not_called()
 
     @patch.object(rutina_server, 'panel_request')
+    def test_seleccion_de_alumno_prepara_identidad_por_proxy_autenticado(self, panel):
+        payload = {'action': 'preparar_alumno', 'alumnoId': 73001}
+        panel.return_value = (201, '{"ok":true,"alumnoId":73001,"vinculado":true,"creado":true}')
+        status, body, _headers = self.request('POST', '/api/personalizados', json.dumps(payload), authenticated=True)
+        self.assertEqual(status, 201)
+        self.assertTrue(json.loads(body)['creado'])
+        panel.assert_called_once_with('POST', '/api/ipad/entrenamiento', json_body=payload)
+
+    @patch.object(rutina_server, 'panel_request')
     def test_post_sin_sesion_no_escribe_y_errores_remotos_salen_redactados(self, panel):
         payload = {'action': 'crear_y_iniciar', 'alumnoId': 7001, 'titulo': 'Fixture'}
         status, _body, _headers = self.request('POST', '/api/personalizados', json.dumps(payload))

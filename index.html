@@ -1936,13 +1936,16 @@
   <!-- 7. ANTIGRAVITY REMOTE CONTROL -->
   <div id="personalizadosView" style="display:none;">
     <div class="personalTitle">ENTRENAMIENTO PERSONAL</div>
-    <div id="personalStatus" class="personalStatus" role="status">Consultando alumnos vinculados…</div>
+    <div id="personalStatus" class="personalStatus" role="status">Consultando padrón de alumnos…</div>
     <button id="personalLogin" class="personalBtn" type="button" style="display:none; margin-bottom:10px;">INICIAR SESIÓN DE OFICINA</button>
     <div class="personalCard">
       <div class="personalGrid">
-        <select id="personalAlumno" class="personalField" aria-label="Alumno"></select>
+        <select id="personalAlumno" class="personalField" aria-label="Alumno">
+          <option value="">Selecciona un alumno</option>
+        </select>
         <button id="personalRefresh" class="personalBtn secondary" type="button">ACTUALIZAR HISTORIAL</button>
       </div>
+      <div id="personalIdentityNotice" class="personalMuted" role="status" style="margin-top:8px;">Al seleccionar un alumno se usará su vínculo existente o se creará un historial individual nuevo.</div>
       <div id="personalMarks" class="personalMuted" style="margin-top:8px;"></div>
     </div>
     <div id="personalActive"></div>
@@ -4871,6 +4874,7 @@
   /* ---------- sesiones individuales compartidas con Ironcross ---------- */
   var personalAlumno = document.getElementById('personalAlumno');
   var personalStatus = document.getElementById('personalStatus');
+  var personalIdentityNotice = document.getElementById('personalIdentityNotice');
   var personalMarks = document.getElementById('personalMarks');
   var personalActive = document.getElementById('personalActive');
   var personalHistory = document.getElementById('personalHistory');
@@ -4878,6 +4882,7 @@
   var personalExerciseCount = 0;
   var personalSession = null;
   var personalHistoryData = null;
+  var personalReady = false;
 
   function personalEscape(value) {
     return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -4900,7 +4905,7 @@
   }
   function cargarPersonalizados() {
     if (!personalStatus) { return; }
-    personalStatus.innerHTML = 'Consultando alumnos con vínculo confirmado…';
+    personalStatus.innerHTML = 'Consultando padrón de alumnos…';
     personalRequest('GET', '/api/personalizados?action=alumnos', null, function (status, data) {
       if (status === 401) {
         personalStatus.innerHTML = 'Inicia sesión de Oficina para acceder al historial.';
@@ -4914,19 +4919,54 @@
       if (personalLoginBtn) { personalLoginBtn.style.display = 'none'; }
       var current = personalSelectedAlumno();
       var alumnos = data.alumnos || [];
-      personalAlumno.innerHTML = alumnos.map(function (student) {
-        return '<option value="' + personalEscape(student.id) + '">' + personalEscape(student.nombre) + '</option>';
+      personalAlumno.innerHTML = '<option value="">Selecciona un alumno</option>' + alumnos.map(function (student) {
+        return '<option value="' + personalEscape(student.id) + '">' + personalEscape(student.nombre) +
+          (student.vinculado ? '' : ' · nuevo historial') + '</option>';
       }).join('');
       if (!alumnos.length) {
-        personalStatus.innerHTML = 'No hay alumnos vinculados a un historial de entrenamiento. El vínculo debe verificarse primero en el panel.';
+        personalStatus.innerHTML = 'El padrón no contiene alumnos disponibles o no se pudo leer.';
         personalActive.innerHTML = '';
         personalHistory.innerHTML = 'Sin historial vinculado.';
+        personalReady = false;
         return;
       }
       if (current && alumnos.some(function (item) { return Number(item.id) === current; })) {
         personalAlumno.value = String(current);
+        prepararPersonalAlumno();
+      } else {
+        personalAlumno.value = '';
+        personalReady = false;
+        personalStatus.innerHTML = 'Selecciona un alumno para abrir su historial individual.';
+        personalActive.innerHTML = '';
+        personalHistory.innerHTML = 'Elige un alumno.';
       }
-      personalStatus.innerHTML = 'Historial guardado en Ironcross · identidad canónica verificada.';
+    });
+  }
+  function prepararPersonalAlumno() {
+    var alumnoId = personalSelectedAlumno();
+    personalReady = false;
+    if (!alumnoId) {
+      personalStatus.innerHTML = 'Selecciona un alumno para continuar.';
+      personalActive.innerHTML = '';
+      personalHistory.innerHTML = 'Elige un alumno.';
+      if (personalIdentityNotice) { personalIdentityNotice.textContent = ''; }
+      return;
+    }
+    personalStatus.innerHTML = 'Verificando identidad y preparando el historial…';
+    if (personalIdentityNotice) { personalIdentityNotice.textContent = ''; }
+    personalRequest('POST', '/api/personalizados', { action: 'preparar_alumno', alumnoId: alumnoId }, function (status, data) {
+      if ((status !== 200 && status !== 201) || !data.ok) {
+        personalStatus.innerHTML = personalEscape(data.error || 'No se pudo preparar el historial.');
+        personalActive.innerHTML = '';
+        personalHistory.innerHTML = 'No se consultó ningún historial.';
+        return;
+      }
+      personalReady = true;
+      if (personalIdentityNotice) {
+        personalIdentityNotice.textContent = data.creado
+          ? 'Nuevo historial individual vinculado. Los historiales antiguos sin vínculo siguen intactos y separados.'
+          : 'Identidad canónica verificada. Usando el historial compartido existente.';
+      }
       cargarPersonalHistorial();
     });
   }
@@ -5102,8 +5142,8 @@
   }
   var personalLoginBtn = document.getElementById('personalLogin');
   if (personalLoginBtn) { personalLoginBtn.addEventListener('click', function () { window.location.href = '/oficina'; }, false); }
-  if (personalAlumno) { personalAlumno.addEventListener('change', cargarPersonalHistorial, false); }
-  if (document.getElementById('personalRefresh')) { document.getElementById('personalRefresh').addEventListener('click', cargarPersonalHistorial, false); }
+  if (personalAlumno) { personalAlumno.addEventListener('change', prepararPersonalAlumno, false); }
+  if (document.getElementById('personalRefresh')) { document.getElementById('personalRefresh').addEventListener('click', prepararPersonalAlumno, false); }
   if (document.getElementById('personalAddExercise')) {
     document.getElementById('personalAddExercise').addEventListener('click', agregarEjercicioNuevo, false);
     agregarEjercicioNuevo();
@@ -5113,7 +5153,7 @@
       var exercises = personalExercisesFromRows(personalNewExercises, 'create');
       var title = document.getElementById('personalTitleInput').value.replace(/^\s+|\s+$/g, '');
       var objective = document.getElementById('personalObjectiveInput').value.replace(/^\s+|\s+$/g, '');
-      if (!personalSelectedAlumno() || !title || !objective || !exercises.length) {
+      if (!personalSelectedAlumno() || !personalReady || !title || !objective || !exercises.length) {
         personalStatus.innerHTML = 'Selecciona alumno y completa nombre, objetivo y al menos un ejercicio.'; return;
       }
       personalRequest('POST', '/api/personalizados', {
