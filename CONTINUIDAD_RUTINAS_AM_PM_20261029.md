@@ -107,7 +107,7 @@ Revisar el diff de RelojIron 2.0 y sus pruebas; preparar commits locales solo co
 
 ### Cambios recuperados e integrados localmente
 
-- Arquitectura vigente registrada: RelojIron `main` publicado en `5b3395702384d4ff4bf269036c5b6a9a2651bd96`. El trabajo se aisló en `codex/relojiron-personalizado-10x-20261031`, inicialmente limpio sobre ese commit; no se consultó el runtime durante esta tarea.
+- Arquitectura vigente registrada: RelojIron `main` publicado en `5b3395702384d4ff4bf269036c5b6a9a2651bd96`. El trabajo se aisló en `codex/relojiron-personalizado-10x-20261031`, inicialmente limpio sobre ese commit. Un GET anónimo del HTML público confirmó HTTP 200 y el hash de `origin/main`; no se autenticó ni consultaron datos.
 - Recuperada selectivamente la interfaz del commit existente `2864174097303d6140cbbddc7c123bd7a91d2de0` y la generación segura de borradores del commit `68cd2baac821f608e94e8a3c4796e5dc3dab1b91`. No se restauró el HTML completo antiguo.
 - Se mantienen semana y calendario AM/PM, días habituales (AM martes/jueves; PM lunes-viernes), excepciones mediante fechas con rutinas guardadas e historial sin jornada en solo lectura. El calendario no crea rutinas para fechas sin clase ni registro previo.
 - Se recuperó el filtro de Asistencia: inicialmente solo respuestas afirmativas cuyo origen identifica encuesta/WhatsApp; AM y PM usan el contrato vigente `/api/hoy?horario=...`. La respuesta se etiqueta como confirmación, no asistencia efectiva. La búsqueda manual conserva PRESENTE/AUSENTE/LIMPIAR como acciones explícitas. Los no vinculados no se asocian por nombre.
@@ -122,7 +122,7 @@ Revisar el diff de RelojIron 2.0 y sus pruebas; preparar commits locales solo co
 - `python3 -m py_compile rutina_server.py test_ironbot_draft.py test_rutina_ampm.py`, `node --check` del JavaScript inline y `git diff --check`: aprobados.
 - Navegador local aislado con API sintética y viewport iPad 768×1024: comprobados días AM/PM y excepción guardada, cierre del temporizador, pausa/reanudación/reinicio, conservación al cambiar de pestaña, botones táctiles, marca reducida de movimiento, respuesta afirmativa sintética, estado vacío PM y búsqueda manual. Sin errores JS, overflow horizontal ni solicitudes POST.
 - Las imágenes y el reporte de este recorrido se guardan en `checkpoints/relojiron-recovery-20261031/`.
-- No se conectó a producción, PostgreSQL, WhatsApp ni al proveedor de IronBot. La respuesta real del modelo no se evaluó. La persistencia de Personalizado ya estaba respaldada por la validación PostgreSQL aislada anterior y este cambio no toca esa ruta.
+- No se accedió a datos de producción, PostgreSQL, WhatsApp ni al proveedor de IronBot. La única lectura productiva fue un GET anónimo de la página estática del iPad. La respuesta real del modelo no se evaluó. La persistencia de Personalizado ya estaba respaldada por la validación PostgreSQL aislada anterior y este cambio no toca esa ruta.
 
 ### Riesgos y límites pendientes
 
@@ -137,3 +137,7 @@ Revisar el diff de RelojIron 2.0 y sus pruebas; preparar commits locales solo co
 - Checkpoint previo recuperable: `checkpoints/relojiron-recovery-20261031-pre/relojiron.bundle`, verificado con `git bundle verify` y SHA-256.
 - Checkpoint final y hashes: `checkpoints/relojiron-recovery-20261031/`.
 - Próximo paso: revisión manual en iPad físico. La publicación requiere autorización posterior para push/merge; no forma parte de esta entrega.
+
+### Comparación de la versión pública — lectura 2026-10-31
+
+Un GET anónimo de solo lectura a la página pública del iPad respondió HTTP 200. SHA-256 servido: `687d14f5e562c7a3c1414fbd3b7c5ec2b2ce76a81c65c48b481702f79e88c450`, idéntico a `origin/main` (`5b33957`). La copia servida contiene Personalizado 10X y el calendario semanal; no contiene la pestaña Asistencia renombrada, el barrido del logo, el cierre superior del selector ni la confirmación IronBot recuperados en esta rama. El HEAD local actualizado (`0c704c8`) tiene hash HTML distinto. No se inició sesión ni se consultaron datos de alumnos.
