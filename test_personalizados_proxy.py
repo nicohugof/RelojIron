@@ -1,6 +1,7 @@
 """Contratos de solo servidor para el puente autenticado de rutinas personales."""
 import http.client
 import json
+from pathlib import Path
 import socketserver
 import threading
 import unittest
@@ -40,6 +41,12 @@ class PersonalizadosProxyTest(unittest.TestCase):
         connection.close()
         return result
 
+    def test_acceso_personalizado_reabre_login_y_refresca_padron(self):
+        html = (Path(rutina_server.DIRECTORY) / 'index.html').read_text(encoding='utf-8')
+        self.assertIn("personalLoginBtn.addEventListener('click', function () { mostrarLogin(); }", html)
+        self.assertIn("if (typeof cargarPersonalizados === 'function') { cargarPersonalizados(); }", html)
+        self.assertIn("personalText.addEventListener('input', updatePersonalSaveState", html)
+
     @patch.object(rutina_server, 'panel_request')
     def test_get_de_alumnos_requiere_sesion_y_usa_proxy_secreto(self, panel):
         panel.return_value = (200, '{"ok":true,"alumnos":[{"id":7001,"nombre":"Fixture"}]}')
@@ -75,6 +82,27 @@ class PersonalizadosProxyTest(unittest.TestCase):
         status, body, _headers = self.request('POST', '/api/personalizados', json.dumps(payload), authenticated=True)
         self.assertEqual(status, 201)
         self.assertTrue(json.loads(body)['creado'])
+        panel.assert_called_once_with('POST', '/api/ipad/entrenamiento', json_body=payload)
+
+    @patch.object(rutina_server, 'panel_request')
+    def test_sesion_libre_se_reenvia_sin_transformar_y_requiere_oficina(self, panel):
+        payload = {
+            'action': 'guardar_sesion_texto_libre',
+            'alumnoId': 73001,
+            'sessionId': 'ps_fixture_session_0001',
+            'contenidoLibre': 'Trabajo sintético de fuerza y movilidad.',
+            'fecha': '2026-10-31',
+            'jornada': 'AM',
+        }
+        panel.return_value = (200, json.dumps({'ok': True, 'sesion': {'id': payload['sessionId']}}))
+
+        status, body, _headers = self.request('POST', '/api/personalizados', json.dumps(payload))
+        self.assertEqual(status, 401)
+        panel.assert_not_called()
+
+        status, body, _headers = self.request('POST', '/api/personalizados', json.dumps(payload), authenticated=True)
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body)['sesion']['id'], payload['sessionId'])
         panel.assert_called_once_with('POST', '/api/ipad/entrenamiento', json_body=payload)
 
     @patch.object(rutina_server, 'panel_request')
