@@ -140,6 +140,7 @@
     }
   }
   @keyframes ironcrossLogoSweep { from { background-position: 100% 0; } to { background-position: -120% 0; } }
+  @media (prefers-reduced-motion: reduce) { #brand { animation: none !important; } }
 
   /* tab bar */
   #tabBar {
@@ -1009,8 +1010,9 @@
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 14px;
-    letter-spacing: 1px;
+    font-size: 12px;
+    letter-spacing: 0;
+    white-space: nowrap;
     background: #2A2A26;
   }
   .hoyBtn.si.on { background: #2E6B3E; }
@@ -1192,10 +1194,9 @@
     line-height: 40px;
     text-align: center;
   }
-  .swTimer .swStart, .swTimer .swReset { min-width: 116px; height: 56px; line-height: 56px; font-size: 17px; }
-  .swTimer .swRemove { position: absolute; top: 4px; right: 4px; z-index: 3; width: 48px; height: 44px; line-height: 44px; padding: 0; font-size: 22px; }
-  .swTimer .swBtn { min-width: 108px; height: 56px; line-height: 56px; font-size: 17px; }
-  .swTimer .swRemove { position: absolute; top: 4px; right: 4px; z-index: 3; min-width: 48px; width: 48px; height: 44px; line-height: 44px; padding: 0; font-size: 22px; }
+  .swRow .swBtn:not(.swRemove) { min-width: 108px; height: 56px; line-height: 56px; font-size: 17px; }
+  .swTimer .swStart, .swTimer .swReset { min-width: 116px; }
+  .swRow .swRemove { position: absolute; top: 4px; right: 4px; z-index: 3; min-width: 48px; width: 48px; height: 44px; line-height: 44px; padding: 0; font-size: 22px; }
   .swStart { background: #2E6B3E; }
   .swPause { background: #C29A22; }
   .swReset { background: #2A2A26; }

@@ -102,3 +102,38 @@ Checkpoint final recuperable guardado en `/Users/nigoku/Nicola OS/checkpoints/re
 ### Próximo paso exacto
 
 Revisar el diff de RelojIron 2.0 y sus pruebas; preparar commits locales solo con los archivos/hunks de esta entrega, dejando fuera los cambios previos señalados. No publicar. Resolver el endpoint de asistencia con fecha en una tarea separada con preflight de Ironcross antes de prometer historial/estado WhatsApp.
+
+## Recuperación de mejoras pendientes — 2026-10-31
+
+### Cambios recuperados e integrados localmente
+
+- Arquitectura vigente registrada: RelojIron `main` publicado en `5b3395702384d4ff4bf269036c5b6a9a2651bd96`. El trabajo se aisló en `codex/relojiron-personalizado-10x-20261031`, inicialmente limpio sobre ese commit; no se consultó el runtime durante esta tarea.
+- Recuperada selectivamente la interfaz del commit existente `2864174097303d6140cbbddc7c123bd7a91d2de0` y la generación segura de borradores del commit `68cd2baac821f608e94e8a3c4796e5dc3dab1b91`. No se restauró el HTML completo antiguo.
+- Se mantienen semana y calendario AM/PM, días habituales (AM martes/jueves; PM lunes-viernes), excepciones mediante fechas con rutinas guardadas e historial sin jornada en solo lectura. El calendario no crea rutinas para fechas sin clase ni registro previo.
+- Se recuperó el filtro de Asistencia: inicialmente solo respuestas afirmativas cuyo origen identifica encuesta/WhatsApp; AM y PM usan el contrato vigente `/api/hoy?horario=...`. La respuesta se etiqueta como confirmación, no asistencia efectiva. La búsqueda manual conserva PRESENTE/AUSENTE/LIMPIAR como acciones explícitas. Los no vinculados no se asocian por nombre.
+- IronBot consulta con GET hasta cinco rutinas anteriores de la API, no usa la ruta de generación que podía guardar directamente, informa si falta historial y devuelve un borrador. La pantalla solicita confirmación antes de generar y antes de reemplazar una rutina existente.
+- Se recuperó el logo IRONCROSS de mayor tamaño con barrido rojo lento y reloj superior de 20 px. Se agregó respeto a `prefers-reduced-motion`.
+- Cronómetro y temporizador conservan su estado al navegar. Pausa/reinicio tienen objetivos táctiles de 56 px, cierre X de 48×44 px en cada tarjeta y cierre superior de 48×44 px en el selector. Se ajustó la tipografía de los botones de Asistencia para evitar solapamiento en iPad.
+- Personalizado 10X permanece en la misma pestaña, con selección de alumno, texto libre, Guardar sesión y Ver última sesión. No se modificaron su API ni su persistencia.
+
+### Verificación
+
+- `python3 -m unittest discover -v`: **41/41 aprobadas**. Incluye regresiones de AM/PM, historial, Asistencia, confirmación de IronBot, consulta solo GET y Personalizado.
+- `python3 -m py_compile rutina_server.py test_ironbot_draft.py test_rutina_ampm.py`, `node --check` del JavaScript inline y `git diff --check`: aprobados.
+- Navegador local aislado con API sintética y viewport iPad 768×1024: comprobados días AM/PM y excepción guardada, cierre del temporizador, pausa/reanudación/reinicio, conservación al cambiar de pestaña, botones táctiles, marca reducida de movimiento, respuesta afirmativa sintética, estado vacío PM y búsqueda manual. Sin errores JS, overflow horizontal ni solicitudes POST.
+- Las imágenes y el reporte de este recorrido se guardan en `checkpoints/relojiron-recovery-20261031/`.
+- No se conectó a producción, PostgreSQL, WhatsApp ni al proveedor de IronBot. La respuesta real del modelo no se evaluó. La persistencia de Personalizado ya estaba respaldada por la validación PostgreSQL aislada anterior y este cambio no toca esa ruta.
+
+### Riesgos y límites pendientes
+
+- La API de Asistencia actual consulta el día de hoy y jornada; no ofrece selección histórica de fecha ni una señal directa de salud de WhatsApp. No se amplió el contrato ni se modificó Ironcross.
+- El recorrido de Asistencia verificó el formato de origen del contrato local de Ironcross y mocks, no el runtime productivo ni la conexión efectiva de WhatsApp. El registro de arquitectura conserva evidencia anterior de servicio desconectado.
+- La generación de IronBot quedó cubierta con mocks; no se invocó proveedor externo y no se afirma calidad de generación real.
+- La validación visual fue simulada en Chrome con contenido sintético; falta confirmar el comportamiento en el iPad físico.
+- Base de producción documentada: Personalizado 10X `5b33957`. Esta rama contiene commits locales únicamente; no hubo push, merge, despliegue, migraciones, escrituras ni cambios en Ironcross/IronBot.
+
+### Continuidad
+
+- Checkpoint previo recuperable: `checkpoints/relojiron-recovery-20261031-pre/relojiron.bundle`, verificado con `git bundle verify` y SHA-256.
+- Checkpoint final y hashes: `checkpoints/relojiron-recovery-20261031/`.
+- Próximo paso: revisión manual en iPad físico. La publicación requiere autorización posterior para push/merge; no forma parte de esta entrega.
