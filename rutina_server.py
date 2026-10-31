@@ -446,6 +446,28 @@ def _responder_texto(handler, status, body_text):
     handler.wfile.write(body)
 
 
+def _responder_json(handler, status, value):
+    body = json.dumps(value, ensure_ascii=False).encode('utf-8')
+    handler.send_response(status)
+    handler.send_header('Content-Type', 'application/json; charset=utf-8')
+    handler.send_header('Content-Length', str(len(body)))
+    handler.send_header('Cache-Control', 'no-store, max-age=0')
+    handler.end_headers()
+    handler.wfile.write(body)
+
+
+def _personal_error_message(status):
+    return {
+        400: 'Revisa los datos del entrenamiento.',
+        401: 'La sesión o autenticación del panel no es válida.',
+        403: 'La operación no está autorizada para el alumno seleccionado.',
+        404: 'No se encontró el historial solicitado.',
+        409: 'El alumno ya tiene una sesión abierta o hay un conflicto de edición.',
+        413: 'La solicitud supera el tamaño permitido.',
+        503: 'El servicio de entrenamiento no está disponible.',
+    }.get(status, 'No se pudo completar la operación en el panel.')
+
+
 def _hoy_post_invalido(alumno_id, accion):
     if not alumno_id or not alumno_id.isdigit():
         return 'ERROR|alumno_id invalido'
@@ -637,6 +659,29 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Expires', '0')
             self.end_headers()
             self.wfile.write(body)
+        elif parsed.path == '/api/personalizados':
+            if not self._oficina_sesion_valida():
+                _responder_json(self, 401, {'ok': False, 'error': 'Sesión de Oficina requerida.'})
+                return
+            action = qs.get('action', ['alumnos'])[0]
+            if action not in ('alumnos', 'historial'):
+                _responder_json(self, 400, {'ok': False, 'error': 'Consulta no válida.'})
+                return
+            params = {'action': action}
+            if action == 'historial':
+                alumno_id = qs.get('alumnoId', [''])[0]
+                if not alumno_id.isdigit() or int(alumno_id) < 1:
+                    _responder_json(self, 400, {'ok': False, 'error': 'Alumno inválido.'})
+                    return
+                params['alumnoId'] = alumno_id
+            try:
+                status, response = panel_request('GET', '/api/ipad/entrenamiento', params=params)
+                _responder_json(self, status, json.loads(response))
+            except PanelError as e:
+                status = e.status if 400 <= e.status < 600 else 502
+                _responder_json(self, status, {'ok': False, 'error': _personal_error_message(status)})
+            except (ValueError, TypeError):
+                _responder_json(self, 502, {'ok': False, 'error': 'Respuesta inválida del panel.'})
         elif parsed.path == '/api/hoy':
             if not self._oficina_sesion_valida():
                 self.send_response(401)
@@ -796,6 +841,38 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     self.end_headers()
                 return
             _responder_texto(self, 200, body)
+        elif parsed.path == '/api/personalizados':
+            if not self._oficina_sesion_valida():
+                length = int(self.headers.get('Content-Length', 0))
+                if length > 0:
+                    self.rfile.read(min(length, 128001))
+                _responder_json(self, 401, {'ok': False, 'error': 'Sesión de Oficina requerida.'})
+                return
+            length = int(self.headers.get('Content-Length', 0))
+            if length < 1 or length > 128000:
+                if length > 0:
+                    self.rfile.read(min(length, 128001))
+                _responder_json(self, 413 if length > 128000 else 400,
+                                {'ok': False, 'error': 'Tamaño de solicitud inválido.'})
+                return
+            try:
+                payload = json.loads(self.rfile.read(length).decode('utf-8'))
+            except (ValueError, UnicodeDecodeError):
+                _responder_json(self, 400, {'ok': False, 'error': 'JSON inválido.'})
+                return
+            if not isinstance(payload, dict) or payload.get('action') not in (
+                'crear_y_iniciar', 'iniciar_rutina', 'editar_ejercicios_sesion', 'registrar_serie', 'finalizar_sesion'
+            ):
+                _responder_json(self, 400, {'ok': False, 'error': 'Acción no válida.'})
+                return
+            try:
+                status, response = panel_request('POST', '/api/ipad/entrenamiento', json_body=payload)
+                _responder_json(self, status, json.loads(response))
+            except PanelError as e:
+                status = e.status if 400 <= e.status < 600 else 502
+                _responder_json(self, status, {'ok': False, 'error': _personal_error_message(status)})
+            except (ValueError, TypeError):
+                _responder_json(self, 502, {'ok': False, 'error': 'Respuesta inválida del panel.'})
         elif parsed.path == '/api/chat-login':
             length = int(self.headers.get('Content-Length', 0))
             raw = self.rfile.read(length).decode('utf-8')

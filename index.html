@@ -90,7 +90,7 @@
     right: 0;
     bottom: 56px;
   }
-  #clockView, #stopwatchView, #rutinaView, #dashboardView, #alumnosView, #pagosView, #asistenteView, #hoyView, #remotoView {
+  #clockView, #stopwatchView, #rutinaView, #dashboardView, #alumnosView, #pagosView, #asistenteView, #hoyView, #remotoView, #personalizadosView {
     position: absolute;
     top: 0;
     left: 0;
@@ -1653,6 +1653,19 @@
     letter-spacing: 1px;
     cursor: pointer;
   }
+
+  #personalizadosView { position:absolute; inset:0; overflow:auto; padding:12px; background:#11110F; color:#EDE9DF; font-family:Helvetica,Arial,sans-serif; }
+  .personalCard { background:#1A1916; border:1px solid #34322C; border-radius:12px; padding:12px; margin-bottom:10px; }
+  .personalTitle { font-size:17px; font-weight:bold; letter-spacing:1px; color:#F0C36D; margin-bottom:8px; }
+  .personalGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .personalField { width:100%; min-height:42px; box-sizing:border-box; border:1px solid #4A473F; border-radius:7px; background:#0E0E0D; color:#FFF; padding:8px; font-size:16px; }
+  .personalBtn { min-height:44px; border:0; border-radius:8px; background:#A72E1D; color:#FFF; font-weight:bold; padding:9px 12px; cursor:pointer; }
+  .personalBtn.secondary { background:#35332E; }
+  .personalRow { border-top:1px solid #34322C; padding:9px 0; }
+  .personalMuted { color:#B8B3A8; font-size:12px; }
+  .personalStatus { min-height:24px; color:#F0C36D; font-size:13px; padding:4px 0; }
+  .personalExerciseRow { display:grid; grid-template-columns:2fr 70px 70px 76px; gap:6px; margin:6px 0; }
+  @media (max-width:700px) { .personalGrid { grid-template-columns:1fr; } .personalExerciseRow { grid-template-columns:1fr 1fr; } }
 </style>
 </head>
 <body>
@@ -1921,6 +1934,32 @@
   </div>
 
   <!-- 7. ANTIGRAVITY REMOTE CONTROL -->
+  <div id="personalizadosView" style="display:none;">
+    <div class="personalTitle">ENTRENAMIENTO PERSONAL</div>
+    <div id="personalStatus" class="personalStatus" role="status">Consultando alumnos vinculados…</div>
+    <button id="personalLogin" class="personalBtn" type="button" style="display:none; margin-bottom:10px;">INICIAR SESIÓN DE OFICINA</button>
+    <div class="personalCard">
+      <div class="personalGrid">
+        <select id="personalAlumno" class="personalField" aria-label="Alumno"></select>
+        <button id="personalRefresh" class="personalBtn secondary" type="button">ACTUALIZAR HISTORIAL</button>
+      </div>
+      <div id="personalMarks" class="personalMuted" style="margin-top:8px;"></div>
+    </div>
+    <div id="personalActive"></div>
+    <div class="personalCard">
+      <div class="personalTitle">NUEVA SESIÓN</div>
+      <div class="personalGrid">
+        <input id="personalTitleInput" class="personalField" maxlength="120" placeholder="Nombre de rutina">
+        <input id="personalObjectiveInput" class="personalField" maxlength="240" placeholder="Objetivo">
+      </div>
+      <div id="personalNewExercises"></div>
+      <div class="personalGrid" style="margin-top:8px;">
+        <button id="personalAddExercise" class="personalBtn secondary" type="button">+ EJERCICIO</button>
+        <button id="personalStart" class="personalBtn" type="button">GUARDAR E INICIAR</button>
+      </div>
+    </div>
+    <div class="personalCard"><div class="personalTitle">SESIONES PREVIAS</div><div id="personalHistory" class="personalMuted">Elige un alumno.</div></div>
+  </div>
   <div id="remotoView" style="display:none;">
     <div class="remotoCard">
       <div class="remotoHeaderTitle">
@@ -1981,6 +2020,7 @@
   <div id="tabRutina" class="tab active">RUTINA</div>
   <div id="tabClock" class="tab">RELOJ</div>
   <div id="tabStopwatch" class="tab">TIMERS</div>
+  <div id="tabPersonalizados" class="tab">PERSONAL</div>
   <div id="tabHoy" class="tab">HOY</div>
   <div id="tabDashboard" class="tab">PANEL</div>
   <div id="tabAlumnos" class="tab">ALUMNOS</div>
@@ -2066,6 +2106,7 @@
   var stopwatchView = document.getElementById('stopwatchView');
   var asistenteView = document.getElementById('asistenteView');
   var remotoView = document.getElementById('remotoView');
+  var personalizadosView = document.getElementById('personalizadosView');
 
   var tabDashboard = document.getElementById('tabDashboard');
   var tabAlumnos = document.getElementById('tabAlumnos');
@@ -2076,6 +2117,7 @@
   var tabStopwatch = document.getElementById('tabStopwatch');
   var tabAsistente = document.getElementById('tabAsistente');
   var tabRemoto = document.getElementById('tabRemoto');
+  var tabPersonalizados = document.getElementById('tabPersonalizados');
 
   var currentTab = 'rutina';
   var previousTab = 'rutina';
@@ -2090,6 +2132,7 @@
     if (stopwatchView) { stopwatchView.style.display = 'none'; }
     if (asistenteView) { asistenteView.style.display = 'none'; }
     if (remotoView) { remotoView.style.display = 'none'; }
+    if (personalizadosView) { personalizadosView.style.display = 'none'; }
 
     if (tabDashboard) { tabDashboard.className = 'tab'; }
     if (tabAlumnos) { tabAlumnos.className = 'tab'; }
@@ -2100,6 +2143,7 @@
     if (tabStopwatch) { tabStopwatch.className = 'tab'; }
     if (tabAsistente) { tabAsistente.className = 'tab'; }
     if (tabRemoto) { tabRemoto.className = 'tab'; }
+    if (tabPersonalizados) { tabPersonalizados.className = 'tab'; }
 
     if (typeof stopOfficeTimer === 'function') { stopOfficeTimer(); }
   }
@@ -2146,6 +2190,14 @@
     cargarHoy();
   }
 
+  function showPersonalizados() {
+    currentTab = 'personalizados';
+    hideAllViews();
+    if (personalizadosView) { personalizadosView.style.display = 'block'; }
+    if (tabPersonalizados) { tabPersonalizados.className = 'tab active'; }
+    cargarPersonalizados();
+  }
+
   function showRutina() {
     currentTab = 'rutina';
     hideAllViews();
@@ -2171,6 +2223,7 @@
       if (previousTab === 'alumnos') { showAlumnos(); }
       else if (previousTab === 'pagos') { showPagos(); }
       else if (previousTab === 'hoy') { showHoy(); }
+      else if (previousTab === 'personalizados') { showPersonalizados(); }
       else if (previousTab === 'rutina') { showRutina(); }
       else if (previousTab === 'stopwatch') { showStopwatch(); }
       else if (previousTab === 'asistente') { showAsistente(); }
@@ -2206,6 +2259,7 @@
   if (tabAlumnos) { tabAlumnos.addEventListener('click', function () { showAlumnos(); }, false); }
   if (tabPagos) { tabPagos.addEventListener('click', showPagos, false); }
   if (tabHoy) { tabHoy.addEventListener('click', showHoy, false); }
+  if (tabPersonalizados) { tabPersonalizados.addEventListener('click', showPersonalizados, false); }
   if (tabRutina) { tabRutina.addEventListener('click', showRutina, false); }
   if (tabClock) { tabClock.addEventListener('click', showClock, false); }
   if (tabStopwatch) { tabStopwatch.addEventListener('click', showStopwatch, false); }
@@ -4811,6 +4865,267 @@
       if (e.keyCode === 13) {
         enviarOrdenRemota();
       }
+    }, false);
+  }
+
+  /* ---------- sesiones individuales compartidas con Ironcross ---------- */
+  var personalAlumno = document.getElementById('personalAlumno');
+  var personalStatus = document.getElementById('personalStatus');
+  var personalMarks = document.getElementById('personalMarks');
+  var personalActive = document.getElementById('personalActive');
+  var personalHistory = document.getElementById('personalHistory');
+  var personalNewExercises = document.getElementById('personalNewExercises');
+  var personalExerciseCount = 0;
+  var personalSession = null;
+  var personalHistoryData = null;
+
+  function personalEscape(value) {
+    return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function personalRequest(method, url, payload, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      var data = {};
+      try { data = JSON.parse(xhr.responseText || '{}'); } catch (e) {}
+      callback(xhr.status, data);
+    };
+    xhr.send(payload ? JSON.stringify(payload) : null);
+  }
+  function personalSelectedAlumno() {
+    return personalAlumno ? Number(personalAlumno.value) : 0;
+  }
+  function cargarPersonalizados() {
+    if (!personalStatus) { return; }
+    personalStatus.innerHTML = 'Consultando alumnos con vínculo confirmado…';
+    personalRequest('GET', '/api/personalizados?action=alumnos', null, function (status, data) {
+      if (status === 401) {
+        personalStatus.innerHTML = 'Inicia sesión de Oficina para acceder al historial.';
+        if (personalLoginBtn) { personalLoginBtn.style.display = 'block'; }
+        return;
+      }
+      if (status !== 200 || !data.ok) {
+        personalStatus.innerHTML = 'No se pudo conectar con el historial compartido. Reintenta más tarde.';
+        return;
+      }
+      if (personalLoginBtn) { personalLoginBtn.style.display = 'none'; }
+      var current = personalSelectedAlumno();
+      var alumnos = data.alumnos || [];
+      personalAlumno.innerHTML = alumnos.map(function (student) {
+        return '<option value="' + personalEscape(student.id) + '">' + personalEscape(student.nombre) + '</option>';
+      }).join('');
+      if (!alumnos.length) {
+        personalStatus.innerHTML = 'No hay alumnos vinculados a un historial de entrenamiento. El vínculo debe verificarse primero en el panel.';
+        personalActive.innerHTML = '';
+        personalHistory.innerHTML = 'Sin historial vinculado.';
+        return;
+      }
+      if (current && alumnos.some(function (item) { return Number(item.id) === current; })) {
+        personalAlumno.value = String(current);
+      }
+      personalStatus.innerHTML = 'Historial guardado en Ironcross · identidad canónica verificada.';
+      cargarPersonalHistorial();
+    });
+  }
+  function cargarPersonalHistorial() {
+    var alumnoId = personalSelectedAlumno();
+    if (!alumnoId) { return; }
+    personalStatus.innerHTML = 'Cargando historial…';
+    personalRequest('GET', '/api/personalizados?action=historial&alumnoId=' + encodeURIComponent(alumnoId), null, function (status, data) {
+      if (status !== 200 || !data.ok) {
+        personalStatus.innerHTML = status === 401 ? 'La sesión expiró. Inicia sesión de nuevo.' : 'No se pudo consultar el historial.';
+        personalHistory.innerHTML = personalEscape(data.error || 'Servicio no disponible.');
+        return;
+      }
+      personalHistoryData = data;
+      personalSession = (data.sesiones || []).filter(function (session) { return session.estado !== 'completada'; })[0] || null;
+      personalStatus.innerHTML = 'Historial actualizado · ' + (data.sesiones || []).length + ' sesiones.';
+      personalMarks.innerHTML = (data.marcas || []).length
+        ? 'Marcas registradas: ' + data.marcas.map(function (mark) { return personalEscape(mark.ejercicio) + ' ' + personalEscape(mark.valor) + ' ' + personalEscape(mark.tipo); }).join(' · ')
+        : 'Sin marcas personales registradas.';
+      renderPersonalSession();
+      renderPersonalHistory();
+    });
+  }
+  function personalExercisesFromRows(container, prefix) {
+    var rows = container.querySelectorAll('.' + prefix + '-exercise-row');
+    var result = [];
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var name = row.querySelector('[data-ex-name]').value.replace(/^\s+|\s+$/g, '');
+      var sets = Number(row.querySelector('[data-ex-sets]').value || 0);
+      var repsValue = row.querySelector('[data-ex-reps]').value;
+      var timeValue = row.querySelector('[data-ex-time]').value;
+      var load = Number(row.querySelector('[data-ex-load]').value || 0);
+      if (!name) { continue; }
+      result.push({
+        ejercicioId: prefix === 'edit' ? row.getAttribute('data-ex-id') : 'custom_' + Date.now() + '_' + i,
+        nombre: name, bloque: 'superset', series: sets,
+        repeticiones: repsValue ? Number(repsValue) : null,
+        segundos: timeValue ? Number(timeValue) : null,
+        lastreKg: load, descansoSegundos: 60, esSuperset: false,
+        condicionVariante: 'libre_estricto', notasTecnicas: ''
+      });
+    }
+    return result;
+  }
+  function personalExerciseRows(exercises, prefix) {
+    return exercises.map(function (exercise) {
+      return '<div class="personalExerciseRow ' + prefix + '-exercise-row" data-ex-id="' + personalEscape(exercise.ejercicioId) + '">' +
+        '<input class="personalField" data-ex-name value="' + personalEscape(exercise.nombre) + '" placeholder="Ejercicio">' +
+        '<input class="personalField" data-ex-sets type="number" min="1" max="20" value="' + personalEscape(exercise.series || 3) + '" aria-label="Series">' +
+        '<input class="personalField" data-ex-reps type="number" min="1" max="200" value="' + personalEscape(exercise.repeticiones || '') + '" placeholder="Reps">' +
+        '<input class="personalField" data-ex-time type="number" min="1" max="3600" value="' + personalEscape(exercise.segundos || '') + '" placeholder="Segundos">' +
+        '<input class="personalField" data-ex-load type="number" min="0" step="0.5" value="' + personalEscape(exercise.lastreKg || 0) + '" placeholder="Carga kg">' +
+        '</div>';
+    }).join('');
+  }
+  function renderPersonalSession() {
+    if (!personalSession) {
+      personalActive.innerHTML = '<div class="personalCard personalMuted">No hay sesión abierta para este alumno.</div>';
+      return;
+    }
+    var session = personalSession;
+    var exerciseRows = personalExerciseRows(session.rutinaSnapshot.ejercicios || [], 'edit');
+    var setRows = (session.rutinaSnapshot.ejercicios || []).map(function (exercise) {
+      var count = (session.series || []).filter(function (set) { return set.ejercicioId === exercise.ejercicioId; }).length;
+      return '<div class="personalRow"><strong>' + personalEscape(exercise.nombre) + '</strong><div class="personalGrid">' +
+        '<input class="personalField" data-log-reps type="number" min="1" placeholder="Repeticiones">' +
+        '<input class="personalField" data-log-time type="number" min="1" placeholder="Segundos">' +
+        '<input class="personalField" data-log-load type="number" min="0" step="0.5" placeholder="Carga kg">' +
+        '<input class="personalField" data-log-observation maxlength="300" placeholder="Observación">' +
+        '<button class="personalBtn" type="button" data-log-ex="' + personalEscape(exercise.ejercicioId) + '" data-log-next="' + (count + 1) + '">GUARDAR SERIE ' + (count + 1) + '</button>' +
+        '</div></div>';
+    }).join('');
+    personalActive.innerHTML = '<div class="personalCard"><div class="personalTitle">SESIÓN ABIERTA · ' + personalEscape(session.rutinaSnapshot.titulo) + '</div>' +
+      '<div class="personalMuted">' + personalEscape(session.fecha) + ' · Los cambios y series se guardan en el historial compartido.</div>' +
+      '<input id="personalEditTitle" class="personalField" maxlength="120" value="' + personalEscape(session.rutinaSnapshot.titulo) + '" aria-label="Título de sesión">' +
+      '<input id="personalEditObjective" class="personalField" maxlength="240" value="' + personalEscape(session.rutinaSnapshot.objetivo) + '" aria-label="Objetivo">' +
+      exerciseRows + '<div class="personalGrid"><button id="personalSaveExercises" class="personalBtn secondary" type="button">GUARDAR CAMBIOS</button>' +
+      '<button id="personalAddActiveExercise" class="personalBtn secondary" type="button">+ EJERCICIO</button></div>' + setRows +
+      '<button id="personalFinish" class="personalBtn" type="button">FINALIZAR SESIÓN</button></div>';
+    personalActive.querySelectorAll('[data-log-ex]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var row = button.parentNode;
+        var rep = row.querySelector('[data-log-reps]').value;
+        var seconds = row.querySelector('[data-log-time]').value;
+        if (!rep && !seconds) { personalStatus.innerHTML = 'Registra repeticiones o segundos antes de guardar.'; return; }
+        personalRequest('POST', '/api/personalizados', {
+          action: 'registrar_serie', alumnoId: personalSelectedAlumno(), sesionId: session.id,
+          serie: { ejercicioId: button.getAttribute('data-log-ex'), numeroSerie: Number(button.getAttribute('data-log-next')),
+            repeticiones: rep ? Number(rep) : null, tiempoSegundos: seconds ? Number(seconds) : null,
+            pesoLastreKg: Number(row.querySelector('[data-log-load]').value || 0),
+            observacion: row.querySelector('[data-log-observation]').value }
+        }, function (status, data) {
+          if (status !== 200 || !data.ok) { personalStatus.innerHTML = personalEscape(data.error || 'No se pudo guardar la serie.'); return; }
+          cargarPersonalHistorial();
+        });
+      }, false);
+    });
+    document.getElementById('personalSaveExercises').addEventListener('click', function () {
+      var exercises = personalExercisesFromRows(personalActive, 'edit');
+      if (!exercises.length) { personalStatus.innerHTML = 'La sesión debe conservar al menos un ejercicio.'; return; }
+      personalRequest('POST', '/api/personalizados', {
+        action: 'editar_ejercicios_sesion', alumnoId: personalSelectedAlumno(), sesionId: session.id,
+        titulo: document.getElementById('personalEditTitle').value,
+        objetivo: document.getElementById('personalEditObjective').value, ejercicios: exercises
+      }, function (status, data) {
+        if (status !== 200 || !data.ok) { personalStatus.innerHTML = personalEscape(data.error || 'No se pudieron guardar los cambios.'); return; }
+        personalStatus.innerHTML = 'Cambios guardados en el historial compartido.'; cargarPersonalHistorial();
+      });
+    }, false);
+    document.getElementById('personalAddActiveExercise').addEventListener('click', function () {
+      var name = prompt('Nombre del nuevo ejercicio');
+      if (!name) { return; }
+      var next = (session.rutinaSnapshot.ejercicios || []).slice();
+      next.push({ ejercicioId: 'custom_' + Date.now(), nombre: name, bloque: 'superset', series: 3,
+        repeticiones: 8, segundos: null, lastreKg: 0, descansoSegundos: 60, esSuperset: false,
+        condicionVariante: 'libre_estricto', notasTecnicas: '' });
+      personalRequest('POST', '/api/personalizados', {
+        action: 'editar_ejercicios_sesion', alumnoId: personalSelectedAlumno(), sesionId: session.id,
+        ejercicios: next
+      }, function (status, data) {
+        if (status !== 200 || !data.ok) { personalStatus.innerHTML = personalEscape(data.error || 'No se pudo añadir el ejercicio.'); return; }
+        cargarPersonalHistorial();
+      });
+    }, false);
+    document.getElementById('personalFinish').addEventListener('click', function () {
+      if (!window.confirm('¿Finalizar esta sesión? Los ejercicios registrados quedarán en el historial.')) { return; }
+      personalRequest('POST', '/api/personalizados', {
+        action: 'finalizar_sesion', alumnoId: personalSelectedAlumno(), sesionId: session.id,
+        rpeGlobal: 6, energiaPost: 3, sensacionGeneral: 'Sesión personalizada'
+      }, function (status, data) {
+        if (status !== 200 || !data.ok) { personalStatus.innerHTML = personalEscape(data.error || 'No se pudo cerrar la sesión.'); return; }
+        cargarPersonalHistorial();
+      });
+    }, false);
+  }
+  function renderPersonalHistory() {
+    var sessions = (personalHistoryData && personalHistoryData.sesiones) || [];
+    if (!sessions.length) { personalHistory.innerHTML = 'No hay sesiones guardadas para este alumno.'; return; }
+    personalHistory.innerHTML = sessions.map(function (session) {
+      var exercises = (session.rutinaSnapshot.ejercicios || []).map(function (exercise) { return exercise.nombre; }).join(', ');
+      var sets = (session.series || []).map(function (set) {
+        return personalEscape(set.ejercicioNombre) + ': ' + personalEscape(set.repeticiones || (set.tiempoSegundos + 's')) +
+          (set.pesoLastreKg ? ' · ' + personalEscape(set.pesoLastreKg) + 'kg' : '');
+      }).join(' · ');
+      var button = session.estado === 'completada' && !personalSession
+        ? '<button class="personalBtn secondary" type="button" data-repeat="' + personalEscape(session.rutinaId) + '">USAR ESTA RUTINA</button>' : '';
+      return '<div class="personalRow"><strong>' + personalEscape(session.fecha) + ' · ' + personalEscape(session.rutinaSnapshot.titulo) + '</strong>' +
+        '<div class="personalMuted">' + personalEscape(session.estado) + ' · ' + personalEscape(exercises || 'Sin ejercicios') + '</div>' +
+        '<div class="personalMuted">' + personalEscape(sets || 'Sin series registradas') + '</div>' + button + '</div>';
+    }).join('');
+    personalHistory.querySelectorAll('[data-repeat]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        personalRequest('POST', '/api/personalizados', {
+          action: 'iniciar_rutina', alumnoId: personalSelectedAlumno(), rutinaId: button.getAttribute('data-repeat')
+        }, function (status, data) {
+          if (status !== 200 || !data.ok) { personalStatus.innerHTML = personalEscape(data.error || 'No se pudo recuperar la rutina.'); return; }
+          cargarPersonalHistorial();
+        });
+      }, false);
+    });
+  }
+  function agregarEjercicioNuevo() {
+    personalExerciseCount++;
+    var row = document.createElement('div');
+    row.className = 'personalExerciseRow create-exercise-row';
+    row.innerHTML = '<input class="personalField" data-ex-name placeholder="Ejercicio">' +
+      '<input class="personalField" data-ex-sets type="number" min="1" max="20" value="3" aria-label="Series">' +
+      '<input class="personalField" data-ex-reps type="number" min="1" max="200" value="8" placeholder="Reps">' +
+      '<input class="personalField" data-ex-time type="number" min="1" max="3600" placeholder="Segundos">' +
+      '<input class="personalField" data-ex-load type="number" min="0" step="0.5" value="0" placeholder="Carga kg">';
+    personalNewExercises.appendChild(row);
+  }
+  var personalLoginBtn = document.getElementById('personalLogin');
+  if (personalLoginBtn) { personalLoginBtn.addEventListener('click', function () { window.location.href = '/oficina'; }, false); }
+  if (personalAlumno) { personalAlumno.addEventListener('change', cargarPersonalHistorial, false); }
+  if (document.getElementById('personalRefresh')) { document.getElementById('personalRefresh').addEventListener('click', cargarPersonalHistorial, false); }
+  if (document.getElementById('personalAddExercise')) {
+    document.getElementById('personalAddExercise').addEventListener('click', agregarEjercicioNuevo, false);
+    agregarEjercicioNuevo();
+  }
+  if (document.getElementById('personalStart')) {
+    document.getElementById('personalStart').addEventListener('click', function () {
+      var exercises = personalExercisesFromRows(personalNewExercises, 'create');
+      var title = document.getElementById('personalTitleInput').value.replace(/^\s+|\s+$/g, '');
+      var objective = document.getElementById('personalObjectiveInput').value.replace(/^\s+|\s+$/g, '');
+      if (!personalSelectedAlumno() || !title || !objective || !exercises.length) {
+        personalStatus.innerHTML = 'Selecciona alumno y completa nombre, objetivo y al menos un ejercicio.'; return;
+      }
+      personalRequest('POST', '/api/personalizados', {
+        action: 'crear_y_iniciar', alumnoId: personalSelectedAlumno(), titulo: title, objetivo: objective, ejercicios: exercises
+      }, function (status, data) {
+        if ((status !== 201 && status !== 200) || !data.ok) { personalStatus.innerHTML = personalEscape(data.error || 'No se pudo crear la sesión.'); return; }
+        document.getElementById('personalTitleInput').value = '';
+        document.getElementById('personalObjectiveInput').value = '';
+        personalNewExercises.innerHTML = ''; personalExerciseCount = 0; agregarEjercicioNuevo();
+        personalStatus.innerHTML = data.recuperada ? 'Se recuperó la sesión abierta; no se creó una rutina duplicada.' : 'Sesión guardada en Ironcross.';
+        cargarPersonalHistorial();
+      });
     }, false);
   }
 
