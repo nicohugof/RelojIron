@@ -449,6 +449,18 @@ def leer_oficina():
     return body
 
 
+def leer_reloj_estado():
+    """Consulta el estado del reloj sincronizado desde ironcross-dashboard."""
+    _, body = panel_request('GET', '/api/reloj/estado')
+    return body
+
+
+def enviar_reloj_comando(data_dict):
+    """Envía un comando de control de reloj (iniciar/pausar/reanudar/reiniciar/configurar) a ironcross-dashboard."""
+    _, body = panel_request('POST', '/api/reloj/estado', json_body=data_dict)
+    return body
+
+
 def normalizar_horario(valor):
     """AM/PM (también am/pm). Vacío → None. Cualquier otra cosa es inválido."""
     if valor is None:
@@ -785,6 +797,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Expires', '0')
             self.end_headers()
             self.wfile.write(body)
+        elif parsed.path == '/api/reloj/estado':
+            try:
+                body = leer_reloj_estado().encode('utf-8')
+            except PanelError as exc:
+                self.send_response(exc.status)
+                self.end_headers()
+                return
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
+            self.end_headers()
+            self.wfile.write(body)
         else:
             super().do_GET()
 
@@ -1034,6 +1061,36 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     body = resp.read()
             except Exception as e:
                 body = json.dumps({"status": "error", "error": str(e)}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.end_headers()
+            self.wfile.write(body)
+        elif parsed.path == '/api/reloj/estado':
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8', errors='ignore')
+            data = None
+            if raw.strip().startswith('{'):
+                try:
+                    data = json.loads(raw)
+                except Exception:
+                    pass
+            if not data:
+                qs = urllib.parse.parse_qs(raw)
+                data = {k: v[0] for k, v in qs.items()}
+                if 'initialSec' in data:
+                    try:
+                        data['initialSec'] = int(data['initialSec'])
+                    except (ValueError, TypeError):
+                        pass
+
+            try:
+                body = enviar_reloj_comando(data).encode('utf-8')
+            except PanelError as exc:
+                self.send_response(exc.status)
+                self.end_headers()
+                return
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('Content-Length', str(len(body)))
