@@ -129,18 +129,19 @@
     letter-spacing: 10px;
     margin-top: 30px;
     text-transform: uppercase;
+    background: -webkit-linear-gradient(105deg, #8B2211 0%, #C23B22 38%, #FFD0C6 50%, #C23B22 62%, #8B2211 100%);
+    background: linear-gradient(105deg, #8B2211 0%, #C23B22 38%, #FFD0C6 50%, #C23B22 62%, #8B2211 100%);
+    background-size: 220% 100%;
+    -webkit-background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: ironcrossLogoSweep 9s linear infinite;
+    animation: ironcrossLogoSweep 9s linear infinite;
   }
-  @supports (-webkit-background-clip: text) {
-    #brand {
-      background: linear-gradient(105deg, #8B2211 0%, #C23B22 38%, #FFD0C6 50%, #C23B22 62%, #8B2211 100%);
-      background-size: 220% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: ironcrossLogoSweep 9s linear infinite;
-    }
-  }
+  @-webkit-keyframes ironcrossLogoSweep { from { background-position: 100% 0; } to { background-position: -120% 0; } }
   @keyframes ironcrossLogoSweep { from { background-position: 100% 0; } to { background-position: -120% 0; } }
-  @media (prefers-reduced-motion: reduce) { #brand { animation: none !important; } }
+  @media (prefers-reduced-motion: reduce) { #brand { -webkit-animation: none !important; animation: none !important; } }
 
   /* tab bar */
   #tabBar {
@@ -1714,7 +1715,6 @@
   <div id="topBrand">IRONCROSS · OS</div>
   <div id="topClock">--:--:--</div>
   <div id="topRight">
-    <a href="/oficina" class="topBtn" style="color:#10B981;border-color:#059669;text-decoration:none;">🏛️ OFICINA</a>
     <div id="topRefreshBtn" class="topBtn">ACTUALIZAR</div>
     <div id="topLockBtn" class="topBtn">BLOQUEAR</div>
   </div>
