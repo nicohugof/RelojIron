@@ -306,7 +306,8 @@
     top: 207px;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 56px;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   }
   #rutinaCalcPane {
     overflow-y: auto;
@@ -329,26 +330,33 @@
   }
   #rutinaBtnRow {
     position: absolute;
-    left: 16px;
-    right: 16px;
+    left: 12px;
+    right: 12px;
     bottom: 10px;
     height: 44px;
+    display: flex;
+    gap: 6px;
   }
   .rutinaBtn {
-    display: inline-block;
-    width: 23%;
+    flex: 1 1 0;
+    min-width: 0;
     height: 44px;
     line-height: 44px;
     text-align: center;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 1px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 4px;
+    border-radius: 4px;
   }
-  #rutinaCopyBtn { background: #2A2A26; margin-right: 2%; }
-  #rutinaDictarBtn { background: #3B3830; margin-right: 2%; }
+  #rutinaCopyBtn { background: #2A2A26; }
+  #rutinaDictarBtn { background: #3B3830; }
   #rutinaDictarBtn.grabando {
     background: #C23B22;
     color: #FFFFFF;
@@ -358,8 +366,8 @@
     from { opacity: 1; }
     to { opacity: 0.6; }
   }
-  #rutinaIronbotBtn { background: #8B2211; margin-right: 2%; }
-  #rutinaSaveBtn { background: #C23B22; width: 25%; }
+  #rutinaIronbotBtn { background: #8B2211; }
+  #rutinaSaveBtn { background: #C23B22; }
   #rutinaStatus {
     position: absolute;
     left: 16px;
@@ -371,6 +379,9 @@
     font-family: Helvetica, Arial, sans-serif;
     font-size: 12px;
     letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
 
