@@ -2101,7 +2101,7 @@
           <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
         </div>
       </div>
-      <input type="text" id="hoySearch" placeholder="Buscar alumno para registrar asistencia" autocomplete="off">
+      <input type="text" id="hoySearch" placeholder="🔍 Buscar alumno en el padrón para agregar a la clase..." autocomplete="off">
       <div id="hoyCounts"></div>
       <div id="hoyMain">
         <div id="hoyListWrap">
@@ -3255,10 +3255,12 @@
     var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
     if (q) {
       var matches = 0;
-      for (var i = 0; i < hoyFilas.length; i++) { if (hoyFilas[i].kind === 'R' && hoyDoblar(hoyFilas[i].nombre).indexOf(q) !== -1) { matches++; } }
+      for (var i = 0; i < hoyFilas.length; i++) {
+        if (hoyDoblar(hoyFilas[i].nombre).indexOf(q) !== -1) { matches++; }
+      }
       countBox('sin', 'PADRÓN', matches);
     } else {
-      countBox('si', 'CONFIRMADOS', hoyConfirmados);
+      countBox('si', 'VIENEN A CLASE', hoyConfirmados);
       if (hoySinIdentidad) { countBox('sin', 'SIN VINCULAR', hoySinIdentidad); }
     }
   }
@@ -3301,29 +3303,45 @@
     var vistos = 0;
     for (i = 0; i < hoyFilas.length; i++) {
       var fila = hoyFilas[i];
-      if (fila.kind !== 'R') { continue; }
+      if (fila.kind !== 'R' && fila.kind !== 'U') { continue; }
       var encuesta = fila.resp === 'si' && hoyEsEncuesta(fila.origen);
-      if (q && hoyDoblar(fila.nombre).indexOf(q) === -1) { continue; }
-      vistos += 1;
-      if (fila.letra !== ultima) {
-        ultima = fila.letra;
-        if (ultima !== '#') {
-          activas[ultima] = true;
-        }
-        var sec = document.createElement('div');
-        sec.className = 'hoySec';
-        sec.id = 'hoySec-' + ultima;
-        hoyTextoNodo(sec, ultima === '#' ? '#' : ultima);
-        hoyList.appendChild(sec);
+
+      // Si no hay búsqueda: mostrar ÚNICAMENTE a los que vienen a la clase (resp === 'si')
+      if (!q && fila.resp !== 'si') {
+        continue;
       }
-      hoyPintarFilaR(fila.parts, encuesta);
+      // Si hay búsqueda: filtrar en todo el padrón de alumnos
+      if (q && hoyDoblar(fila.nombre).indexOf(q) === -1) {
+        continue;
+      }
+
+      vistos += 1;
+      if (fila.kind === 'R') {
+        if (fila.letra !== ultima) {
+          ultima = fila.letra;
+          if (ultima !== '#') {
+            activas[ultima] = true;
+          }
+          var sec = document.createElement('div');
+          sec.className = 'hoySec';
+          sec.id = 'hoySec-' + ultima;
+          hoyTextoNodo(sec, ultima === '#' ? '#' : ultima);
+          hoyList.appendChild(sec);
+        }
+        hoyPintarFilaR(fila.parts, encuesta);
+      } else if (fila.kind === 'U') {
+        hoyPintarFilaU(fila.parts);
+      }
     }
     hoyPintarLetras(activas);
     if (!vistos) {
-      if (q) { hoySetStatus('No se encontraron alumnos del padrón'); }
-      else { hoySetStatus('No hay alumnos para mostrar.'); }
+      if (q) {
+        hoySetStatus('No se encontró a "' + hoySearch.value + '" en el padrón.');
+      } else {
+        hoySetStatus('No hay alumnos confirmados para esta jornada. Usa el buscador de arriba para agregar a un alumno.');
+      }
     } else if (q) {
-      hoySetStatus('Resultados del padrón (' + vistos + ' alumnos).');
+      hoySetStatus('Resultados de búsqueda en padrón (' + vistos + ' alumnos). Toca PRESENTE para marcar asistencia.');
     } else {
       hoySetStatus(hoyConfirmados ? (hoyConfirmados + ' confirmaron por WhatsApp · Toca PRESENTE para marcar asistencia.') : 'Toca PRESENTE o AUSENTE para marcar asistencia.');
     }
@@ -3388,6 +3406,7 @@
         } else if (parts[0] === 'U' && parts.length >= 2) {
           var respuestaU = parts[2] || '';
           if (respuestaU === 'si' || respuestaU === 'no') { hayRespuesta = true; sinIdentidad++; }
+          filas.push({ kind: 'U', parts: parts, nombre: parts[1] || '', resp: respuestaU, origen: parts[3] || '', letra: hoyLetraDeNombre(parts[1] || '') });
         }
       }
       filas.sort(function (a, b) {
@@ -3402,7 +3421,11 @@
       hoySinIdentidad = sinIdentidad;
       hoyHayRespuesta = hayRespuesta;
       hoyConfirmados = 0;
-      for (var c = 0; c < filas.length; c++) { if (filas[c].resp === 'si' && hoyEsEncuesta(filas[c].origen)) { hoyConfirmados++; } }
+      for (var c = 0; c < filas.length; c++) {
+        if (filas[c].resp === 'si') {
+          hoyConfirmados++;
+        }
+      }
       hoyPintarLista();
     };
     xhr.send(null);
