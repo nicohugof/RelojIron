@@ -38,7 +38,7 @@
   }
   #topBrand {
     display: table-cell;
-    width: 190px;
+    width: 170px;
     vertical-align: middle;
     padding-left: 14px;
     color: #C23B22;
@@ -54,13 +54,13 @@
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 32px;
     letter-spacing: 2px;
     cursor: pointer;
   }
   #topRight {
     display: table-cell;
-    width: 260px;
+    width: 170px;
     text-align: right;
     vertical-align: middle;
     padding-right: 14px;
@@ -188,7 +188,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 155px;
+    height: 174px;
     padding: 10px 16px 0 16px;
   }
   #rutinaTitle {
@@ -207,7 +207,7 @@
   #rutinaWeekLabel { font-size: 12px; letter-spacing: 1px; }
   #rutinaWeekPrev, #rutinaWeekNext, #rutinaCalendarOpen { width: 40px; font-size: 20px; color: #F0C36D !important; }
   #rutinaWeekDays { display: table; width: 100%; table-layout: fixed; margin-top: 3px; }
-  .rutinaWeekDay { display: table-cell; height: 30px; text-align: center; vertical-align: middle; color: #B8B3A8; background: #141412; border: 1px solid #222; font-size: 11px; font-weight: bold; }
+  .rutinaWeekDay { display: table-cell; height: 34px; line-height: 34px; text-align: center; vertical-align: middle; color: #B8B3A8; background: #141412; border: 1px solid #222; font-size: 11px; font-weight: bold; padding: 0 2px; }
   .rutinaWeekDay.active { color: #FFF; background: #C23B22; }
   .rutinaWeekDay.hasRoutine:after { content: ' •'; color: #F0C36D; }
   #rutinaCalendar { position: absolute; display: none; top: 116px; left: 12px; right: 12px; z-index: 60; padding: 8px; background: #141412; border: 1px solid #4A473F; box-shadow: 0 4px 14px #000; }
@@ -232,16 +232,17 @@
   }
   .rutinaJornadaBtn {
     display: table-cell;
-    height: 42px;
-    line-height: 18px;
+    height: 52px;
+    line-height: 52px;
     text-align: center;
+    vertical-align: middle;
     background: #141412;
     color: #7A7568;
     border: 1px solid #2A2A26;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 14px;
-    letter-spacing: 1px;
+    font-size: 24px;
+    letter-spacing: 2px;
     cursor: pointer;
   }
   .rutinaJornadaBtn.active {
@@ -274,7 +275,7 @@
   }
   #rutinaSubBar {
     position: absolute;
-    top: 155px;
+    top: 174px;
     left: 0;
     right: 0;
     height: 52px;
@@ -304,7 +305,7 @@
   }
   #rutinaBody, #rutinaCalcPane {
     position: absolute;
-    top: 207px;
+    top: 226px;
     left: 0;
     right: 0;
     bottom: 56px;
@@ -335,19 +336,22 @@
     right: 12px;
     bottom: 10px;
     height: 44px;
-    display: flex;
-    gap: 6px;
+    display: table;
+    width: calc(100% - 24px);
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 6px 0;
   }
   .rutinaBtn {
-    flex: 1 1 0;
-    min-width: 0;
+    display: table-cell;
     height: 44px;
     line-height: 44px;
     text-align: center;
+    vertical-align: middle;
     color: #EDE9DF;
     font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 0.5px;
     cursor: pointer;
     white-space: nowrap;
@@ -1692,7 +1696,7 @@
     cursor: pointer;
   }
 
-  #personalizadosView { position:absolute; inset:0; overflow:auto; padding:12px; background:#11110F; color:#EDE9DF; font-family:Helvetica,Arial,sans-serif; }
+  #personalizadosView { position:absolute; top:0; left:0; right:0; bottom:56px; bottom:calc(56px + env(safe-area-inset-bottom, 0px)); overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 16px 80px 16px; background:#11110F; color:#EDE9DF; font-family:Helvetica,Arial,sans-serif; }
   .personalTitle { font-size:22px; font-weight:bold; letter-spacing:.4px; color:#F0C36D; margin:4px 0 12px; }
   .personalStatus { min-height:24px; color:#F0C36D; font-size:14px; padding:4px 0; }
   .personalMuted { color:#B8B3A8; font-size:14px; line-height:1.45; }
@@ -1714,10 +1718,7 @@
 <div id="topBar">
   <div id="topBrand">IRONCROSS · OS</div>
   <div id="topClock">--:--:--</div>
-  <div id="topRight">
-    <div id="topRefreshBtn" class="topBtn">ACTUALIZAR</div>
-    <div id="topLockBtn" class="topBtn">BLOQUEAR</div>
-  </div>
+  <div id="topRight"></div>
 </div>
 
 <div id="loginOverlay" style="display:none;">
@@ -2050,14 +2051,14 @@
 <div id="tabBar">
   <div id="tabRutina" class="tab active">RUTINA</div>
   <div id="tabClock" class="tab">RELOJ</div>
-  <div id="tabStopwatch" class="tab">TIMERS</div>
-  <div id="tabPersonalizados" class="tab">PERSONAL</div>
+  <div id="tabStopwatch" class="tab">TEMPORIZADOR</div>
+  <div id="tabPersonalizados" class="tab">PERSONALIZADO</div>
   <div id="tabHoy" class="tab">ASISTENCIA</div>
   <div id="tabDashboard" class="tab">PANEL</div>
   <div id="tabAlumnos" class="tab">ALUMNOS</div>
   <div id="tabPagos" class="tab">PAGOS</div>
-  <div id="tabAsistente" class="tab" style="font-weight:bold;color:#3CD070;">🏛️ OFICINA</div>
-  <div id="tabRemoto" class="tab" style="font-weight:bold;color:#38BDF8;">⚡ AGY</div>
+  <div id="tabAsistente" class="tab" style="display:none !important;">🏛️ OFICINA</div>
+  <div id="tabRemoto" class="tab" style="display:none !important;">⚡ AGY</div>
 </div>
 
 <script type="text/javascript">
@@ -2984,20 +2985,19 @@
     var meta = document.createElement('div');
     meta.className = 'hoyMeta';
     var detalle = confirmado
-      ? 'CONFIRMÓ · ' + (origen || 'encuesta') + ' · no marca asistencia efectiva'
-      : (origen ? 'RESPUESTA: ' + hoyEtiqueta(resp) + ' · ' + origen : 'Padrón canónico · registrar solo al confirmar asistencia');
+      ? 'CONFIRMÓ WHATSAPP · ' + (origen || 'encuesta')
+      : (origen ? 'RESPUESTA: ' + hoyEtiqueta(resp) + ' · ' + origen : 'Padrón canónico');
     hoyTextoNodo(meta, detalle);
     nameCol.appendChild(name);
     nameCol.appendChild(meta);
     row.appendChild(nameCol);
 
-    if (confirmado) { hoyList.appendChild(row); return; }
     var btns = document.createElement('div');
     btns.className = 'hoyBtns';
     var inner = document.createElement('div');
     inner.className = 'hoyBtnsInner';
-    inner.appendChild(hoyBoton('PRESENTE', 'si', false, alumnoId, 'si'));
-    inner.appendChild(hoyBoton('AUSENTE', 'no', false, alumnoId, 'no'));
+    inner.appendChild(hoyBoton('PRESENTE', 'si', resp === 'si', alumnoId, 'si'));
+    inner.appendChild(hoyBoton('AUSENTE', 'no', resp === 'no', alumnoId, 'no'));
     inner.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
     btns.appendChild(inner);
     row.appendChild(btns);
@@ -3086,7 +3086,6 @@
       var fila = hoyFilas[i];
       if (fila.kind !== 'R') { continue; }
       var encuesta = fila.resp === 'si' && hoyEsEncuesta(fila.origen);
-      if (!q && !encuesta) { continue; }
       if (q && hoyDoblar(fila.nombre).indexOf(q) === -1) { continue; }
       vistos += 1;
       if (fila.letra !== ultima) {
@@ -3100,20 +3099,16 @@
         hoyTextoNodo(sec, ultima === '#' ? '#' : ultima);
         hoyList.appendChild(sec);
       }
-      if (fila.kind === 'R') {
-        hoyPintarFilaR(fila.parts, !q && encuesta);
-      }
+      hoyPintarFilaR(fila.parts, encuesta);
     }
     hoyPintarLetras(activas);
     if (!vistos) {
       if (q) { hoySetStatus('No se encontraron alumnos del padrón'); }
-      else if (hoySinIdentidad) { hoySetStatus(hoySinIdentidad + ' respuesta(s) no se pueden vincular con seguridad. Busca un alumno para registrar asistencia manual.'); }
-      else if (!hoyHayRespuesta) { hoySetStatus('La API no devolvió respuestas para esta jornada; el estado de conexión de WhatsApp no está disponible.'); }
-      else { hoySetStatus('No hay confirmaciones vinculadas para esta jornada. Busca un alumno para registrar asistencia manual.'); }
+      else { hoySetStatus('No hay alumnos para mostrar.'); }
     } else if (q) {
-      hoySetStatus('Resultados del padrón. Registrar asistencia requiere una acción manual.');
+      hoySetStatus('Resultados del padrón (' + vistos + ' alumnos).');
     } else {
-      hoySetStatus('Confirmaciones de encuesta · no equivalen a asistencia efectiva.');
+      hoySetStatus(hoyConfirmados ? (hoyConfirmados + ' confirmaron por WhatsApp · Toca PRESENTE para marcar asistencia.') : 'Toca PRESENTE o AUSENTE para marcar asistencia.');
     }
   }
 
@@ -3356,14 +3351,14 @@
     var fin = new Date(rutinaWeekStart.getFullYear(), rutinaWeekStart.getMonth(), rutinaWeekStart.getDate() + 6);
     rutinaWeekLabel.innerHTML = rutinaWeekStart.getDate() + '/' + pad(rutinaWeekStart.getMonth() + 1) + ' — ' + fin.getDate() + '/' + pad(fin.getMonth() + 1);
     rutinaWeekDays.innerHTML = '';
-    var labels = ['D','L','M','M','J','V','S'];
+    var nombresDias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     var days = diasDeSemana(rutinaWeekStart);
     for (var i = 0; i < days.length; i++) {
       (function (date) {
         var iso = fechaAISO(date);
         var btn = document.createElement('div');
         btn.className = 'rutinaWeekDay' + (iso === fechaSeleccionada ? ' active' : '') + (diasGuardadosCache.indexOf(iso) !== -1 ? ' hasRoutine' : '');
-        btn.appendChild(document.createTextNode(labels[date.getDay()] + ' ' + date.getDate()));
+        btn.appendChild(document.createTextNode(nombresDias[date.getDay()] + ' ' + date.getDate()));
         btn.addEventListener('click', function () { seleccionarDia(iso); }, false);
         rutinaWeekDays.appendChild(btn);
       })(days[i]);
