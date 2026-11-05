@@ -167,13 +167,14 @@ def obtener_antigravity_status():
 # Candado de la pestaña OFICINA (2026-09-06): esa pestaña mostraba nombres de
 # alumnos, deuda y estado de pago a cualquiera en internet, sin pedir nada.
 # Pantalla propia de una sola clave (sin usuario) + sesión recordada por
-# cookie, para no escribirla varias veces por día en la tablet del gym. La
+# cookie HttpOnly, para no escribirla varias veces por día en la tablet del gym. La
 # verificación es siempre acá, del lado del servidor — el HTML nunca sabe
 # la clave real.
-OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD') or os.environ.get('CHAT_PASSWORD', '2799706')
-OFICINA_SESSION_SECRET = os.environ.get('OFICINA_SESSION_SECRET') or os.environ.get('CHAT_SESSION_SECRET') or 'ironcross-oficina-secret-2799706'
+DASHBOARD_PASSWORD = os.environ.get('DASHBOARD_PASSWORD', '')
+OFICINA_PASSWORD = os.environ.get('OFICINA_PASSWORD') or DASHBOARD_PASSWORD or os.environ.get('CHAT_PASSWORD', '2799706')
+OFICINA_SESSION_SECRET = os.environ.get('OFICINA_SESSION_SECRET') or os.environ.get('SESSION_SECRET') or os.environ.get('CHAT_SESSION_SECRET') or 'ironcross-oficina-secret-2799706'
 OFICINA_COOKIE = 'oficina_session'
-OFICINA_SESION_SEGUNDOS = 60 * 60 * 24 * 180  # 180 dias
+OFICINA_SESION_SEGUNDOS = int(os.environ.get('OFICINA_SESION_SEGUNDOS', 60 * 60 * 8))  # 8 horas por turno
 
 # Candado específico de la pestaña ASISTENTE (Chat con Nicola OS)
 CHAT_PASSWORD = os.environ.get('CHAT_PASSWORD', '2799706')
@@ -447,6 +448,17 @@ def leer_oficina():
     """Texto para la pestaña GYM del iPad. Mismo formato de antes, ahora vía panel."""
     _, body = panel_request('GET', '/api/oficina')
     return body
+
+
+def leer_cobranzas(hoy_param=None):
+    """Consulta el módulo canónico Glenn Cobranzas en ironcross-dashboard."""
+    params = {'hoy': hoy_param} if hoy_param else None
+    return panel_request('GET', '/api/cobranzas', params=params)
+
+
+def guardar_compromiso_cobranza(data_dict):
+    """Registra una promesa o acuerdo de cobranza en ironcross-dashboard."""
+    return panel_request('POST', '/api/cobranzas', json_body=data_dict)
 
 
 def leer_reloj_estado():
@@ -745,6 +757,34 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 _responder_json(self, status, {'ok': False, 'error': _personal_error_message(status)})
             except (ValueError, TypeError):
                 _responder_json(self, 502, {'ok': False, 'error': 'Respuesta inválida del panel.'})
+        elif parsed.path == '/api/oficina-check':
+            autenticado = self._oficina_sesion_valida()
+            body = json.dumps({'autenticado': autenticado, 'dashboard_url': PANEL_API_URL + '/cobranzas'}).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            self.end_headers()
+            self.wfile.write(body)
+        elif parsed.path == '/api/cobranzas':
+            if not self._oficina_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
+                return
+            try:
+                hoy_p = qs.get('hoy', [None])[0]
+                status_code, body = leer_cobranzas(hoy_p)
+                body_bytes = body.encode('utf-8')
+                self.send_response(status_code)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(body_bytes)))
+                self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+                self.end_headers()
+                self.wfile.write(body_bytes)
+            except PanelError as e:
+                self.send_response(e.status)
+                self.end_headers()
+                return
         elif parsed.path == '/api/hoy':
             if not self._oficina_sesion_valida():
                 self.send_response(401)
@@ -855,37 +895,82 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path == '/api/oficina-login':
             length = int(self.headers.get('Content-Length', 0))
             raw = self.rfile.read(length).decode('utf-8')
-            data = urllib.parse.parse_qs(raw)
-            password = data.get('password', [''])[0]
+            password = ''
+            if raw.strip().startswith('{'):
+                try:
+                    js = json.loads(raw)
+                    password = js.get('password', '')
+                except Exception:
+                    password = ''
+            if not password:
+                data = urllib.parse.parse_qs(raw)
+                password = data.get('password', [''])[0]
+
             es_valido_oficina = bool(OFICINA_PASSWORD and hmac.compare_digest(password, OFICINA_PASSWORD))
             es_valido_chat = bool(CHAT_PASSWORD and hmac.compare_digest(password, CHAT_PASSWORD))
-            if es_valido_oficina or es_valido_chat:
+            es_valido_dash = bool(DASHBOARD_PASSWORD and hmac.compare_digest(password, DASHBOARD_PASSWORD))
+
+            if es_valido_oficina or es_valido_chat or es_valido_dash:
                 self.send_response(200)
                 token_oficina = crear_token_oficina()
-                cookie_oficina = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                cookie_oficina = '{}={}; Max-Age={}; Path=/; SameSite=Lax; HttpOnly'.format(
                     OFICINA_COOKIE, token_oficina, OFICINA_SESION_SEGUNDOS
                 )
                 self.send_header('Set-Cookie', cookie_oficina)
                 token_chat = crear_token_chat()
-                cookie_chat = '{}={}; Max-Age={}; Path=/; SameSite=Lax'.format(
+                cookie_chat = '{}={}; Max-Age={}; Path=/; SameSite=Lax; HttpOnly'.format(
                     CHAT_COOKIE, token_chat, CHAT_SESION_SEGUNDOS
                 )
                 self.send_header('Set-Cookie', cookie_chat)
-                self.send_header('Content-Length', '2')
+                es_json_req = 'application/json' in (self.headers.get('Content-Type', '') + self.headers.get('Accept', ''))
+                if es_json_req:
+                    resp_data = json.dumps({'ok': True, 'dashboard_url': PANEL_API_URL + '/cobranzas'}).encode('utf-8')
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                else:
+                    resp_data = b'ok'
+                    self.send_header('Content-Type', 'text/plain; charset=utf-8')
+                self.send_header('Content-Length', str(len(resp_data)))
                 self.end_headers()
-                self.wfile.write(b'ok')
+                self.wfile.write(resp_data)
             else:
                 self.send_response(401)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                resp_err = b'{"ok":false,"error":"Clave administrativa incorrecta"}'
+                self.send_header('Content-Length', str(len(resp_err)))
                 self.end_headers()
+                self.wfile.write(resp_err)
         elif parsed.path == '/api/oficina-logout':
             self.send_response(200)
-            cookie_oficina = '{}=; Max-Age=0; Path=/; SameSite=Lax'.format(OFICINA_COOKIE)
-            cookie_chat = '{}=; Max-Age=0; Path=/; SameSite=Lax'.format(CHAT_COOKIE)
+            cookie_oficina = '{}=; Max-Age=0; Path=/; SameSite=Lax; HttpOnly'.format(OFICINA_COOKIE)
+            cookie_chat = '{}=; Max-Age=0; Path=/; SameSite=Lax; HttpOnly'.format(CHAT_COOKIE)
             self.send_header('Set-Cookie', cookie_oficina)
             self.send_header('Set-Cookie', cookie_chat)
-            self.send_header('Content-Length', '2')
+            resp = b'{"ok":true}'
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(resp)))
             self.end_headers()
-            self.wfile.write(b'ok')
+            self.wfile.write(resp)
+        elif parsed.path == '/api/cobranzas':
+            if not self._oficina_sesion_valida():
+                self.send_response(401)
+                self.end_headers()
+                return
+            length = int(self.headers.get('Content-Length', 0))
+            raw = self.rfile.read(length).decode('utf-8')
+            try:
+                payload = json.loads(raw)
+                status_code, body = guardar_compromiso_cobranza(payload)
+                body_bytes = body.encode('utf-8')
+                self.send_response(status_code)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(body_bytes)))
+                self.end_headers()
+                self.wfile.write(body_bytes)
+            except (json.JSONDecodeError, PanelError) as e:
+                status = getattr(e, 'status', 400)
+                self.send_response(status)
+                self.end_headers()
+                return
         elif parsed.path == '/api/hoy':
             if not self._oficina_sesion_valida():
                 length = int(self.headers.get('Content-Length', 0))

@@ -5,9 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="CRM Trabajos">
-  <title>Nicola OS — Tablero de Control de Trabajos (CRM)</title>
+  <title>Ironcross · Oficina & Glenn Cobranzas</title>
   <style>
+    :root {
+      --bg: #0A0D14;
+      --surface: #111726;
+      --surface-2: #1A2338;
+      --border: #232F48;
+      --primary: #A82CD0;
+      --primary-dark: #7B1FA2;
+      --text: #F1F5F9;
+      --text-muted: #94A3B8;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --info: #3B82F6;
+    }
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,910 +28,969 @@
       -webkit-tap-highlight-color: transparent;
     }
     body {
-      background-color: #0A0D14;
-      color: #F1F5F9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.4;
       padding: 12px;
       margin: 0;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    .wrapper {
-      max-width: 1280px;
+    .container {
+      max-width: 1200px;
       margin: 0 auto;
     }
 
     /* Barra Superior */
     .header-bar {
-      background-color: #111726;
-      border: 1px solid #1E293B;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px 16px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       display: flex;
-      display: -webkit-flex;
       justify-content: space-between;
-      -webkit-justify-content: space-between;
       align-items: center;
-      -webkit-align-items: center;
       flex-wrap: wrap;
       gap: 10px;
     }
-    .header-left {
-      display: flex;
-      display: -webkit-flex;
-      align-items: center;
-      -webkit-align-items: center;
-      gap: 10px;
-    }
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      background-color: #10B981;
-      box-shadow: 0 0 8px #10B981;
-      display: inline-block;
-    }
-    .main-title {
+    .header-title {
       font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.5px;
       color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .main-sub {
-      font-size: 12px;
-      color: #94A3B8;
-      display: block;
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      display: inline-block;
+      box-shadow: 0 0 6px var(--success);
     }
     .header-actions {
       display: flex;
-      display: -webkit-flex;
+      align-items: center;
       gap: 8px;
     }
-    .btn-nav {
-      background-color: #1E293B;
-      color: #E2E8F0;
-      border: 1px solid #334155;
+    .btn-action {
+      background-color: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 12px;
       border-radius: 8px;
-      padding: 8px 14px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
+      cursor: pointer;
       text-decoration: none;
-      cursor: pointer;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
     }
-    .btn-nav:hover, .btn-nav:active {
-      background-color: #2D3748;
-      color: #FFFFFF;
-      border-color: #10B981;
+    .btn-action:hover {
+      background-color: #263352;
     }
-    .btn-gym {
-      background-color: #C23B22;
-      border-color: #E24A2D;
-      color: #FFFFFF;
-      font-weight: 800;
-      box-shadow: 0 2px 8px rgba(194, 59, 34, 0.4);
+    .btn-action.primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: white;
     }
-    .btn-gym:hover, .btn-gym:active {
-      background-color: #E24A2D;
-      color: #FFFFFF;
-      border-color: #FF5E3A;
+    .btn-action.danger {
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.4);
     }
 
-    /* Toast de Notificación Visual (Explica dónde fue la tarea) */
-    #actionToast {
-      display: none;
-      background-color: #064E3B;
-      border: 1px solid #10B981;
-      color: #ECFDF5;
-      padding: 10px 14px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    /* Resumen de Métricas Rápidas */
-    .kpi-bar {
-      display: flex;
-      display: -webkit-flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .kpi-card {
-      flex: 1;
-      -webkit-flex: 1;
-      min-width: 120px;
-      background-color: #111726;
-      border: 1px solid #1E293B;
-      border-radius: 10px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    .kpi-label {
-      font-size: 11px;
-      color: #94A3B8;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-    .kpi-value {
-      font-size: 18px;
-      font-weight: 900;
-      color: #FFFFFF;
-      margin-top: 2px;
-    }
-    .kpi-curso { border-left: 4px solid #10B981; }
-    .kpi-pausa { border-left: 4px solid #F59E0B; }
-    .kpi-por-hacer { border-left: 4px solid #3B82F6; }
-    .kpi-hechas { border-left: 4px solid #8B5CF6; }
-
-    /* Barra Rápida de Creación de Trabajo */
-    .create-bar {
-      background-color: #111726;
-      border: 1px solid #1E293B;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 14px;
-      display: flex;
-      display: -webkit-flex;
-      gap: 8px;
-    }
-    .input-task {
-      flex: 1;
-      -webkit-flex: 1;
-      background-color: #0A0D14;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 9px 12px;
-      color: #FFFFFF;
-      font-size: 13px;
-      outline: none;
-    }
-    .input-task:focus {
-      border-color: #10B981;
-    }
-    .select-agent {
-      background-color: #0A0D14;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 0 10px;
-      color: #E2E8F0;
-      font-size: 12px;
-      outline: none;
-    }
-    .btn-create {
-      background-color: #10B981;
-      color: #052E16;
-      border: 0;
-      border-radius: 8px;
-      padding: 0 16px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    /* Pestañas para Móvil */
-    .mobile-tab-bar {
-      display: none;
-      gap: 4px;
-      margin-bottom: 12px;
-    }
-    .mobile-tab-btn {
-      flex: 1;
-      -webkit-flex: 1;
-      padding: 10px 4px;
-      font-size: 11px;
-      font-weight: 800;
-      background-color: #111726;
-      color: #94A3B8;
-      border: 1px solid #1E293B;
-      border-radius: 8px;
+    /* Pantalla de Login */
+    #loginView {
+      max-width: 380px;
+      margin: 60px auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
       text-align: center;
-      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
     }
-    .mobile-tab-btn.active {
-      background-color: #1E293B;
-      color: #FFFFFF;
-      border-color: #10B981;
+    .login-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
     }
-
-    /* Columnas CRM */
-    .board-grid {
-      display: flex;
-      display: -webkit-flex;
-      gap: 12px;
-      align-items: flex-start;
-      -webkit-align-items: flex-start;
-    }
-    .board-column {
-      flex: 1;
-      -webkit-flex: 1;
-      min-width: 0;
-      background-color: #0F1422;
-      border: 1px solid #1E293B;
-      border-radius: 12px;
-      padding: 12px;
-    }
-    .column-header {
-      display: flex;
-      display: -webkit-flex;
-      justify-content: space-between;
-      -webkit-justify-content: space-between;
-      align-items: center;
-      -webkit-align-items: center;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-      border-bottom: 2px solid #1E293B;
-    }
-    .col-title {
-      font-size: 12px;
+    .login-title {
+      font-size: 18px;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: flex;
-      display: -webkit-flex;
-      align-items: center;
-      -webkit-align-items: center;
-      gap: 6px;
-    }
-    .col-badge {
-      background-color: #1E293B;
-      color: #E2E8F0;
-      padding: 2px 7px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    /* Colores por columna */
-    .col-curso .column-header { border-bottom-color: #10B981; }
-    .col-curso .col-title { color: #34D399; }
-    .col-pausa .column-header { border-bottom-color: #F59E0B; }
-    .col-pausa .col-title { color: #FBBF24; }
-    .col-por-hacer .column-header { border-bottom-color: #3B82F6; }
-    .col-por-hacer .col-title { color: #60A5FA; }
-    .col-hechas .column-header { border-bottom-color: #8B5CF6; }
-    .col-hechas .col-title { color: #C4B5FD; }
-
-    /* Tarjetas de Tarea */
-    .task-card {
-      background-color: #151C2C;
-      border: 1px solid #243048;
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-    }
-    .task-title {
-      font-size: 14.5px;
-      font-weight: 700;
       color: #FFFFFF;
-      margin-bottom: 6px;
-      line-height: 1.35;
-    }
-    .task-desc {
-      font-size: 12px;
-      color: #94A3B8;
-      margin-bottom: 8px;
-      line-height: 1.4;
-    }
-
-    /* Pie de tarjeta */
-    .task-footer {
-      display: flex;
-      display: -webkit-flex;
-      justify-content: space-between;
-      -webkit-justify-content: space-between;
-      align-items: center;
-      -webkit-align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding-top: 8px;
-      border-top: 1px solid #1F293D;
-    }
-    .task-meta {
-      display: flex;
-      display: -webkit-flex;
-      align-items: center;
-      -webkit-align-items: center;
-      gap: 6px;
-    }
-    .agent-tag {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background-color: #1E293B;
-      color: #E2E8F0;
-      border: 1px solid #334155;
-      text-transform: uppercase;
-    }
-    .agent-glenn { background-color: #064E3B; color: #A7F3D0; border-color: #059669; }
-    .agent-ironbot { background-color: #451A03; color: #FED7AA; border-color: #D97706; }
-    .agent-buzz { background-color: #422006; color: #FEF08A; border-color: #CA8A04; }
-    .agent-mario { background-color: #172554; color: #BFDBFE; border-color: #2563EB; }
-    .agent-zauron { background-color: #083344; color: #A5F3FC; border-color: #0891B2; }
-    .agent-morfeo { background-color: #3B0764; color: #E9D5FF; border-color: #9333EA; }
-
-    /* Botones de Acción */
-    .task-actions {
-      display: flex;
-      display: -webkit-flex;
-      gap: 4px;
-    }
-    .btn-action-task {
-      background-color: #1E293B;
-      border: 1px solid #334155;
-      color: #E2E8F0;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 8px;
-      cursor: pointer;
-    }
-    .btn-action-task:hover, .btn-action-task:active {
-      background-color: #334155;
-      color: #FFFFFF;
-    }
-    .btn-move-play {
-      background-color: #064E3B;
-      color: #A7F3D0;
-      border-color: #059669;
-    }
-    .btn-move-pause {
-      background-color: #451A03;
-      color: #FED7AA;
-      border-color: #D97706;
-    }
-    .btn-move-done {
-      background-color: #1E1B4B;
-      color: #C7D2FE;
-      border-color: #4338CA;
-    }
-
-    /* Caja de Informe Real del Agente */
-    .agent-evidence-box {
-      margin-top: 10px;
-      padding: 9px 12px;
-      background-color: #091A1E;
-      border-left: 3px solid #10B981;
-      border-radius: 6px;
-      font-size: 12px;
-      color: #A7F3D0;
-      line-height: 1.45;
-    }
-    .evidence-label {
-      font-size: 10px;
-      font-weight: 800;
-      color: #34D399;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
-
-    .empty-state {
-      padding: 24px 12px;
+    .login-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .login-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 16px;
       text-align: center;
-      color: #64748B;
+      outline: none;
+      margin-bottom: 14px;
+    }
+    .login-input:focus {
+      border-color: var(--primary);
+    }
+    .login-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .login-error {
+      color: var(--danger);
       font-size: 12px;
-      font-style: italic;
+      margin-top: 10px;
+      display: none;
     }
 
-    /* Móvil */
-    @media (max-width: 900px) {
-      .mobile-tab-bar {
-        display: flex;
-        display: -webkit-flex;
-      }
-      .board-grid {
-        display: block;
-      }
-      .board-column {
-        display: none;
-        margin-bottom: 12px;
-      }
-      .board-column.active-col {
-        display: block;
-      }
+    /* Panel de Oficina */
+    #oficinaView {
+      display: none;
+    }
+
+    /* Tarjetas de KPIs */
+    .kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+    .kpi-card.active-kpi {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(168, 44, 208, 0.2);
+    }
+    .kpi-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .kpi-num {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-top: 8px;
+    }
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Barra de Búsqueda y Filtros */
+    .filter-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-tab {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* Tabla de Alumnos */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      background: var(--surface-2);
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr.row-vence-hoy {
+      background: rgba(245, 158, 11, 0.08);
+    }
+    tr.row-vencido {
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-vence-hoy { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-vencido { background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge-prox-7 { background: rgba(234, 179, 8, 0.2); color: #FACC15; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .badge-prox-30 { background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-al-dia { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-pausa { background: rgba(168, 44, 208, 0.2); color: #C084FC; border: 1px solid rgba(168, 44, 208, 0.4); }
+    .badge-incompleto { background: rgba(148, 163, 184, 0.2); color: #94A3B8; border: 1px solid rgba(148, 163, 184, 0.4); }
+
+    .btn-sm {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-wa { background: #10B981; color: white; }
+    .btn-compromiso { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+
+    /* Modales */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .modal-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    .modal-textarea:focus {
+      border-color: var(--primary);
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #111726;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
   </style>
 </head>
 <body>
 
-<div class="wrapper">
-  <!-- Barra Superior -->
-  <div class="header-bar">
-    <div class="header-left">
-      <span class="status-dot"></span>
+  <div class="container">
+    <!-- Pantalla de Login Protegido -->
+    <div id="loginView">
+      <div class="login-icon">🔒</div>
+      <h2 class="login-title">Oficina Administrativa</h2>
+      <p class="login-desc">Ingresa la clave de administración de Ironcross para acceder al control financiero.</p>
+      <form id="loginForm" onsubmit="hacerLogin(event)">
+        <input type="password" id="passwordInput" class="login-input" placeholder="Clave administrativa" required autofocus autocomplete="current-password">
+        <button type="submit" id="loginBtn" class="login-btn">DESBLOQUEAR OFICINA</button>
+        <p id="loginError" class="login-error">Clave administrativa incorrecta</p>
+      </form>
+      <div style="margin-top: 16px;">
+        <a href="/" class="btn-action" style="display: inline-block;">← Volver al Reloj</a>
+      </div>
+    </div>
+
+    <!-- Panel de Oficina & Cobranzas (Desbloqueado) -->
+    <div id="oficinaView">
+      <!-- Barra Superior -->
+      <div class="header-bar">
+        <div class="header-title">
+          <span class="status-dot"></span>
+          <span>IRONCROSS · OFICINA & GLENN COBRANZAS</span>
+        </div>
+        <div class="header-actions">
+          <button onclick="cargarCobranzas()" class="btn-action">🔄 Actualizar</button>
+          <a id="dashboardLink" href="https://panel.ironcross.cl/cobranzas" target="_blank" class="btn-action primary">🔗 Abrir en Dashboard</a>
+          <a href="/" class="btn-action">⏱️ Reloj</a>
+          <button onclick="hacerLogout()" class="btn-action danger">🔒 Salir</button>
+        </div>
+      </div>
+
+      <!-- Indicadores KPIs -->
+      <div class="kpis-grid">
+        <div class="kpi-card" id="kpiVencidos" onclick="filtrar('vencidos')">
+          <div class="kpi-head" style="color: #F87171;">
+            <span>🚨 Vencidos</span>
+            <span id="kpiCountVencidos">0</span>
+          </div>
+          <div class="kpi-num" id="kpiMontoVencidos">$0</div>
+          <div class="kpi-sub">Renovación pendiente</div>
+        </div>
+
+        <div class="kpi-card" id="kpiProx7" onclick="filtrar('prox_7')">
+          <div class="kpi-head" style="color: #FBBF24;">
+            <span>⏳ Próx. 7 Días</span>
+            <span id="kpiCountProx7">0</span>
+          </div>
+          <div class="kpi-num" id="kpiMontoProx7">$0</div>
+          <div class="kpi-sub">Aviso anticipado</div>
+        </div>
+
+        <div class="kpi-card" id="kpiProx30" onclick="filtrar('prox_30')">
+          <div class="kpi-head" style="color: #60A5FA;">
+            <span>📅 Próx. 30 Días</span>
+            <span id="kpiCountProx30">0</span>
+          </div>
+          <div class="kpi-num" id="kpiMontoProx30">$0</div>
+          <div class="kpi-sub">Flujo esperado</div>
+        </div>
+
+        <div class="kpi-card" style="border-left: 3px solid #10B981;">
+          <div class="kpi-head" style="color: #34D399;">
+            <span>💰 Pagos Mes</span>
+            <span id="kpiCountMes">0</span>
+          </div>
+          <div class="kpi-num" id="kpiMontoMes" style="color: #34D399;">$0</div>
+          <div class="kpi-sub">Confirmado en caja</div>
+        </div>
+
+        <div class="kpi-card" id="kpiIncompletos" onclick="filtrar('incompletos')">
+          <div class="kpi-head" style="color: #C084FC;">
+            <span>🔍 Incompletos</span>
+            <span id="kpiCountIncompletos">0</span>
+          </div>
+          <div class="kpi-num" id="kpiMontoIncompletos">0</div>
+          <div class="kpi-sub">Sin teléfono / sin plan</div>
+        </div>
+
+        <div class="kpi-card" id="kpiCompromisos" onclick="filtrar('compromisos')">
+          <div class="kpi-head" style="color: #818CF8;">
+            <span>🤝 Compromisos</span>
+            <span id="kpiCountCompromisos">0</span>
+          </div>
+          <div class="kpi-num" id="kpiMontoCompromisos">$0</div>
+          <div class="kpi-sub">Acuerdos pendientes</div>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="filter-bar">
+        <div class="search-row">
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar por alumno o plan..." oninput="aplicarFiltros()">
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="todos" onclick="setFiltroTab('todos')">Todos (<span id="tabCountTodos">0</span>)</button>
+          <button class="filter-tab" data-filter="cobrar_hoy" onclick="setFiltroTab('cobrar_hoy')">🚨 Cobrar Hoy / Vencidos (<span id="tabCountCobrar">0</span>)</button>
+          <button class="filter-tab" data-filter="prox_7" onclick="setFiltroTab('prox_7')">⏳ Próx. 7 Días (<span id="tabCountProx7">0</span>)</button>
+          <button class="filter-tab" data-filter="prox_30" onclick="setFiltroTab('prox_30')">📅 Próx. 30 Días (<span id="tabCountProx30">0</span>)</button>
+          <button class="filter-tab" data-filter="compromisos" onclick="setFiltroTab('compromisos')">🤝 Compromisos (<span id="tabCountComp">0</span>)</button>
+          <button class="filter-tab" data-filter="al_dia" onclick="setFiltroTab('al_dia')">✅ Al Día (<span id="tabCountAlDia">0</span>)</button>
+          <button class="filter-tab" data-filter="pausa" onclick="setFiltroTab('pausa')">⏸️ Pausa (<span id="tabCountPausa">0</span>)</button>
+          <button class="filter-tab" data-filter="incompletos" onclick="setFiltroTab('incompletos')">🔍 Incompletos (<span id="tabCountInc">0</span>)</button>
+        </div>
+      </div>
+
+      <!-- Tabla de Alumnos -->
+      <div class="table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Alumno</th>
+                <th>Plan & Monto</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Último Pago / Acuerdo</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="alumnosTbody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                  Cargando información financiera...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal WhatsApp -->
+  <div id="modalWhatsapp" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">💬 Preparar Mensaje WhatsApp</div>
+          <div id="modalWaSub" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;"></div>
+        </div>
+        <button class="modal-close" onclick="cerrarModalWa()">✕</button>
+      </div>
       <div>
-        <div class="main-title">NICOLA OS · CONTROL DE TRABAJOS (CRM)</div>
-        <span class="main-sub">Seguimiento de tareas en curso, en pausa, por realizar y entregas completadas</span>
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">
+          Mensaje personalizado (editable):
+        </label>
+        <textarea id="modalWaText" class="modal-textarea"></textarea>
       </div>
-    </div>
-    <div class="header-actions">
-      <a href="/" class="btn-nav btn-gym">⏱️ IR A RELOJ / GYM</a>
-      <button class="btn-nav" onclick="cargarTareas();">⟳ ACTUALIZAR</button>
-    </div>
-  </div>
-
-  <!-- Toast informativo que le dice a Nicolás qué pasó con la tarea -->
-  <div id="actionToast"></div>
-
-  <!-- Resumen de Contadores Rápidos -->
-  <div class="kpi-bar">
-    <div class="kpi-card kpi-curso" onclick="cambiarColumna('curso');">
-      <div class="kpi-label">🟢 En Curso</div>
-      <div class="kpi-value" id="kpiCursoCount">0</div>
-    </div>
-    <div class="kpi-card kpi-pausa" onclick="cambiarColumna('pausa');">
-      <div class="kpi-label">⏸️ En Pausa</div>
-      <div class="kpi-value" id="kpiPausaCount">0</div>
-    </div>
-    <div class="kpi-card kpi-por-hacer" onclick="cambiarColumna('por-hacer');">
-      <div class="kpi-label">📋 Por Hacer</div>
-      <div class="kpi-value" id="kpiPendienteCount">0</div>
-    </div>
-    <div class="kpi-card kpi-hechas" onclick="cambiarColumna('hechas');">
-      <div class="kpi-label">✅ Entregas</div>
-      <div class="kpi-value" id="kpiCompletadaCount">0</div>
-    </div>
-  </div>
-
-  <!-- Barra de Creación Rápida -->
-  <div class="create-bar">
-    <input type="text" id="newTaskInput" class="input-task" placeholder="Escribe un nuevo trabajo a realizar..." autocomplete="off">
-    <select id="newTaskAgent" class="select-agent">
-      <option value="glenn">Glenn (Finanzas)</option>
-      <option value="ironbot">IronBot (Coach)</option>
-      <option value="buzz">Buzz (Ventas)</option>
-      <option value="mario">Mario (Copiloto)</option>
-      <option value="zauron">Zauron (Forense)</option>
-      <option value="morfeo">Morfeo (Comandante)</option>
-    </select>
-    <button class="btn-create" id="btnCreateTask">+ AGREGAR</button>
-  </div>
-
-  <!-- Pestañas para Celulares -->
-  <div class="mobile-tab-bar" id="mobileTabBar">
-    <button class="mobile-tab-btn active" id="btnTabCurso" onclick="cambiarColumna('curso');">🟢 EN CURSO (<span id="mobCountCurso">0</span>)</button>
-    <button class="mobile-tab-btn" id="btnTabPausa" onclick="cambiarColumna('pausa');">⏸️ EN PAUSA (<span id="mobCountPausa">0</span>)</button>
-    <button class="mobile-tab-btn" id="btnTabPend" onclick="cambiarColumna('por-hacer');">📋 POR HACER (<span id="mobCountPend">0</span>)</button>
-    <button class="mobile-tab-btn" id="btnTabDone" onclick="cambiarColumna('hechas');">✅ ENTREGAS (<span id="mobCountDone">0</span>)</button>
-  </div>
-
-  <!-- Tablero de 4 Columnas -->
-  <div class="board-grid">
-    <!-- 1. REALIZÁNDOSE AHORA -->
-    <div class="board-column col-curso active-col" id="colCurso">
-      <div class="column-header">
-        <div class="col-title">🟢 Realizándose Ahora</div>
-        <span class="col-badge" id="badgeCurso">0</span>
-      </div>
-      <div class="task-list" id="listCurso">
-        <div class="empty-state">No hay trabajos en curso.</div>
-      </div>
-    </div>
-
-    <!-- 2. EN PAUSA -->
-    <div class="board-column col-pausa" id="colPausa">
-      <div class="column-header">
-        <div class="col-title">⏸️ En Pausa / Esperando</div>
-        <span class="col-badge" id="badgePausa">0</span>
-      </div>
-      <div class="task-list" id="listPausa">
-        <div class="empty-state">No hay trabajos en pausa.</div>
-      </div>
-    </div>
-
-    <!-- 3. POR REALIZAR -->
-    <div class="board-column col-por-hacer" id="colPorHacer">
-      <div class="column-header">
-        <div class="col-title">📋 Por Realizar (En Cola)</div>
-        <span class="col-badge" id="badgePorHacer">0</span>
-      </div>
-      <div class="task-list" id="listPorHacer">
-        <div class="empty-state">No hay trabajos pendientes.</div>
-      </div>
-    </div>
-
-    <!-- 4. COMPLETADAS / ENTREGAS -->
-    <div class="board-column col-hechas" id="colHechas">
-      <div class="column-header">
-        <div class="col-title">✅ Entregas Completadas</div>
-        <span class="col-badge" id="badgeHechas">0</span>
-      </div>
-      <div class="task-list" id="listHechas">
-        <div class="empty-state">No hay entregas completadas todavía.</div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="copiarMensajeWa()">📋 Copiar</button>
+        <button class="btn-action" onclick="cerrarModalWa()">Cancelar</button>
+        <button id="modalWaSendBtn" class="btn-action primary" onclick="abrirWaDirecto()">🚀 Abrir WhatsApp</button>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-(function () {
-  var tareasState = {
-    curso: [],
-    pausa: [],
-    pendiente: [],
-    completada: []
-  };
+  <!-- Modal Compromiso -->
+  <div id="modalCompromiso" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">📝 Registrar Compromiso de Pago</div>
+          <div id="modalCompSub" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;"></div>
+        </div>
+        <button class="modal-close" onclick="cerrarModalComp()">✕</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Nota o acuerdo:</label>
+          <input type="text" id="modalCompNota" class="search-input" style="width: 100%;" placeholder="Ej: Paga el viernes tras cobro">
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;">
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Fecha prometida:</label>
+            <input type="date" id="modalCompFecha" class="search-input" style="width: 100%;">
+          </div>
+          <div style="flex: 1;">
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Monto ($):</label>
+            <input type="number" id="modalCompMonto" class="search-input" style="width: 100%;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" onclick="cerrarModalComp()">Cancelar</button>
+        <button id="modalCompSaveBtn" class="btn-action primary" onclick="guardarCompromisoServer()">Guardar Acuerdo</button>
+      </div>
+    </div>
+  </div>
 
-  function normalizarAgente(ag) {
-    var raw = (ag || '').toLowerCase();
-    if (raw.indexOf('glenn') !== -1) return 'glenn';
-    if (raw.indexOf('iron') !== -1) return 'ironbot';
-    if (raw.indexOf('buzz') !== -1) return 'buzz';
-    if (raw.indexOf('zauron') !== -1) return 'zauron';
-    if (raw.indexOf('morfeo') !== -1) return 'morfeo';
-    return 'mario';
-  }
+  <div id="toast"></div>
 
-  function getAgentName(agKey) {
-    if (agKey === 'glenn') return 'Glenn';
-    if (agKey === 'ironbot') return 'IronBot';
-    if (agKey === 'buzz') return 'Buzz';
-    if (agKey === 'zauron') return 'Zauron';
-    if (agKey === 'morfeo') return 'Morfeo';
-    return 'Mario';
-  }
+  <script>
+    var globalCobranzas = null;
+    var currentFilterTab = 'todos';
+    var selectedAlumnoWa = null;
+    var selectedAlumnoComp = null;
+    var inactividadTimer = null;
 
-  function mostrarToast(mensaje) {
-    var toast = document.getElementById('actionToast');
-    if (!toast) return;
-    toast.innerHTML = mensaje;
-    toast.style.display = 'block';
-    setTimeout(function () {
-      toast.style.display = 'none';
-    }, 4500);
-  }
+    function resetInactividad() {
+      if (inactividadTimer) clearTimeout(inactividadTimer);
+      inactividadTimer = setTimeout(function () {
+        // Bloquear tras 30 min de inactividad
+        hacerLogout();
+      }, 30 * 60 * 1000);
+    }
+    window.addEventListener('touchstart', resetInactividad, false);
+    window.addEventListener('mousemove', resetInactividad, false);
+    window.addEventListener('keydown', resetInactividad, false);
 
-  function renderizarBoard() {
-    var listCurso = document.getElementById('listCurso');
-    var listPausa = document.getElementById('listPausa');
-    var listPorHacer = document.getElementById('listPorHacer');
-    var listHechas = document.getElementById('listHechas');
-
-    var cCount = tareasState.curso.length;
-    var pCount = tareasState.pausa.length;
-    var pendCount = tareasState.pendiente.length;
-    var dCount = tareasState.completada.length;
-
-    document.getElementById('kpiCursoCount').innerHTML = cCount;
-    document.getElementById('kpiPausaCount').innerHTML = pCount;
-    document.getElementById('kpiPendienteCount').innerHTML = pendCount;
-    document.getElementById('kpiCompletadaCount').innerHTML = dCount;
-
-    document.getElementById('badgeCurso').innerHTML = cCount;
-    document.getElementById('badgePausa').innerHTML = pCount;
-    document.getElementById('badgePorHacer').innerHTML = pendCount;
-    document.getElementById('badgeHechas').innerHTML = dCount;
-
-    document.getElementById('mobCountCurso').innerHTML = cCount;
-    document.getElementById('mobCountPausa').innerHTML = pCount;
-    document.getElementById('mobCountPend').innerHTML = pendCount;
-    document.getElementById('mobCountDone').innerHTML = dCount;
-
-    renderLista(listCurso, tareasState.curso, 'curso');
-    renderLista(listPausa, tareasState.pausa, 'pausa');
-    renderLista(listPorHacer, tareasState.pendiente, 'pendiente');
-    renderLista(listHechas, tareasState.completada, 'completada');
-  }
-
-  function renderLista(container, lista, columna) {
-    container.innerHTML = '';
-    if (!lista || lista.length === 0) {
-      var emp = document.createElement('div');
-      emp.className = 'empty-state';
-      emp.appendChild(document.createTextNode('Sin trabajos en esta sección.'));
-      container.appendChild(emp);
-      return;
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      if (!t) return;
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(function () { t.style.display = 'none'; }, 3000);
     }
 
-    for (var i = 0; i < lista.length; i++) {
-      (function (task) {
-        var card = document.createElement('div');
-        card.className = 'task-card';
-
-        // Título del Trabajo
-        var title = document.createElement('div');
-        title.className = 'task-title';
-        title.appendChild(document.createTextNode(task.titulo || 'Sin título'));
-        card.appendChild(title);
-
-        // Detalle
-        if (task.descripcion) {
-          var desc = document.createElement('div');
-          desc.className = 'task-desc';
-          desc.appendChild(document.createTextNode(task.descripcion));
-          card.appendChild(desc);
-        }
-
-        // Si tiene evidencia o informe del agente, mostrarlo claramente
-        var evidenciaObj = task.evidencia;
-        if (typeof evidenciaObj === 'string') {
-          try { evidenciaObj = JSON.parse(evidenciaObj); } catch (e) {}
-        }
-        if (evidenciaObj && evidenciaObj.resultado) {
-          var boxEv = document.createElement('div');
-          boxEv.className = 'agent-evidence-box';
-          var lbl = document.createElement('div');
-          lbl.className = 'evidence-label';
-          lbl.appendChild(document.createTextNode('⚡ INFORME GENERADO POR EL AGENTE:'));
-          boxEv.appendChild(lbl);
-          boxEv.appendChild(document.createTextNode(evidenciaObj.resultado));
-          card.appendChild(boxEv);
-        }
-
-        // Pie de tarjeta
-        var footer = document.createElement('div');
-        footer.className = 'task-footer';
-
-        var meta = document.createElement('div');
-        meta.className = 'task-meta';
-
-        var agKey = normalizarAgente(task.agente || task.agente_responsable);
-        var tagAgent = document.createElement('span');
-        tagAgent.className = 'agent-tag agent-' + agKey;
-        tagAgent.appendChild(document.createTextNode('👤 ' + getAgentName(agKey)));
-        meta.appendChild(tagAgent);
-
-        footer.appendChild(meta);
-
-        // Botones de Acción
-        var actions = document.createElement('div');
-        actions.className = 'task-actions';
-
-        if (columna === 'pendiente') {
-          var btnPlay = document.createElement('button');
-          btnPlay.className = 'btn-action-task btn-move-play';
-          btnPlay.appendChild(document.createTextNode('▶ Iniciar'));
-          btnPlay.addEventListener('click', function () {
-            moverTarea(task.id, 'En progreso');
-            mostrarToast('✓ Trabajo movido a <strong>🟢 EN CURSO</strong>. Mostrando esa pestaña ahora...');
-            cambiarColumna('curso');
-          }, false);
-          actions.appendChild(btnPlay);
-
-          var btnPause = document.createElement('button');
-          btnPause.className = 'btn-action-task btn-move-pause';
-          btnPause.appendChild(document.createTextNode('⏸ Pausar'));
-          btnPause.addEventListener('click', function () {
-            moverTarea(task.id, 'En pausa');
-            mostrarToast('⏸ Trabajo puesto en pausa.');
-          }, false);
-          actions.appendChild(btnPause);
-
-        } else if (columna === 'curso') {
-          var btnExec = document.createElement('button');
-          btnExec.className = 'btn-action-task btn-move-play';
-          btnExec.appendChild(document.createTextNode('⚡ Ejecutar Agente'));
-          btnExec.addEventListener('click', function () {
-            ejecutarTarea(task.id, card);
-          }, false);
-          actions.appendChild(btnExec);
-
-          var btnPausar = document.createElement('button');
-          btnPausar.className = 'btn-action-task btn-move-pause';
-          btnPausar.appendChild(document.createTextNode('⏸ Pausar'));
-          btnPausar.addEventListener('click', function () {
-            moverTarea(task.id, 'En pausa');
-            mostrarToast('⏸ Trabajo puesto en pausa.');
-          }, false);
-          actions.appendChild(btnPausar);
-
-          var btnDone = document.createElement('button');
-          btnDone.className = 'btn-action-task btn-move-done';
-          btnDone.appendChild(document.createTextNode('✓ Hecho'));
-          btnDone.addEventListener('click', function () {
-            moverTarea(task.id, 'Completada');
-            mostrarToast('✅ Trabajo completado. Guardado en la pestaña <strong>ENTREGAS</strong>.');
-          }, false);
-          actions.appendChild(btnDone);
-
-        } else if (columna === 'pausa') {
-          var btnReanudar = document.createElement('button');
-          btnReanudar.className = 'btn-action-task btn-move-play';
-          btnReanudar.appendChild(document.createTextNode('▶ Reanudar'));
-          btnReanudar.addEventListener('click', function () {
-            moverTarea(task.id, 'En progreso');
-            mostrarToast('✓ Trabajo reanudado en <strong>🟢 EN CURSO</strong>.');
-            cambiarColumna('curso');
-          }, false);
-          actions.appendChild(btnReanudar);
-
-          var btnDoneP = document.createElement('button');
-          btnDoneP.className = 'btn-action-task btn-move-done';
-          btnDoneP.appendChild(document.createTextNode('✓ Hecho'));
-          btnDoneP.addEventListener('click', function () {
-            moverTarea(task.id, 'Completada');
-            mostrarToast('✅ Trabajo archivado en <strong>ENTREGAS</strong>.');
-          }, false);
-          actions.appendChild(btnDoneP);
-
-        } else if (columna === 'completada') {
-          var btnReopen = document.createElement('button');
-          btnReopen.className = 'btn-action-task btn-move-play';
-          btnReopen.appendChild(document.createTextNode('↺ Reabrir'));
-          btnReopen.addEventListener('click', function () {
-            moverTarea(task.id, 'En progreso');
-            mostrarToast('↺ Trabajo reabierto en <strong>🟢 EN CURSO</strong>.');
-            cambiarColumna('curso');
-          }, false);
-          actions.appendChild(btnReopen);
-        }
-
-        footer.appendChild(actions);
-        card.appendChild(footer);
-        container.appendChild(card);
-      })(lista[i]);
-    }
-  }
-
-  window.ejecutarTarea = function (id, cardEl) {
-    var statusEl = document.createElement('div');
-    statusEl.style.marginTop = '8px';
-    statusEl.style.padding = '6px 10px';
-    statusEl.style.background = '#1E293B';
-    statusEl.style.color = '#38BDF8';
-    statusEl.style.borderRadius = '4px';
-    statusEl.style.fontSize = '11px';
-    statusEl.appendChild(document.createTextNode('⏳ Enviando orden al agente...'));
-    cardEl.appendChild(statusEl);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/tasks/' + id + '/execute', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
+    function checkAuth() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/oficina-check', true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
         if (xhr.status === 200) {
           try {
             var data = JSON.parse(xhr.responseText);
-            var resTxt = (data.evidencia && data.evidencia.resultado) || 'Tarea procesada por el agente.';
-            statusEl.style.background = '#064E3B';
-            statusEl.style.color = '#A7F3D0';
-            statusEl.innerHTML = '<strong>✓ Resultado:</strong> ' + resTxt;
-            mostrarToast('⚡ Agente completó su trabajo. Guardado en <strong>✅ ENTREGAS</strong>.');
-            setTimeout(cargarTareas, 1500);
-          } catch (e) {
-            statusEl.innerHTML = '✓ Orden enviada al agente.';
-          }
-        } else {
-          statusEl.style.color = '#FECACA';
-          statusEl.innerHTML = 'Error enviando al agente (' + xhr.status + ')';
-        }
-      }
-    };
-    xhr.send(JSON.stringify({}));
-  };
-
-  window.moverTarea = function (id, nuevoEstado) {
-    var encontrada = null;
-    var keys = ['curso', 'pausa', 'pendiente', 'completada'];
-    for (var k = 0; k < keys.length; k++) {
-      var arr = tareasState[keys[k]];
-      for (var idx = 0; idx < arr.length; idx++) {
-        if (arr[idx].id === id) {
-          encontrada = arr.splice(idx, 1)[0];
-          break;
-        }
-      }
-      if (encontrada) break;
-    }
-
-    if (encontrada) {
-      encontrada.estado = nuevoEstado;
-      if (nuevoEstado === 'En progreso') {
-        tareasState.curso.unshift(encontrada);
-      } else if (nuevoEstado === 'En pausa' || nuevoEstado === 'Bloqueada') {
-        tareasState.pausa.unshift(encontrada);
-      } else if (nuevoEstado === 'Pendiente' || nuevoEstado === 'Backlog') {
-        tareasState.pendiente.unshift(encontrada);
-      } else if (nuevoEstado === 'Completada') {
-        tareasState.completada.unshift(encontrada);
-      }
-      renderizarBoard();
-    }
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/tasks/' + id + '/status', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({ nuevo_estado: nuevoEstado }));
-  };
-
-  window.cargarTareas = function () {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/tasks', true);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          try {
-            var data = JSON.parse(xhr.responseText);
-            procesarDataBackend(data);
+            if (data.autenticado) {
+              mostrarOficina();
+              if (data.dashboard_url) {
+                var dLink = document.getElementById('dashboardLink');
+                if (dLink) dLink.href = data.dashboard_url;
+              }
+              cargarCobranzas();
+              return;
+            }
           } catch (e) {}
         }
+        mostrarLogin();
+      };
+      xhr.send(null);
+    }
+
+    function mostrarLogin() {
+      document.getElementById('loginView').style.display = 'block';
+      document.getElementById('oficinaView').style.display = 'none';
+    }
+
+    function mostrarOficina() {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('oficinaView').style.display = 'block';
+    }
+
+    function hacerLogin(e) {
+      if (e) e.preventDefault();
+      var passInput = document.getElementById('passwordInput');
+      var errEl = document.getElementById('loginError');
+      var btn = document.getElementById('loginBtn');
+      var pass = passInput.value.trim();
+      if (!pass) return;
+
+      btn.disabled = true;
+      btn.innerText = 'VERIFICANDO...';
+      errEl.style.display = 'none';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/oficina-login', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.onreadystatechange = function () {
+        btn.disabled = false;
+        btn.innerText = 'DESBLOQUEAR OFICINA';
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200) {
+          passInput.value = '';
+          mostrarOficina();
+          cargarCobranzas();
+          showToast('Oficina desbloqueada con éxito.');
+        } else {
+          errEl.style.display = 'block';
+        }
+      };
+      xhr.send(JSON.stringify({ password: pass }));
+    }
+
+    function hacerLogout() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/oficina-logout', true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          mostrarLogin();
+          showToast('Sesión administrativa cerrada.');
+        }
+      };
+      xhr.send(null);
+    }
+
+    function cargarCobranzas() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/cobranzas', true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200) {
+          try {
+            var res = JSON.parse(xhr.responseText);
+            if (res.ok && res.data) {
+              globalCobranzas = res.data;
+              renderizarTodo();
+              return;
+            }
+          } catch (e) {}
+        } else if (xhr.status === 401) {
+          mostrarLogin();
+          return;
+        }
+        showToast('No se pudieron obtener datos financieros.');
+      };
+      xhr.send(null);
+    }
+
+    function fmtClp(monto) {
+      return '$' + Number(monto || 0).toLocaleString('es-CL');
+    }
+
+    function renderizarTodo() {
+      if (!globalCobranzas) return;
+      var kpis = globalCobranzas.kpis;
+
+      // KPIs
+      document.getElementById('kpiCountVencidos').innerText = kpis.conteoVencidos;
+      document.getElementById('kpiMontoVencidos').innerText = fmtClp(kpis.totalVencidos);
+
+      document.getElementById('kpiCountProx7').innerText = kpis.conteoProximos7Dias;
+      document.getElementById('kpiMontoProx7').innerText = fmtClp(kpis.totalProximos7Dias);
+
+      document.getElementById('kpiCountProx30').innerText = kpis.conteoProximos30Dias;
+      document.getElementById('kpiMontoProx30').innerText = fmtClp(kpis.totalProximos30Dias);
+
+      document.getElementById('kpiCountMes').innerText = kpis.conteoPagosMesActual;
+      document.getElementById('kpiMontoMes').innerText = fmtClp(kpis.ingresosMesActual);
+
+      document.getElementById('kpiCountIncompletos').innerText = kpis.alumnosIncompletos;
+      document.getElementById('kpiMontoIncompletos').innerText = kpis.alumnosIncompletos;
+
+      document.getElementById('kpiCountCompromisos').innerText = kpis.compromisosPendientes;
+      document.getElementById('kpiMontoCompromisos').innerText = fmtClp(kpis.totalCompromisosPendientes);
+
+      // Conteo tabs
+      var alumnos = globalCobranzas.alumnos;
+      document.getElementById('tabCountTodos').innerText = alumnos.length;
+      document.getElementById('tabCountCobrar').innerText = kpis.conteoVencidos;
+      document.getElementById('tabCountProx7').innerText = kpis.conteoProximos7Dias;
+      document.getElementById('tabCountProx30').innerText = kpis.conteoProximos30Dias;
+      document.getElementById('tabCountComp').innerText = kpis.compromisosPendientes;
+      document.getElementById('tabCountAlDia').innerText = alumnos.filter(function (a) { return a.estado === 'al_dia'; }).length;
+      document.getElementById('tabCountPausa').innerText = alumnos.filter(function (a) { return a.estado === 'pausado_o_exento'; }).length;
+      document.getElementById('tabCountInc').innerText = kpis.alumnosIncompletos;
+
+      aplicarFiltros();
+    }
+
+    function setFiltroTab(tabId) {
+      currentFilterTab = tabId;
+      var tabs = document.querySelectorAll('.filter-tab');
+      tabs.forEach(function (t) {
+        if (t.getAttribute('data-filter') === tabId) t.classList.add('active');
+        else t.classList.remove('active');
+      });
+      aplicarFiltros();
+    }
+
+    function filtrar(tipo) {
+      if (tipo === 'vencidos') setFiltroTab('cobrar_hoy');
+      else if (tipo === 'prox_7') setFiltroTab('prox_7');
+      else if (tipo === 'prox_30') setFiltroTab('prox_30');
+      else if (tipo === 'incompletos') setFiltroTab('incompletos');
+      else if (tipo === 'compromisos') setFiltroTab('compromisos');
+    }
+
+    function aplicarFiltros() {
+      if (!globalCobranzas) return;
+      var query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      var lista = globalCobranzas.alumnos;
+
+      if (currentFilterTab === 'cobrar_hoy') {
+        lista = lista.filter(function (a) { return a.estado === 'vence_hoy' || a.estado === 'vencido'; });
+      } else if (currentFilterTab === 'prox_7') {
+        lista = lista.filter(function (a) { return a.estado === 'proximos_7_dias'; });
+      } else if (currentFilterTab === 'prox_30') {
+        lista = lista.filter(function (a) { return a.estado === 'proximos_30_dias'; });
+      } else if (currentFilterTab === 'compromisos') {
+        lista = lista.filter(function (a) { return a.compromiso && a.compromiso.estado === 'pendiente'; });
+      } else if (currentFilterTab === 'al_dia') {
+        lista = lista.filter(function (a) { return a.estado === 'al_dia'; });
+      } else if (currentFilterTab === 'pausa') {
+        lista = lista.filter(function (a) { return a.estado === 'pausado_o_exento'; });
+      } else if (currentFilterTab === 'incompletos') {
+        lista = lista.filter(function (a) { return a.estado === 'pendiente_conciliacion' || (a.datos_incompletos && a.datos_incompletos.length > 0); });
       }
-    };
-    xhr.send(null);
-  };
 
-  function procesarDataBackend(data) {
-    // Usar directamente los datos reales de la base de datos sin inyectar tareas falsas
-    tareasState.curso = data['En progreso'] || [];
-    tareasState.pausa = (data['Bloqueada'] || []).concat(data['En revisión'] || []).concat(data['En pausa'] || []);
-    tareasState.pendiente = (data['Pendiente'] || []).concat(data['Backlog'] || []);
-    tareasState.completada = data['Completada'] || [];
-    renderizarBoard();
-  }
+      if (query) {
+        lista = lista.filter(function (a) {
+          return a.nombre_completo.toLowerCase().indexOf(query) !== -1 ||
+                 a.plan.toLowerCase().indexOf(query) !== -1 ||
+                 (a.telefono && a.telefono.indexOf(query) !== -1);
+        });
+      }
 
-  // Creación rápida de un nuevo trabajo
-  var newTaskInput = document.getElementById('newTaskInput');
-  var newTaskAgent = document.getElementById('newTaskAgent');
-  var btnCreateTask = document.getElementById('btnCreateTask');
-
-  function crearNuevoTrabajo() {
-    var txt = (newTaskInput.value || '').trim();
-    if (!txt) return;
-    var ag = newTaskAgent.value || 'glenn';
-    newTaskInput.value = '';
-
-    var nueva = {
-      id: 'usr_' + Date.now(),
-      titulo: txt,
-      descripcion: 'Ingresada manualmente desde el CRM.',
-      agente: ag,
-      agente_responsable: ag,
-      prioridad: 'alta',
-      proyecto: 'Nicola OS',
-      estado: 'Pendiente'
-    };
-
-    tareasState.pendiente.unshift(nueva);
-    renderizarBoard();
-    mostrarToast('✓ Nuevo trabajo agregado a <strong>📋 POR HACER</strong>.');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/tasks', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-      titulo: txt,
-      agente_responsable: ag,
-      descripcion: 'Ingresada por Nicolás',
-      prioridad: 'alta'
-    }));
-  }
-
-  btnCreateTask.addEventListener('click', crearNuevoTrabajo, false);
-  newTaskInput.addEventListener('keydown', function (e) {
-    if (e.keyCode === 13) { crearNuevoTrabajo(); }
-  }, false);
-
-  window.cambiarColumna = function (tipo) {
-    var cols = document.querySelectorAll('.board-column');
-    for (var i = 0; i < cols.length; i++) {
-      cols[i].className = cols[i].className.replace(' active-col', '');
+      renderTabla(lista);
     }
-    var targetId = 'colCurso';
-    var tabId = 'btnTabCurso';
-    if (tipo === 'pausa') { targetId = 'colPausa'; tabId = 'btnTabPausa'; }
-    else if (tipo === 'por-hacer') { targetId = 'colPorHacer'; tabId = 'btnTabPend'; }
-    else if (tipo === 'hechas') { targetId = 'colHechas'; tabId = 'btnTabDone'; }
 
-    var target = document.getElementById(targetId);
-    if (target) { target.className += ' active-col'; }
+    function renderTabla(lista) {
+      var tbody = document.getElementById('alumnosTbody');
+      if (!lista || lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">No se encontraron registros para este filtro.</td></tr>';
+        return;
+      }
 
-    var btns = document.querySelectorAll('.mobile-tab-btn');
-    for (var j = 0; j < btns.length; j++) {
-      btns[j].className = 'mobile-tab-btn';
+      var html = '';
+      for (var i = 0; i < lista.length; i++) {
+        var a = lista[i];
+        var rowClass = a.estado === 'vence_hoy' ? 'row-vence-hoy' : (a.estado === 'vencido' ? 'row-vencido' : '');
+
+        var badgeHtml = '';
+        if (a.estado === 'vence_hoy') badgeHtml = '<span class="badge badge-vence-hoy">🔥 Vence Hoy</span>';
+        else if (a.estado === 'vencido') badgeHtml = '<span class="badge badge-vencido">⚠️ Vencido (' + Math.abs(a.dias_restantes || 0) + 'd)</span>';
+        else if (a.estado === 'proximos_7_dias') badgeHtml = '<span class="badge badge-prox-7">⏳ Próx. 7d (' + a.dias_restantes + 'd)</span>';
+        else if (a.estado === 'proximos_30_dias') badgeHtml = '<span class="badge badge-prox-30">📅 Próx. 30d (' + a.dias_restantes + 'd)</span>';
+        else if (a.estado === 'al_dia') badgeHtml = '<span class="badge badge-al-dia">✅ Al día</span>';
+        else if (a.estado === 'pausado_o_exento') badgeHtml = '<span class="badge badge-pausa">⏸️ Pausa / Canje</span>';
+        else badgeHtml = '<span class="badge badge-incompleto">🔍 Conciliar</span>';
+
+        var diasInfo = a.dias_restantes !== null ? (a.dias_restantes === 0 ? '<span style="color:#F59E0B;font-weight:700;">¡Hoy!</span>' : (a.dias_restantes < 0 ? '<span style="color:#EF4444;">Atraso ' + Math.abs(a.dias_restantes) + 'd</span>' : 'Quedan ' + a.dias_restantes + 'd')) : '—';
+
+        var acuerdoHtml = '';
+        if (a.compromiso) {
+          acuerdoHtml = '<div style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);padding:4px 8px;border-radius:6px;font-size:11px;color:#A5B4FC;">' +
+                        '<strong>🤝 Compromiso:</strong> ' + escapeHtml(a.compromiso.nota) + '</div>';
+        } else if (a.ultimo_pago) {
+          acuerdoHtml = '<div style="font-size:11px;color:var(--text-muted);">' + fmtClp(a.ultimo_pago.monto) + ' (' + (a.ultimo_pago.fecha_pago || '') + ')</div>';
+        } else {
+          acuerdoHtml = '<span style="color:#64748B;font-size:11px;font-style:italic;">Sin pagos</span>';
+        }
+
+        var waDisabled = !a.telefono_limpio ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : '';
+
+        html += '<tr class="' + rowClass + '">' +
+          '<td>' +
+            '<div style="font-weight:700;color:#FFFFFF;">' + escapeHtml(a.nombre_completo) + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + (a.telefono ? escapeHtml(a.telefono) : '<span style="color:#EF4444;">Sin teléfono</span>') + '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div style="color:var(--text);">' + escapeHtml(a.plan) + '</div>' +
+            '<div style="font-weight:700;color:#C084FC;font-size:12px;margin-top:2px;">' + a.monto_formateado + '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div style="color:#FFFFFF;font-weight:600;">' + (a.fecha_vencimiento_formateada || '—') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">' + diasInfo + '</div>' +
+          '</td>' +
+          '<td>' + badgeHtml + (a.es_deuda_confirmada ? '<div style="font-size:10px;color:#F87171;font-weight:700;margin-top:2px;">Deuda Confirmada</div>' : '') + '</td>' +
+          '<td>' + acuerdoHtml + '</td>' +
+          '<td style="text-align: right;">' +
+            '<div style="display:inline-flex;gap:6px;">' +
+              '<button class="btn-sm btn-wa" ' + waDisabled + ' onclick="abrirModalWa(' + a.alumno_id + ')">💬 WhatsApp</button>' +
+              '<button class="btn-sm btn-compromiso" onclick="abrirModalComp(' + a.alumno_id + ')">📝 Acuerdo</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }
+
+      tbody.innerHTML = html;
     }
-    var btnActive = document.getElementById(tabId);
-    if (btnActive) { btnActive.className = 'mobile-tab-btn active'; }
-  };
 
-  cargarTareas();
-})();
-</script>
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
+    // Modal WhatsApp
+    function abrirModalWa(alumnoId) {
+      if (!globalCobranzas) return;
+      var a = globalCobranzas.alumnos.find(function (x) { return x.alumno_id === alumnoId; });
+      if (!a) return;
+      selectedAlumnoWa = a;
+
+      document.getElementById('modalWaSub').innerText = a.nombre_completo + ' (' + (a.telefono || '') + ')';
+      document.getElementById('modalWaText').value = a.whatsapp_mensaje || '';
+      document.getElementById('modalWhatsapp').style.display = 'flex';
+    }
+
+    function cerrarModalWa() {
+      document.getElementById('modalWhatsapp').style.display = 'none';
+      selectedAlumnoWa = null;
+    }
+
+    function copiarMensajeWa() {
+      var txt = document.getElementById('modalWaText').value;
+      if (!txt) return;
+      navigator.clipboard.writeText(txt);
+      showToast('Mensaje copiado al portapapeles.');
+    }
+
+    function abrirWaDirecto() {
+      if (!selectedAlumnoWa || !selectedAlumnoWa.telefono_limpio) return;
+      var txt = document.getElementById('modalWaText').value;
+      var url = 'https://wa.me/' + selectedAlumnoWa.telefono_limpio + '?text=' + encodeURIComponent(txt);
+      window.open(url, '_blank');
+      cerrarModalWa();
+      showToast('Abriendo WhatsApp...');
+    }
+
+    // Modal Compromiso
+    function abrirModalComp(alumnoId) {
+      if (!globalCobranzas) return;
+      var a = globalCobranzas.alumnos.find(function (x) { return x.alumno_id === alumnoId; });
+      if (!a) return;
+      selectedAlumnoComp = a;
+
+      document.getElementById('modalCompSub').innerText = a.nombre_completo + ' · ' + a.plan;
+      document.getElementById('modalCompNota').value = a.compromiso ? a.compromiso.nota : '';
+      document.getElementById('modalCompFecha').value = a.compromiso && a.compromiso.fecha_prometida ? a.compromiso.fecha_prometida : '';
+      document.getElementById('modalCompMonto').value = a.monto || '';
+      document.getElementById('modalCompromiso').style.display = 'flex';
+    }
+
+    function cerrarModalComp() {
+      document.getElementById('modalCompromiso').style.display = 'none';
+      selectedAlumnoComp = null;
+    }
+
+    function guardarCompromisoServer() {
+      if (!selectedAlumnoComp) return;
+      var nota = document.getElementById('modalCompNota').value.trim();
+      var fecha = document.getElementById('modalCompFecha').value;
+      var monto = document.getElementById('modalCompMonto').value;
+      var btn = document.getElementById('modalCompSaveBtn');
+
+      if (!nota) {
+        showToast('Debes ingresar una nota para el acuerdo.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'Guardando...';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/cobranzas', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function () {
+        btn.disabled = false;
+        btn.innerText = 'Guardar Acuerdo';
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200) {
+          cerrarModalComp();
+          showToast('Acuerdo guardado exitosamente.');
+          cargarCobranzas();
+        } else {
+          showToast('Error al guardar el acuerdo.');
+        }
+      };
+      xhr.send(JSON.stringify({
+        alumno_id: selectedAlumnoComp.alumno_id,
+        plan_id: selectedAlumnoComp.plan_id,
+        nota: nota,
+        fecha_prometida: fecha || null,
+        monto: monto ? Number(monto) : null,
+        contacto_realizado: true
+      }));
+    }
+
+    // Inicio automático
+    checkAuth();
+  </script>
 </body>
 </html>
