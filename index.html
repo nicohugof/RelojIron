@@ -2063,6 +2063,18 @@
 <script type="text/javascript">
 (function () {
 
+  // Soporte para proxy reverso (/reloj/): reescribir llamadas relativas a la raíz
+  var basePath = (window.location.pathname.indexOf('/reloj') === 0) ? '/reloj' : '';
+  if (basePath) {
+    var _origOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+      if (typeof url === 'string' && url.charAt(0) === '/' && url.indexOf(basePath) !== 0) {
+        url = basePath + url;
+      }
+      return _origOpen.call(this, method, url, async, user, password);
+    };
+  }
+
   function pad(n) {
     return (n < 10 ? '0' : '') + n;
   }
