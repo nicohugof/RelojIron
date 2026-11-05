@@ -3909,10 +3909,100 @@
     }
   }
 
+  /* ---------- sincronizacion con Dashboard /api/reloj/estado ---------- */
+  var syncInFlight = false;
+  var lastSyncedVersion = 0;
+
+  function syncWithDashboard(action, params) {
+    if (typeof XMLHttpRequest === 'undefined') { return; }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/reloj/estado', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        try {
+          var res = JSON.parse(xhr.responseText);
+          if (res && res.state) {
+            applyDashboardRelojState(res.state, res.serverTime);
+          }
+        } catch (e) {}
+      }
+    };
+    var payload = { accion: action };
+    if (params) {
+      if (params.modo) { payload.modo = params.modo; }
+      if (params.initialSec) { payload.initialSec = params.initialSec; }
+    }
+    xhr.send(JSON.stringify(payload));
+  }
+
+  function pollDashboardReloj() {
+    if (syncInFlight) { return; }
+    syncInFlight = true;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/reloj/estado', true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        syncInFlight = false;
+        if (xhr.status === 200) {
+          try {
+            var res = JSON.parse(xhr.responseText);
+            if (res && res.state) {
+              applyDashboardRelojState(res.state, res.serverTime);
+            }
+          } catch (e) {}
+        }
+      }
+    };
+    xhr.send(null);
+  }
+
+  function applyDashboardRelojState(st, serverTime) {
+    if (!st || st.version === lastSyncedVersion) { return; }
+    lastSyncedVersion = st.version;
+
+    if (stopwatches.length === 0) {
+      if (st.modo === 'temporizador' || st.modo === 'emom') {
+        addTile('timer', (st.initialSec || 60) * 1000);
+      } else {
+        addTile('sw', 0);
+      }
+    }
+
+    var primary = stopwatches[0];
+    if (!primary) { return; }
+
+    if ((st.modo === 'temporizador' || st.modo === 'emom') && primary.type !== 'timer') {
+      primary.type = 'timer';
+      primary.totalMs = (st.initialSec || 60) * 1000;
+    } else if (st.modo === 'cronometro' && primary.type !== 'sw') {
+      primary.type = 'sw';
+      primary.totalMs = 0;
+    }
+
+    if (st.estado === 'running') {
+      primary.running = true;
+      var now = Date.now();
+      var skew = (typeof serverTime === 'number') ? (serverTime - now) : 0;
+      primary.startTs = (st.startTs || now) - skew;
+      primary.elapsedMs = st.elapsedMs || 0;
+      primary.done = false;
+    } else if (st.estado === 'paused') {
+      primary.running = false;
+      primary.elapsedMs = st.elapsedMs || 0;
+    } else if (st.estado === 'stopped') {
+      primary.running = false;
+      primary.elapsedMs = st.elapsedMs || 0;
+      primary.done = false;
+    }
+    redrawRow(primary);
+  }
+
   function toggleRun(sw) {
     if (sw.running) {
       sw.elapsedMs = getElapsed(sw);
       sw.running = false;
+      if (stopwatches[0] === sw) { syncWithDashboard('pausar'); }
     } else {
       if (sw.done) {
         sw.done = false;
@@ -3922,6 +4012,7 @@
       }
       sw.startTs = Date.now();
       sw.running = true;
+      if (stopwatches[0] === sw) { syncWithDashboard('iniciar'); }
     }
     redrawRow(sw);
   }
@@ -3934,6 +4025,7 @@
     sw.beeped = false;
     sw.blinkTick = 0;
     sw.rowEl.style.background = COLOR_BG;
+    if (stopwatches[0] === sw) { syncWithDashboard('reiniciar'); }
     redrawRow(sw);
   }
 
@@ -4113,6 +4205,9 @@
       if (stopwatches[i].running || stopwatches[i].done) { redrawRow(stopwatches[i]); }
     }
   }, 100);
+
+  setInterval(pollDashboardReloj, 2000);
+  pollDashboardReloj();
 
   updateEmptyState();
 
