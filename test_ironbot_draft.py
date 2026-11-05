@@ -76,6 +76,7 @@ class IronBotDraftTests(unittest.TestCase):
         html = Path(rutina_server.DIRECTORY, 'index.html').read_text(encoding='utf-8')
         self.assertIn('window.confirm(\'IronBot consultará hasta cinco rutinas guardadas anteriores', html)
         self.assertIn('Ya existe una rutina guardada para', html)
+        self.assertIn('rutinaGuardadaExiste && rutinaBorradorExterno && !window.confirm', html)
         self.assertIn("xhr.open('POST', '/api/generar-rutina'", html)
         self.assertIn('no marca asistencia efectiva', html)
         self.assertIn('tabHoy" class="tab">ASISTENCIA', html)

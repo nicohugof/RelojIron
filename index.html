@@ -3226,6 +3226,10 @@
   var rutinaViendoLegacy = false;
   var rutinaSinGuardar = false;
   var rutinaGuardadaExiste = false;
+  // Solo un borrador de IronBot puede pisar una rutina guardada que el profe no
+  // editó; editar la rutina cargada y guardarla no requiere confirmación.
+  var rutinaBorradorExterno = false;
+  var rutinaGuardando = false;
 
   function pintarJornadas() {
     rutinaJornadaAM.className = 'rutinaJornadaBtn' + (!rutinaViendoLegacy && jornadaSeleccionada === 'AM' ? ' active' : '');
@@ -3271,8 +3275,14 @@
 
   rutinaLegacyCopyAmBtn.addEventListener('click', function () { copiarHistoricoSinJornada('AM'); }, false);
   rutinaLegacyCopyPmBtn.addEventListener('click', function () { copiarHistoricoSinJornada('PM'); }, false);
-  rutinaText.addEventListener('keyup', function () { if (!rutinaViendoLegacy) { rutinaSinGuardar = true; } }, false);
-  rutinaText.addEventListener('change', function () { if (!rutinaViendoLegacy) { rutinaSinGuardar = true; } }, false);
+  function marcarRutinaEditada() {
+    if (rutinaViendoLegacy) { return; }
+    if (!rutinaSinGuardar) { rutinaStatus.innerHTML = 'Cambios sin guardar'; }
+    rutinaSinGuardar = true;
+  }
+  rutinaText.addEventListener('keyup', marcarRutinaEditada, false);
+  rutinaText.addEventListener('input', marcarRutinaEditada, false);
+  rutinaText.addEventListener('change', marcarRutinaEditada, false);
 
   function fechaAISO(fecha) {
     return fecha.getFullYear() + '-' + pad(fecha.getMonth() + 1) + '-' + pad(fecha.getDate());
@@ -3398,6 +3408,7 @@
 
   function cargarRutinaFecha(fecha) {
     rutinaGuardadaExiste = false;
+    rutinaBorradorExterno = false;
     rutinaLegacyEncontrada = false;
     rutinaLegacyContenido = '';
     rutinaViendoLegacy = false;
@@ -3499,22 +3510,26 @@
   }
 
   function guardarRutina() {
-    if (rutinaViendoLegacy) { return; }
-    if (rutinaGuardadaExiste && !window.confirm('Ya existe una rutina guardada para ' + fechaSeleccionada + ' ' + jornadaSeleccionada + '. ¿Confirmas reemplazarla?')) { return; }
+    if (rutinaViendoLegacy || rutinaGuardando) { return; }
+    if (rutinaGuardadaExiste && rutinaBorradorExterno && !window.confirm('Ya existe una rutina guardada para ' + fechaSeleccionada + ' ' + jornadaSeleccionada + '. El borrador de IronBot la reemplazará. ¿Confirmas?')) { return; }
     rutinaStatus.innerHTML = 'Guardando...';
+    rutinaGuardando = true;
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/guardar', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
+        rutinaGuardando = false;
         if (xhr.status === 200) {
           rutinaSinGuardar = false;
           rutinaGuardadaExiste = true;
-          rutinaStatus.innerHTML = 'Guardado';
+          rutinaBorradorExterno = false;
+          var ahora = new Date();
+          rutinaStatus.innerHTML = 'Guardado ✓ ' + jornadaSeleccionada + ' · ' + ('0' + ahora.getHours()).slice(-2) + ':' + ('0' + ahora.getMinutes()).slice(-2);
           cargarDias();
         } else {
-          rutinaStatus.innerHTML = 'No se pudo guardar';
+          rutinaStatus.innerHTML = 'No se pudo guardar (error ' + xhr.status + ') · tus cambios siguen en pantalla';
         }
       }
     };
@@ -3554,6 +3569,7 @@
             if (data.rutina) {
               rutinaText.value = data.rutina;
               rutinaSinGuardar = true;
+              rutinaBorradorExterno = true;
               fitRutinaText();
               rutinaStatus.innerHTML = '⚡ Borrador generado · ' + (data.historial || 'sin historial verificable');
               return;
@@ -3563,6 +3579,7 @@
           if (resp.indexOf('CALENTAMIENTO') !== -1) {
             rutinaText.value = resp;
             rutinaSinGuardar = true;
+            rutinaBorradorExterno = true;
             fitRutinaText();
             rutinaStatus.innerHTML = '⚡ Borrador generado · revisa antes de guardar';
           } else {
