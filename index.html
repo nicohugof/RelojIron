@@ -896,53 +896,57 @@
   }
   #hoyAmPmBar {
     position: absolute;
-    top: 8px;
+    top: 10px;
     left: 16px;
     right: 16px;
-    height: 52px;
+    height: 42px;
+    background: #E5E7EB;
+    border-radius: 10px;
+    padding: 3px;
+    box-sizing: border-box;
   }
   #hoyAmPm {
     display: table;
     width: 100%;
-    height: 52px;
+    height: 36px;
     table-layout: fixed;
     border-collapse: separate;
-    border-spacing: 6px 0;
+    border-spacing: 2px 0;
   }
   .hoyAmPmBtn {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    height: 52px;
-    background: #FFFFFF;
+    height: 36px;
+    background: transparent;
     color: #4B5563;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 800;
-    font-size: 24px;
-    letter-spacing: 2px;
-    border: 2px solid #E5E7EB;
-    border-radius: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    transition: all 0.15s ease;
   }
   .hoyAmPmBtn.on {
-    background: #C23B22;
-    color: #FFFFFF;
-    border-color: #C23B22;
-    box-shadow: 0 2px 6px rgba(194,59,34,0.35);
+    background: #FFFFFF;
+    color: #111827;
+    font-weight: 800;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
   }
   #hoySearch {
     position: absolute;
-    top: 68px;
+    top: 60px;
     left: 16px;
     right: 16px;
-    height: 46px;
+    height: 44px;
     box-sizing: border-box;
     background: #FFFFFF;
     color: #111827;
     border: 2px solid #D1D5DB;
     border-radius: 10px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     padding: 0 14px;
@@ -952,17 +956,17 @@
   }
   #hoyCounts {
     position: absolute;
-    top: 124px;
+    top: 112px;
     left: 16px;
     right: 16px;
-    height: 42px;
+    height: 38px;
     overflow: hidden;
     white-space: nowrap;
   }
   .hoyCount {
     display: inline-block;
-    margin-right: 10px;
-    padding: 6px 14px;
+    margin-right: 8px;
+    padding: 4px 12px;
     background: #FFFFFF;
     border: 1px solid #E5E7EB;
     border-radius: 8px;
@@ -972,13 +976,13 @@
   }
   .hoyCount b {
     display: inline-block;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
     color: #111827;
-    margin-right: 8px;
+    margin-right: 6px;
   }
   .hoyCount span {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #6B7280;
@@ -991,7 +995,7 @@
   .hoyCount.sin b { color: #D97706; }
   #hoyMain {
     position: absolute;
-    top: 174px;
+    top: 156px;
     left: 0;
     right: 0;
     bottom: 30px;
@@ -1000,7 +1004,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    right: 36px;
+    right: 0;
     bottom: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -1008,91 +1012,133 @@
   }
   #hoyList {
     position: relative;
-    padding: 6px 16px 36px 16px;
+    padding: 6px 14px 36px 14px;
   }
   #hoyLetters {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 36px;
-    bottom: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: #FFFFFF;
-    border-left: 1px solid #E5E7EB;
+    display: none !important;
   }
-  .hoyLetter {
-    height: 22px;
-    line-height: 22px;
-    text-align: center;
-    color: #9CA3AF;
+  .hoySectionHeader {
+    padding: 12px 2px 6px 2px;
+  }
+  .hoySectionTitle {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
-  .hoyLetter.on {
-    color: #C23B22;
-    font-weight: 900;
-  }
-  .hoySec {
-    padding: 14px 4px 6px 4px;
+  .hoySectionTitle.si { color: #15803D; }
+  .hoySectionTitle.no { color: #B91C1C; }
+  .hoySectionTitle.busqueda { color: #1F2937; }
+  .hoyEmptyCard {
+    background: #FFFFFF;
+    border: 1px dashed #D1D5DB;
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
     color: #6B7280;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
   }
   .hoyRow {
-    display: table;
+    display: block;
     width: 100%;
-    table-layout: fixed;
-    padding: 12px 16px;
+    box-sizing: border-box;
+    padding: 12px 14px;
     background: #FFFFFF;
     border: 1px solid #E5E7EB;
     border-radius: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
-  .hoyNameCol {
+  .hoyRowTop {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 6px;
+  }
+  .hoyRowNameWrap {
     display: table-cell;
     vertical-align: middle;
-    padding-right: 12px;
   }
   .hoyName {
     color: #111827;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-size: 21px;
+    font-size: 20px;
     font-weight: 800;
     line-height: 1.25;
     letter-spacing: -0.3px;
+    word-break: break-word;
+  }
+  .hoyRowBadgeWrap {
+    display: table-cell;
+    width: 90px;
+    vertical-align: middle;
+    text-align: right;
+  }
+  .hoyPill {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .hoyPill.si {
+    background: #DCFCE7;
+    color: #15803D;
+    border: 1px solid #86EFAC;
+  }
+  .hoyPill.no {
+    background: #FEE2E2;
+    color: #B91C1C;
+    border: 1px solid #FCA5A5;
+  }
+  .hoyPill.sin {
+    background: #FEF3C7;
+    color: #B45309;
+    border: 1px solid #FCD34D;
+  }
+  .hoyPill.padron {
+    background: #F3F4F6;
+    color: #4B5563;
+    border: 1px solid #E5E7EB;
   }
   .hoyMeta {
     color: #6B7280;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.2px;
-    margin-top: 4px;
+    margin-top: 2px;
   }
-  .hoyRow.si .hoyMeta { color: #15803D; font-weight: 700; }
-  .hoyRow.no .hoyMeta { color: #DC2626; font-weight: 700; }
-  .hoyRow.sin .hoyMeta { color: #D97706; font-weight: 700; }
+  .hoyRow.si .hoyMeta { color: #15803D; }
+  .hoyRow.no .hoyMeta { color: #DC2626; }
+  .hoyRow.sin .hoyMeta { color: #D97706; }
+  .hoyRowNotice {
+    color: #B45309;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #FDE68A;
+  }
   .hoyBtns {
-    display: table-cell;
-    width: 250px;
-    vertical-align: middle;
-  }
-  .hoyBtnsInner {
     display: table;
     width: 100%;
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 6px 0;
+    margin-top: 6px;
   }
   .hoyBtn {
     display: table-cell;
-    height: 48px;
+    height: 42px;
     text-align: center;
     vertical-align: middle;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -1102,6 +1148,7 @@
     white-space: nowrap;
     border-radius: 8px;
     cursor: pointer;
+    box-sizing: border-box;
   }
   .hoyBtn.si {
     background: #F0FDF4;
@@ -1132,7 +1179,6 @@
     font-size: 12px;
   }
   .hoyRow.ro .hoyName { color: #6B7280; }
-  .hoyRow.ro .hoyBtns { width: 1px; }
   #hoyStatus {
     position: absolute;
     left: 0;
@@ -3186,60 +3232,133 @@
     return btn;
   }
 
-  function hoyPintarFilaR(parts, confirmado) {
+  function hoyNormalizarNombre(txt) {
+    if (!txt) { return ''; }
+    var doblado = hoyDoblar(String(txt));
+    return doblado.replace(/[^A-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+  }
+
+  function hoyBuscarCoincidenciaPadron(nombreRaw, padronR) {
+    var rawNorm = hoyNormalizarNombre(nombreRaw);
+    if (!rawNorm || !padronR || !padronR.length) { return null; }
+    var palabrasRaw = rawNorm.split(' ');
+    var primeraPalabra = palabrasRaw[0];
+    if (primeraPalabra.length < 3) { return null; }
+
+    var candidatos = [];
+    for (var i = 0; i < padronR.length; i++) {
+      var item = padronR[i];
+      var pNorm = hoyNormalizarNombre(item.nombre);
+      var pPalabras = pNorm.split(' ');
+      if (pPalabras.length > 0 && pPalabras[0] === primeraPalabra) {
+        candidatos.push(item);
+      } else if (pNorm.indexOf(rawNorm) !== -1 || rawNorm.indexOf(pNorm) !== -1) {
+        candidatos.push(item);
+      }
+    }
+    if (candidatos.length === 1) {
+      return candidatos[0];
+    }
+    return null;
+  }
+
+  function hoyPintarTarjeta(item) {
+    var alumnoId = item.alumnoId || '';
+    var nombre = item.nombre || '';
+    var resp = item.resp || '';
+    var origen = hoyOrigenVisible(item.origen || '');
+    var alias = item.alias || '';
+    var noVinculado = !!item.noVinculado;
+
+    var row = document.createElement('div');
+    row.className = 'hoyRow ' + hoyClaseResp(resp) + (noVinculado ? ' noVinculado' : '');
+
+    var topRow = document.createElement('div');
+    topRow.className = 'hoyRowTop';
+
+    var nameWrap = document.createElement('div');
+    nameWrap.className = 'hoyRowNameWrap';
+
+    var nameEl = document.createElement('div');
+    nameEl.className = 'hoyName';
+    hoyTextoNodo(nameEl, nombre);
+    nameWrap.appendChild(nameEl);
+
+    var metaEl = document.createElement('div');
+    metaEl.className = 'hoyMeta';
+    var metaText = '';
+    if (alias) {
+      metaText = 'CONFIRMÓ WHATSAPP · (como "' + alias + '") · ' + (origen || 'encuesta');
+    } else if (origen) {
+      metaText = (resp === 'si' ? 'CONFIRMÓ WHATSAPP · ' : '') + origen;
+    } else {
+      metaText = 'Padrón canónico';
+    }
+    hoyTextoNodo(metaEl, metaText);
+    nameWrap.appendChild(metaEl);
+    topRow.appendChild(nameWrap);
+
+    var badgeWrap = document.createElement('div');
+    badgeWrap.className = 'hoyRowBadgeWrap';
+    var pill = document.createElement('span');
+    if (resp === 'si') {
+      pill.className = 'hoyPill si';
+      hoyTextoNodo(pill, 'VIENE');
+    } else if (resp === 'no') {
+      pill.className = 'hoyPill no';
+      hoyTextoNodo(pill, 'NO VA');
+    } else if (noVinculado) {
+      pill.className = 'hoyPill sin';
+      hoyTextoNodo(pill, 'SIN VINC.');
+    } else {
+      pill.className = 'hoyPill padron';
+      hoyTextoNodo(pill, 'PADRÓN');
+    }
+    badgeWrap.appendChild(pill);
+    topRow.appendChild(badgeWrap);
+    row.appendChild(topRow);
+
+    if (alumnoId) {
+      var btns = document.createElement('div');
+      btns.className = 'hoyBtns';
+      btns.appendChild(hoyBoton('PRESENTE', 'si', resp === 'si', alumnoId, 'si'));
+      btns.appendChild(hoyBoton('AUSENTE', 'no', resp === 'no', alumnoId, 'no'));
+      btns.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
+      row.appendChild(btns);
+    } else {
+      var notice = document.createElement('div');
+      notice.className = 'hoyRowNotice';
+      hoyTextoNodo(notice, 'Voto desde WhatsApp · Alumno no vinculado en el padrón');
+      row.appendChild(notice);
+    }
+
+    return row;
+  }
+
+  function hoyPintarFilaR(parts, encuesta) {
+    // Compatibilidad: hoyPintarFilaR(fila.parts, encuesta)
     var alumnoId = parts[1] || '';
     var nombre = parts[2] || '';
     var resp = parts[3] || '';
-    var origen = hoyOrigenVisible(parts[4] || '');
-    var row = document.createElement('div');
-    row.className = 'hoyRow ' + hoyClaseResp(resp);
-
-    var nameCol = document.createElement('div');
-    nameCol.className = 'hoyNameCol';
-    var name = document.createElement('div');
-    name.className = 'hoyName';
-    hoyTextoNodo(name, nombre);
-    var meta = document.createElement('div');
-    meta.className = 'hoyMeta';
-    var detalle = confirmado
-      ? 'CONFIRMÓ WHATSAPP · ' + (origen || 'encuesta')
-      : (origen ? 'RESPUESTA: ' + hoyEtiqueta(resp) + ' · ' + origen : 'Padrón canónico');
-    hoyTextoNodo(meta, detalle);
-    nameCol.appendChild(name);
-    nameCol.appendChild(meta);
-    row.appendChild(nameCol);
-
-    var btns = document.createElement('div');
-    btns.className = 'hoyBtns';
-    var inner = document.createElement('div');
-    inner.className = 'hoyBtnsInner';
-    inner.appendChild(hoyBoton('PRESENTE', 'si', resp === 'si', alumnoId, 'si'));
-    inner.appendChild(hoyBoton('AUSENTE', 'no', resp === 'no', alumnoId, 'no'));
-    inner.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
-    btns.appendChild(inner);
-    row.appendChild(btns);
-    hoyList.appendChild(row);
+    var origen = parts[4] || '';
+    return hoyPintarTarjeta({ alumnoId: alumnoId, nombre: nombre, resp: resp, origen: origen });
   }
 
-  function hoyPintarFilaU(parts) {
-    var nombre = parts[1] || '';
-    var resp = parts[2] || '';
-    var origen = hoyOrigenVisible(parts[3] || '');
-    var row = document.createElement('div');
-    row.className = 'hoyRow ro ' + hoyClaseResp(resp);
+  function hoyCrearHeaderSeccion(titulo, cls, cantidad) {
+    var sec = document.createElement('div');
+    sec.className = 'hoySectionHeader';
+    var title = document.createElement('span');
+    title.className = 'hoySectionTitle ' + cls;
+    hoyTextoNodo(title, titulo + (cantidad !== undefined ? ' (' + cantidad + ')' : ''));
+    sec.appendChild(title);
+    return sec;
+  }
 
-    var nameCol = document.createElement('div');
-    nameCol.className = 'hoyNameCol';
-    var name = document.createElement('div');
-    name.className = 'hoyName';
-    hoyTextoNodo(name, nombre);
-    var meta = document.createElement('div');
-    meta.className = 'hoyMeta';
-    hoyTextoNodo(meta, hoyEtiqueta(resp) + ' · ' + (origen ? origen : 'solo lectura'));
-    nameCol.appendChild(name);
-    nameCol.appendChild(meta);
-    row.appendChild(nameCol);
-    hoyList.appendChild(row);
+  function hoyCrearTarjetaVacia(mensaje) {
+    var empty = document.createElement('div');
+    empty.className = 'hoyEmptyCard';
+    hoyTextoNodo(empty, mensaje);
+    return empty;
   }
 
   function hoyPintarCounts() {
@@ -3256,40 +3375,15 @@
     if (q) {
       var matches = 0;
       for (var i = 0; i < hoyFilas.length; i++) {
-        if (hoyDoblar(hoyFilas[i].nombre).indexOf(q) !== -1) { matches++; }
+        var matchNom = hoyDoblar(hoyFilas[i].nombre).indexOf(q) !== -1;
+        var matchAli = hoyFilas[i].alias ? hoyDoblar(hoyFilas[i].alias).indexOf(q) !== -1 : false;
+        if (matchNom || matchAli) { matches++; }
       }
       countBox('sin', 'PADRÓN', matches);
     } else {
-      countBox('si', 'VIENEN A CLASE', hoyConfirmados);
+      countBox('si', 'VIENEN HOY', hoyConfirmados);
+      countBox('no', 'NO VAN', hoyNoVan || 0);
       if (hoySinIdentidad) { countBox('sin', 'SIN VINCULAR', hoySinIdentidad); }
-    }
-  }
-
-  function hoySaltarLetra(letra) {
-    var el = document.getElementById('hoySec-' + letra);
-    if (!el || !hoyListWrap) { return; }
-    var top = el.offsetTop || 0;
-    var n = el.offsetParent;
-    while (n && n !== hoyListWrap) {
-      top += n.offsetTop || 0;
-      n = n.offsetParent;
-    }
-    hoyListWrap.scrollTop = top;
-  }
-
-  function hoyPintarLetras(activas) {
-    hoyLetters.innerHTML = '';
-    var i;
-    for (i = 0; i < HOY_LETRAS.length; i++) {
-      (function (letra) {
-        var d = document.createElement('div');
-        d.className = 'hoyLetter' + (activas[letra] ? ' on' : '');
-        hoyTextoNodo(d, letra);
-        d.addEventListener('click', function () {
-          hoySaltarLetra(letra);
-        }, false);
-        hoyLetters.appendChild(d);
-      })(HOY_LETRAS.charAt(i));
     }
   }
 
@@ -3297,53 +3391,67 @@
     var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
     hoyPintarCounts();
     hoyList.innerHTML = '';
-    var activas = {};
-    var ultima = '';
-    var i;
-    var vistos = 0;
-    for (i = 0; i < hoyFilas.length; i++) {
-      var fila = hoyFilas[i];
-      if (fila.kind !== 'R' && fila.kind !== 'U') { continue; }
-      var encuesta = fila.resp === 'si' && hoyEsEncuesta(fila.origen);
 
-      // Si no hay búsqueda: mostrar ÚNICAMENTE a los que vienen a la clase (resp === 'si')
-      if (!q && fila.resp !== 'si') {
-        continue;
-      }
-      // Si hay búsqueda: filtrar en todo el padrón de alumnos
-      if (q && hoyDoblar(fila.nombre).indexOf(q) === -1) {
-        continue;
-      }
-
-      vistos += 1;
-      if (fila.kind === 'R') {
-        if (fila.letra !== ultima) {
-          ultima = fila.letra;
-          if (ultima !== '#') {
-            activas[ultima] = true;
-          }
-          var sec = document.createElement('div');
-          sec.className = 'hoySec';
-          sec.id = 'hoySec-' + ultima;
-          hoyTextoNodo(sec, ultima === '#' ? '#' : ultima);
-          hoyList.appendChild(sec);
+    if (!q) {
+      // Vista limpia por defecto: Quién se anotó para venir y quién puso no voy
+      var vienen = [];
+      var noVan = [];
+      for (var i = 0; i < hoyFilas.length; i++) {
+        var f = hoyFilas[i];
+        if (f.resp === 'si') {
+          vienen.push(f);
+        } else if (f.resp === 'no') {
+          noVan.push(f);
         }
-        hoyPintarFilaR(fila.parts, encuesta);
-      } else if (fila.kind === 'U') {
-        hoyPintarFilaU(fila.parts);
       }
-    }
-    hoyPintarLetras(activas);
-    if (!vistos) {
-      if (q) {
+
+      // 1. Sección de los que se anotaron hoy para venir
+      hoyList.appendChild(hoyCrearHeaderSeccion('🟢 SE ANOTARON PARA VENIR HOY', 'si', vienen.length));
+      if (vienen.length === 0) {
+        hoyList.appendChild(hoyCrearTarjetaVacia('No hay alumnos confirmados para asistir en la jornada ' + hoyHorario + '.'));
+      } else {
+        for (var j = 0; j < vienen.length; j++) {
+          hoyList.appendChild(hoyPintarTarjeta(vienen[j]));
+        }
+      }
+
+      // 2. Sección de los que pusieron NO VOY
+      hoyList.appendChild(hoyCrearHeaderSeccion('🔴 PUSIERON "NO VOY"', 'no', noVan.length));
+      if (noVan.length === 0) {
+        hoyList.appendChild(hoyCrearTarjetaVacia('Ningún alumno ha reportado inasistencia para la jornada ' + hoyHorario + '.'));
+      } else {
+        for (var k = 0; k < noVan.length; k++) {
+          hoyList.appendChild(hoyPintarTarjeta(noVan[k]));
+        }
+      }
+
+      if (vienen.length === 0 && noVan.length === 0) {
+        hoySetStatus('No hay registros en la encuesta para ' + hoyHorario + '. Usa el buscador para agregar a un alumno.');
+      } else {
+        hoySetStatus((vienen.length ? vienen.length + ' anotados para venir' : 'Sin confirmados') + ' · Toca PRESENTE para marcar asistencia.');
+      }
+    } else {
+      // Modo búsqueda en el padrón
+      var encontrados = [];
+      for (var m = 0; m < hoyFilas.length; m++) {
+        var fila = hoyFilas[m];
+        var mNom = hoyDoblar(fila.nombre).indexOf(q) !== -1;
+        var mAli = fila.alias ? hoyDoblar(fila.alias).indexOf(q) !== -1 : false;
+        if (mNom || mAli) {
+          encontrados.push(fila);
+        }
+      }
+
+      hoyList.appendChild(hoyCrearHeaderSeccion('🔍 RESULTADOS EN EL PADRÓN', 'busqueda', encontrados.length));
+      if (encontrados.length === 0) {
+        hoyList.appendChild(hoyCrearTarjetaVacia('No se encontró a "' + hoySearch.value + '" en el padrón de alumnos.'));
         hoySetStatus('No se encontró a "' + hoySearch.value + '" en el padrón.');
       } else {
-        hoySetStatus('No hay alumnos confirmados para esta jornada. Usa el buscador de arriba para agregar a un alumno.');
+        for (var n = 0; n < encontrados.length; n++) {
+          hoyList.appendChild(hoyPintarTarjeta(encontrados[n]));
+        }
+        hoySetStatus('Encontrados ' + encontrados.length + ' alumnos. Toca PRESENTE para marcar asistencia.');
       }
-    } else if (q) {
-      hoySetStatus('Resultados de búsqueda en padrón (' + vistos + ' alumnos). Toca PRESENTE para marcar asistencia.');
-    } else {
-      hoySetStatus(hoyConfirmados ? (hoyConfirmados + ' confirmaron por WhatsApp · Toca PRESENTE para marcar asistencia.') : 'Toca PRESENTE o AUSENTE para marcar asistencia.');
     }
   }
 
@@ -3386,10 +3494,10 @@
       hoySetStatus('');
       var lines = t.split('\n');
       var counts = { si: '0', no: '0', sin: '0' };
-      var filas = [];
-      var sinIdentidad = 0;
-      var hayRespuesta = false;
+      var filasPadron = [];
+      var filasRawU = [];
       var i;
+
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (!line) { continue; }
@@ -3401,31 +3509,72 @@
         } else if (parts[0] === 'R' && parts.length >= 3) {
           var respuesta = parts[3] || '';
           var origenFila = parts[4] || '';
-          if (respuesta === 'si' || respuesta === 'no') { hayRespuesta = true; }
-          filas.push({ kind: 'R', parts: parts, nombre: parts[2] || '', resp: respuesta, origen: origenFila, letra: hoyLetraDeNombre(parts[2] || '') });
+          filasPadron.push({
+            kind: 'R',
+            alumnoId: parts[1] || '',
+            nombre: parts[2] || '',
+            resp: respuesta,
+            origen: origenFila,
+            alias: '',
+            letra: hoyLetraDeNombre(parts[2] || '')
+          });
         } else if (parts[0] === 'U' && parts.length >= 2) {
-          var respuestaU = parts[2] || '';
-          if (respuestaU === 'si' || respuestaU === 'no') { hayRespuesta = true; sinIdentidad++; }
-          filas.push({ kind: 'U', parts: parts, nombre: parts[1] || '', resp: respuestaU, origen: parts[3] || '', letra: hoyLetraDeNombre(parts[1] || '') });
+          filasRawU.push({
+            nombre: parts[1] || '',
+            resp: parts[2] || '',
+            origen: parts[3] || ''
+          });
         }
       }
-      filas.sort(function (a, b) {
+
+      var sinIdentidad = 0;
+      var confirmados = 0;
+      var noVan = 0;
+
+      // Emparejar votos de WhatsApp con alumnos del padrón (ej: "Gustavo" -> Gustavo Oporto)
+      for (var u = 0; u < filasRawU.length; u++) {
+        var rawU = filasRawU[u];
+        var match = hoyBuscarCoincidenciaPadron(rawU.nombre, filasPadron);
+        if (match) {
+          match.resp = rawU.resp;
+          match.origen = rawU.origen || 'encuesta';
+          match.alias = rawU.nombre;
+        } else {
+          sinIdentidad++;
+          filasPadron.push({
+            kind: 'U',
+            alumnoId: '',
+            nombre: rawU.nombre,
+            resp: rawU.resp,
+            origen: rawU.origen || 'encuesta',
+            alias: '',
+            letra: hoyLetraDeNombre(rawU.nombre),
+            noVinculado: true
+          });
+        }
+      }
+
+      for (var c = 0; c < filasPadron.length; c++) {
+        if (filasPadron[c].resp === 'si') {
+          confirmados++;
+        } else if (filasPadron[c].resp === 'no') {
+          noVan++;
+        }
+      }
+
+      filasPadron.sort(function (a, b) {
         var an = hoyDoblar(a.nombre);
         var bn = hoyDoblar(b.nombre);
         if (an < bn) { return -1; }
         if (an > bn) { return 1; }
         return 0;
       });
-      hoyFilas = filas;
+
+      hoyFilas = filasPadron;
       hoyCountsData = counts;
       hoySinIdentidad = sinIdentidad;
-      hoyHayRespuesta = hayRespuesta;
-      hoyConfirmados = 0;
-      for (var c = 0; c < filas.length; c++) {
-        if (filas[c].resp === 'si') {
-          hoyConfirmados++;
-        }
-      }
+      hoyConfirmados = confirmados;
+      hoyNoVan = noVan;
       hoyPintarLista();
     };
     xhr.send(null);
