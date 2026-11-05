@@ -1710,7 +1710,110 @@
   .personalActions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .personalHistory { white-space:pre-wrap; word-wrap:break-word; color:#EDE9DF; font-size:16px; line-height:1.5; }
   .personalHistoryCard { border-top:1px solid #34322C; margin-top:12px; padding-top:12px; }
-  @media (max-width:700px) { #personalizadosView { padding:10px; } .personalStudents { gap:8px; } .personalActions { gap:8px; } #personalText { min-height:220px; } }
+  .tab-short { display: none; }
+  @media (max-width:700px) {
+    #personalizadosView { padding:10px; }
+    .personalStudents { gap:8px; }
+    .personalActions { gap:8px; }
+    #personalText { min-height:220px; }
+    .tab-full { display: none; }
+    .tab-short { display: inline; }
+  }
+
+  /* Adaptación responsive para botones y controles en pantallas medianas y móviles */
+  @media (max-width: 768px) {
+    .tab {
+      font-size: 10px;
+      letter-spacing: 0;
+      padding: 0 1px;
+    }
+    .rutinaBtn {
+      font-size: 11px;
+      letter-spacing: 0;
+      padding: 0 2px;
+    }
+    .addBtn {
+      font-size: 14px;
+      height: 50px;
+      line-height: 50px;
+      padding: 0 4px;
+    }
+    .swRow .swBtn:not(.swRemove) {
+      min-width: 86px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 15px;
+    }
+    .personalStudentBtn, .personalBtn {
+      min-height: 48px;
+      font-size: 14px;
+      padding: 8px 6px;
+    }
+    #rutinaLegacyCopyAmBtn, #rutinaLegacyCopyPmBtn {
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .tab {
+      font-size: 8.5px;
+      letter-spacing: -0.2px;
+      padding: 0 1px;
+    }
+    .rutinaBtn {
+      font-size: 10px;
+      letter-spacing: 0;
+      padding: 0 1px;
+    }
+    #rutinaLegacyCopyAmBtn, #rutinaLegacyCopyPmBtn {
+      font-size: 9px;
+      letter-spacing: 0;
+    }
+    .addBtn {
+      font-size: 11px;
+      height: 44px;
+      line-height: 44px;
+      letter-spacing: 0;
+      padding: 0 2px;
+    }
+    .swRow .swBtn:not(.swRemove) {
+      min-width: 68px;
+      height: 42px;
+      line-height: 42px;
+      font-size: 13px;
+      padding: 0 4px;
+    }
+    .gymFilterBtn {
+      padding: 5px 6px;
+      font-size: 10px;
+      letter-spacing: 0;
+      margin-right: 2px;
+    }
+    .gymActionBtn {
+      width: 76px;
+      font-size: 10px;
+    }
+    .personalStudentBtn, .personalBtn {
+      min-height: 42px;
+      font-size: 12px;
+      padding: 6px 4px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .tab {
+      font-size: 7.5px;
+      letter-spacing: -0.3px;
+      padding: 0;
+    }
+    .rutinaBtn {
+      font-size: 9px;
+    }
+    .addBtn {
+      font-size: 10px;
+    }
+  }
 </style>
 </head>
 <body>

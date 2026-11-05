@@ -416,6 +416,59 @@
       z-index: 200;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
+
+    /* Adaptación responsive para pantallas móviles y tabletas */
+    @media (max-width: 640px) {
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .brand {
+        justify-content: center;
+        text-align: center;
+      }
+      .header-actions {
+        display: flex;
+        width: 100%;
+        gap: 6px;
+      }
+      .btn-action {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 6px;
+        font-size: 11px;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .filter-tabs {
+        gap: 4px;
+        padding-bottom: 6px;
+      }
+      .filter-tab {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+      .btn-sm {
+        font-size: 10px;
+        padding: 4px 6px;
+      }
+      .kpis-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .modal-card {
+        width: 95%;
+        padding: 16px;
+      }
+      .modal-footer {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .modal-footer .btn-action {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
