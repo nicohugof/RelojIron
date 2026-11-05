@@ -2147,7 +2147,7 @@
           <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
         </div>
       </div>
-      <input type="text" id="hoySearch" placeholder="🔍 Buscar alumno en el padrón para agregar a la clase..." autocomplete="off">
+      <input type="text" id="hoySearch" placeholder="🔍 Buscar alumno para agregar a la clase..." autocomplete="off">
       <div id="hoyCounts"></div>
       <div id="hoyMain">
         <div id="hoyListWrap">
@@ -3238,26 +3238,76 @@
     return doblado.replace(/[^A-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
   }
 
-  function hoyBuscarCoincidenciaPadron(nombreRaw, padronR) {
-    var rawNorm = hoyNormalizarNombre(nombreRaw);
-    if (!rawNorm || !padronR || !padronR.length) { return null; }
-    var palabrasRaw = rawNorm.split(' ');
-    var primeraPalabra = palabrasRaw[0];
-    if (primeraPalabra.length < 3) { return null; }
+  var HOY_ALIAS_CONOCIDOS = {
+    'GUTI': 'GUSTAVO OPORTO',
+    'GUSTAVO': 'GUSTAVO OPORTO',
+    'EL OMI': 'OMAR',
+    'OMI': 'OMAR',
+    'OMI IRONCROSS': 'OMAR',
+    'DIEGO IROUME SOTO': 'DIEGO IROUME',
+    'MARCELO': 'MARCELO CATALDO',
+    'ALVARO': 'ALVARO MUNOZ',
+    'CARO': 'CAROLINA VAZQUEZ',
+    'FRANCOHATABELLO': 'FRANCO BELLOHATA',
+    'GERO': 'GERARDO ROJAS',
+    'TOMAS ROQUER': 'TOMAS',
+    'TAMY': 'TAMARA MATUS',
+    'JEANCA FUENTES': 'JEAN CARLO FUENTES',
+    'SIMON BENITO': 'SIMON STUARDO',
+    'CARMENCIISIMA': 'CARMEN'
+  };
 
-    var candidatos = [];
+  function hoyBuscarCoincidenciaPadron(nombreRaw, padronR) {
+    if (!nombreRaw || !padronR || !padronR.length) { return null; }
+    var rawClean = String(nombreRaw).replace(/^\s+|\s+$/g, '');
+    var rawNorm = hoyNormalizarNombre(rawClean);
+
+    if (rawClean === '🖤.-') { rawNorm = 'SEBASTIAN CALDERON'; }
+    if (rawClean === '🎼') { rawNorm = 'MARCELO CATALDO'; }
+    if (HOY_ALIAS_CONOCIDOS[rawNorm]) {
+      rawNorm = HOY_ALIAS_CONOCIDOS[rawNorm];
+    }
+
+    if (!rawNorm || rawNorm.length < 2) { return null; }
+    var palabrasRaw = rawNorm.split(' ');
+
+    var mejorItem = null;
+    var mejorPuntaje = 0;
+    var empates = 0;
+
     for (var i = 0; i < padronR.length; i++) {
       var item = padronR[i];
+      if (item.kind !== 'R') { continue; }
       var pNorm = hoyNormalizarNombre(item.nombre);
+      if (!pNorm || pNorm.length < 2) { continue; }
+
+      if (pNorm === rawNorm) {
+        return item;
+      }
+
       var pPalabras = pNorm.split(' ');
-      if (pPalabras.length > 0 && pPalabras[0] === primeraPalabra) {
-        candidatos.push(item);
-      } else if (pNorm.indexOf(rawNorm) !== -1 || rawNorm.indexOf(pNorm) !== -1) {
-        candidatos.push(item);
+      var coincidencias = 0;
+      for (var r = 0; r < palabrasRaw.length; r++) {
+        for (var p = 0; p < pPalabras.length; p++) {
+          if (palabrasRaw[r].length >= 3 && palabrasRaw[r] === pPalabras[p]) {
+            coincidencias++;
+          }
+        }
+      }
+
+      if (coincidencias > 0) {
+        if (coincidencias > mejorPuntaje) {
+          mejorPuntaje = coincidencias;
+          mejorItem = item;
+          empates = 1;
+        } else if (coincidencias === mejorPuntaje) {
+          empates++;
+        }
       }
     }
-    if (candidatos.length === 1) {
-      return candidatos[0];
+
+    if (mejorItem && (empates === 1 || mejorPuntaje >= 2)) {
+      return mejorItem;
     }
     return null;
   }
@@ -3268,10 +3318,9 @@
     var resp = item.resp || '';
     var origen = hoyOrigenVisible(item.origen || '');
     var alias = item.alias || '';
-    var noVinculado = !!item.noVinculado;
 
     var row = document.createElement('div');
-    row.className = 'hoyRow ' + hoyClaseResp(resp) + (noVinculado ? ' noVinculado' : '');
+    row.className = 'hoyRow ' + hoyClaseResp(resp);
 
     var topRow = document.createElement('div');
     topRow.className = 'hoyRowTop';
@@ -3287,12 +3336,12 @@
     var metaEl = document.createElement('div');
     metaEl.className = 'hoyMeta';
     var metaText = '';
-    if (alias) {
-      metaText = 'CONFIRMÓ WHATSAPP · (como "' + alias + '") · ' + (origen || 'encuesta');
+    if (alias && hoyNormalizarNombre(alias) !== hoyNormalizarNombre(nombre)) {
+      metaText = 'CONFIRMÓ WHATSAPP · (' + alias + ')';
     } else if (origen) {
       metaText = (resp === 'si' ? 'CONFIRMÓ WHATSAPP · ' : '') + origen;
     } else {
-      metaText = 'Padrón canónico';
+      metaText = 'Alumno registrado';
     }
     hoyTextoNodo(metaEl, metaText);
     nameWrap.appendChild(metaEl);
@@ -3300,21 +3349,12 @@
 
     var badgeWrap = document.createElement('div');
     badgeWrap.className = 'hoyRowBadgeWrap';
-    var pill = document.createElement('span');
-    if (resp === 'si') {
-      pill.className = 'hoyPill si';
-      hoyTextoNodo(pill, 'VIENE');
-    } else if (resp === 'no') {
-      pill.className = 'hoyPill no';
-      hoyTextoNodo(pill, 'NO VA');
-    } else if (noVinculado) {
-      pill.className = 'hoyPill sin';
-      hoyTextoNodo(pill, 'SIN VINC.');
-    } else {
-      pill.className = 'hoyPill padron';
-      hoyTextoNodo(pill, 'PADRÓN');
+    if (resp === 'si' || resp === 'no') {
+      var pill = document.createElement('span');
+      pill.className = 'hoyPill ' + (resp === 'si' ? 'si' : 'no');
+      hoyTextoNodo(pill, resp === 'si' ? 'VIENE' : 'NO VA');
+      badgeWrap.appendChild(pill);
     }
-    badgeWrap.appendChild(pill);
     topRow.appendChild(badgeWrap);
     row.appendChild(topRow);
 
@@ -3325,11 +3365,6 @@
       btns.appendChild(hoyBoton('AUSENTE', 'no', resp === 'no', alumnoId, 'no'));
       btns.appendChild(hoyBoton('LIMPIAR', 'limpiar', false, alumnoId, 'limpiar'));
       row.appendChild(btns);
-    } else {
-      var notice = document.createElement('div');
-      notice.className = 'hoyRowNotice';
-      hoyTextoNodo(notice, 'Voto desde WhatsApp · Alumno no vinculado en el padrón');
-      row.appendChild(notice);
     }
 
     return row;
@@ -3379,11 +3414,10 @@
         var matchAli = hoyFilas[i].alias ? hoyDoblar(hoyFilas[i].alias).indexOf(q) !== -1 : false;
         if (matchNom || matchAli) { matches++; }
       }
-      countBox('sin', 'PADRÓN', matches);
+      countBox('si', 'ENCONTRADOS', matches);
     } else {
       countBox('si', 'VIENEN HOY', hoyConfirmados);
       countBox('no', 'NO VAN', hoyNoVan || 0);
-      if (hoySinIdentidad) { countBox('sin', 'SIN VINCULAR', hoySinIdentidad); }
     }
   }
 
@@ -3431,7 +3465,7 @@
         hoySetStatus((vienen.length ? vienen.length + ' anotados para venir' : 'Sin confirmados') + ' · Toca PRESENTE para marcar asistencia.');
       }
     } else {
-      // Modo búsqueda en el padrón
+      // Modo búsqueda de alumnos
       var encontrados = [];
       for (var m = 0; m < hoyFilas.length; m++) {
         var fila = hoyFilas[m];
@@ -3442,10 +3476,10 @@
         }
       }
 
-      hoyList.appendChild(hoyCrearHeaderSeccion('🔍 RESULTADOS EN EL PADRÓN', 'busqueda', encontrados.length));
+      hoyList.appendChild(hoyCrearHeaderSeccion('🔍 ALUMNOS ENCONTRADOS', 'busqueda', encontrados.length));
       if (encontrados.length === 0) {
-        hoyList.appendChild(hoyCrearTarjetaVacia('No se encontró a "' + hoySearch.value + '" en el padrón de alumnos.'));
-        hoySetStatus('No se encontró a "' + hoySearch.value + '" en el padrón.');
+        hoyList.appendChild(hoyCrearTarjetaVacia('No se encontró a "' + hoySearch.value + '".'));
+        hoySetStatus('No se encontró a "' + hoySearch.value + '".');
       } else {
         for (var n = 0; n < encontrados.length; n++) {
           hoyList.appendChild(hoyPintarTarjeta(encontrados[n]));
