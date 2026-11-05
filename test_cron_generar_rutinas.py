@@ -70,7 +70,7 @@ class TestCronGenerarRutinas(unittest.TestCase):
             "ok": True,
             "rutina": "PREPARACION\nArticular\nCALENTAMIENTO\nSkipping",
         }
-        mock_guardar.return_value = (200, '{"ok":true}')
+        mock_guardar.return_value = None
 
         ok = cron_generar_rutinas.asegurar_rutina_jornada("2026-11-05", "PM", forzar=False)
         self.assertTrue(ok)

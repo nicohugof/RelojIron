@@ -65,13 +65,9 @@ def asegurar_rutina_jornada(
 
         rutina_texto = resultado["rutina"].strip()
         print(f"[GUARDANDO] Persistiendo rutina en la base de datos para {fecha} {jornada}...")
-        status, resp = rutina_server.guardar_rutina(fecha, rutina_texto, jornada)
-        if status in (200, 201):
-            print(f"[ÉXITO] Rutina creada y guardada para {fecha} {jornada}. (Status {status})")
-            return True
-        else:
-            print(f"[ERROR] Falló al guardar en panel: HTTP {status} - {resp}", file=sys.stderr)
-            return False
+        rutina_server.guardar_rutina(fecha, rutina_texto, jornada)
+        print(f"[ÉXITO] Rutina creada y guardada para {fecha} {jornada}.")
+        return True
 
     except Exception as exc:
         print(f"[EXCEPCIÓN] Error procesando rutina para {fecha} {jornada}: {exc}", file=sys.stderr)
