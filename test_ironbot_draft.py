@@ -94,7 +94,7 @@ class IronBotDraftTests(unittest.TestCase):
         self.assertIn('.swRow .swBtn:not(.swRemove)', html)
         self.assertIn('tabPersonalizados', html)
         self.assertIn('personalText', html)
-        self.assertIn('font-size: 12px;\n    letter-spacing: 0;\n    white-space: nowrap;', html)
+        self.assertIn('font-size: 14px;\n    letter-spacing: 0.5px;\n    white-space: nowrap;', html)
 
 
 if __name__ == '__main__':
