@@ -538,195 +538,229 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
+  /* ---------- panel dashboard / alumnos / pagos (diseno blanco apple/linear) ---------- */
+  #dashboardView {
+    display: none;
+    background: #F8F9FA;
+    color: #111827;
+    padding: 16px 20px 80px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
   #gymKpis {
-    padding: 12px 16px 8px 16px;
+    padding: 6px 0 16px 0;
     overflow: hidden;
   }
   .gymKpiCard {
     float: left;
-    background: #141412;
-    border: 1px solid #222;
-    padding: 10px 14px;
-    margin-right: 10px;
-    margin-bottom: 8px;
-    min-width: 130px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    min-width: 145px;
     cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
   .gymKpiLabel {
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 1.5px;
-    color: #7A7568;
-    margin-bottom: 4px;
-    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #6B7280;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   .gymKpiVal {
-    font-size: 20px;
-    font-weight: bold;
-    font-family: Helvetica, Arial, sans-serif;
-    color: #EDE9DF;
+    font-size: 28px;
+    font-weight: 800;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #111827;
+    line-height: 1.15;
   }
   .gymKpiSub {
-    font-size: 11px;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #9CA3AF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin-top: 4px;
   }
-  .kpiIngresos .gymKpiVal { color: #3CD070; }
-  .kpiActivos .gymKpiVal { color: #2E6B3E; }
-  .kpiPorVencer .gymKpiVal { color: #C29A22; }
-  .kpiVencidos .gymKpiVal { color: #C23B22; }
-  .kpiSinPlan .gymKpiVal { color: #7A7568; }
+  .kpiIngresos .gymKpiVal { color: #059669; }
+  .kpiActivos .gymKpiVal { color: #10B981; }
+  .kpiPorVencer .gymKpiVal { color: #D97706; }
+  .kpiVencidos .gymKpiVal { color: #DC2626; }
+  .kpiSinPlan .gymKpiVal { color: #6B7280; }
+
+  #alumnosView, #pagosView {
+    display: none;
+    background: #F8F9FA;
+    color: #111827;
+    padding: 16px 20px 80px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
   #gymToolbar {
-    padding: 6px 16px 10px 16px;
+    padding: 6px 0 14px 0;
     display: table;
     width: 100%;
     table-layout: fixed;
   }
   #gymFilters {
     display: table-cell;
-    width: 420px;
+    width: 440px;
     vertical-align: middle;
   }
   .gymFilterBtn {
     display: inline-block;
-    padding: 6px 10px;
-    background: #141412;
-    color: #7A7568;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    margin-right: 4px;
+    padding: 8px 12px;
+    background: #FFFFFF;
+    color: #4B5563;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-right: 6px;
     cursor: pointer;
-    font-family: Helvetica, Arial, sans-serif;
-    border: 1px solid #2A2A26;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
   }
   .gymFilterBtn.active {
     background: #C23B22;
-    color: #EDE9DF;
+    color: #FFFFFF;
     border-color: #C23B22;
+    box-shadow: 0 1px 3px rgba(194,59,34,0.3);
   }
   #gymSearch {
-    height: 34px;
-    background: #141412;
-    color: #EDE9DF;
-    border: 1px solid #2A2A26;
-    font-size: 14px;
-    font-family: Helvetica, Arial, sans-serif;
-    padding: 0 10px;
+    height: 42px;
+    background: #FFFFFF;
+    color: #111827;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 0 12px;
     width: 100%;
+    box-sizing: border-box;
     -webkit-user-select: text;
     user-select: text;
   }
   .gymActionBtn {
     display: table-cell;
     width: 110px;
-    height: 34px;
-    line-height: 34px;
+    height: 42px;
+    line-height: 42px;
     text-align: center;
-    background: #2A2A26;
-    color: #EDE9DF;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1px;
+    background: #111827;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     vertical-align: middle;
+    border-radius: 8px;
   }
   #gymList {
-    padding: 0 16px 20px 16px;
+    padding: 0 0 20px 0;
   }
   .gymRow {
     display: table;
     width: 100%;
     table-layout: fixed;
-    padding: 10px 0;
-    border-top: 1px solid #222;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   }
   .gymName {
     display: table-cell;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
     vertical-align: middle;
   }
   .gymMeta {
     display: table-cell;
     width: 280px;
     text-align: right;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    color: #6B7280;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
     vertical-align: middle;
   }
-  .gymRow.V .gymMeta { color: #C23B22; font-weight: bold; }
-  .gymRow.P .gymMeta { color: #C29A22; font-weight: bold; }
-  .gymRow.A .gymMeta { color: #5CB85C; }
-  .gymRow.S .gymMeta { color: #7A7568; }
+  .gymRow.V .gymMeta { color: #DC2626; font-weight: 800; }
+  .gymRow.P .gymMeta { color: #D97706; font-weight: 800; }
+  .gymRow.A .gymMeta { color: #059669; font-weight: 700; }
+  .gymRow.S .gymMeta { color: #9CA3AF; }
   #gymStatus, #pagosStatus {
     padding: 14px 16px;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
+    color: #6B7280;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     min-height: 16px;
-  }
-
-  /* pagos view */
-  #pagosView {
-    padding: 12px 16px 20px 16px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
   .pagoRow {
     display: table;
     width: 100%;
     table-layout: fixed;
-    padding: 10px 0;
-    border-top: 1px solid #222;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   }
   .pagoFecha {
     display: table-cell;
-    width: 65px;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: bold;
+    width: 75px;
+    color: #6B7280;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
     vertical-align: middle;
   }
   .pagoAlumno {
     display: table-cell;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    font-weight: bold;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
     vertical-align: middle;
   }
   .pagoPlan {
     display: table-cell;
     width: 220px;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    color: #4B5563;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
     vertical-align: middle;
   }
   .pagoMonto {
     display: table-cell;
-    width: 105px;
+    width: 120px;
     text-align: right;
-    color: #3CD070;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    font-weight: bold;
+    color: #059669;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
     vertical-align: middle;
   }
   .pagoMedio {
     display: table-cell;
     width: 160px;
     text-align: right;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
+    color: #9CA3AF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
     vertical-align: middle;
     overflow: hidden;
     white-space: nowrap;
@@ -753,125 +787,124 @@
     padding: 30px 24px;
     text-align: center;
   }
-  #hoyStatus {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    bottom: 0;
-    height: 22px;
-    padding: 2px 0 0 0;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  #hoyStatus.hoyError {
-    color: #C23B22;
-  }
-
   #gymPlanes {
-    padding: 4px 16px 20px 16px;
+    padding: 6px 0 40px 0;
   }
   .gymPlanGrupo {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 11px;
-    letter-spacing: 2px;
-    margin-top: 16px;
-    margin-bottom: 2px;
+    color: #6B7280;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
   }
   .gymPlanRow {
-    padding: 10px 0 12px 0;
-    border-top: 1px solid #222;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   }
   .gymPlanHead {
     display: table;
     width: 100%;
     table-layout: fixed;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   .gymPlanName {
     display: table-cell;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
     vertical-align: middle;
   }
   .gymPlanPrice {
     display: table-cell;
-    width: 110px;
+    width: 120px;
     text-align: right;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    color: #059669;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
     vertical-align: middle;
   }
   .gymPlanUrl {
     display: block;
     width: 100%;
-    background: #141412;
-    color: #EDE9DF;
-    border: 1px solid #2A2A26;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    padding: 8px;
+    box-sizing: border-box;
+    background: #F9FAFB;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-family: Menlo, Monaco, Courier, monospace;
+    font-size: 13px;
+    padding: 8px 10px;
     -webkit-user-select: text;
     user-select: text;
   }
   .gymPlanCopyBtn {
     display: inline-block;
-    margin-top: 6px;
-    padding: 0 14px;
-    height: 32px;
-    line-height: 32px;
-    background: #2A2A26;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 12px;
-    letter-spacing: 1px;
+    margin-top: 8px;
+    padding: 0 16px;
+    height: 36px;
+    line-height: 36px;
+    background: #C23B22;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-radius: 6px;
+    cursor: pointer;
   }
 
-  /* hoy / asistencia view */
+  /* hoy / asistencia view (panel blanco limpio apple/linear 10x) */
   #hoyView {
     display: none;
     overflow: hidden;
-    background: #0A0A09;
+    background: #F8F9FA;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   #hoyTitle {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 28px;
-    padding: 10px 16px 0 16px;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 3px;
+    height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.3px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E7EB;
   }
   #hoyPane {
     position: absolute;
-    top: 32px;
+    top: 45px;
     left: 0;
     right: 0;
     bottom: 0;
+    background: #F8F9FA;
   }
   #hoyAmPmBar {
     position: absolute;
-    top: 6px;
+    top: 8px;
     left: 16px;
     right: 16px;
-    height: 56px;
+    height: 52px;
   }
   #hoyAmPm {
     display: table;
     width: 100%;
-    height: 56px;
+    height: 52px;
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 6px 0;
@@ -880,145 +913,174 @@
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    height: 56px;
-    background: #141412;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
+    height: 52px;
+    background: #FFFFFF;
+    color: #4B5563;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
     font-size: 24px;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
   .hoyAmPmBtn.on {
     background: #C23B22;
-    color: #EDE9DF;
+    color: #FFFFFF;
+    border-color: #C23B22;
+    box-shadow: 0 2px 6px rgba(194,59,34,0.35);
   }
   #hoySearch {
     position: absolute;
     top: 68px;
     left: 16px;
     right: 16px;
-    height: 40px;
-    background: #141412;
-    color: #EDE9DF;
-    border: 1px solid #2A2A26;
-    font-size: 16px;
-    font-family: Helvetica, Arial, sans-serif;
-    padding: 0 12px;
+    height: 46px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    color: #111827;
+    border: 2px solid #D1D5DB;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 0 14px;
     -webkit-user-select: text;
     user-select: text;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
   #hoyCounts {
     position: absolute;
-    top: 114px;
+    top: 124px;
     left: 16px;
     right: 16px;
-    height: 36px;
+    height: 42px;
     overflow: hidden;
     white-space: nowrap;
   }
   .hoyCount {
     display: inline-block;
-    margin-right: 8px;
-    padding: 4px 10px;
-    background: #141412;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
+    margin-right: 10px;
+    padding: 6px 14px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    color: #374151;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   }
   .hoyCount b {
     display: inline-block;
-    font-size: 18px;
-    color: #EDE9DF;
-    margin-right: 6px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #111827;
+    margin-right: 8px;
   }
   .hoyCount span {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #7A7568;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #6B7280;
   }
-  .hoyCount.si b { color: #2E6B3E; }
-  .hoyCount.no b { color: #C23B22; }
-  .hoyCount.sin b { color: #C29A22; }
+  .hoyCount.si { border-color: #86EFAC; background: #F0FDF4; }
+  .hoyCount.si b { color: #15803D; }
+  .hoyCount.no { border-color: #FECACA; background: #FEF2F2; }
+  .hoyCount.no b { color: #DC2626; }
+  .hoyCount.sin { border-color: #FDE68A; background: #FFFBEB; }
+  .hoyCount.sin b { color: #D97706; }
   #hoyMain {
     position: absolute;
-    top: 154px;
+    top: 174px;
     left: 0;
     right: 0;
-    bottom: 26px;
+    bottom: 30px;
   }
   #hoyListWrap {
     position: absolute;
     top: 0;
     left: 0;
-    right: 28px;
+    right: 36px;
     bottom: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    background: #F8F9FA;
   }
   #hoyList {
     position: relative;
-    padding: 0 8px 16px 16px;
+    padding: 6px 16px 36px 16px;
   }
   #hoyLetters {
     position: absolute;
     top: 0;
     right: 0;
-    width: 28px;
+    width: 36px;
     bottom: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    background: #0A0A09;
+    background: #FFFFFF;
+    border-left: 1px solid #E5E7EB;
   }
   .hoyLetter {
-    height: 18px;
-    line-height: 18px;
+    height: 22px;
+    line-height: 22px;
     text-align: center;
-    color: #3A3830;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 11px;
+    color: #9CA3AF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
   }
   .hoyLetter.on {
-    color: #EDE9DF;
+    color: #C23B22;
+    font-weight: 900;
   }
   .hoySec {
-    padding: 8px 0 2px 0;
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 12px;
-    letter-spacing: 2px;
+    padding: 14px 4px 6px 4px;
+    color: #6B7280;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.5px;
   }
   .hoyRow {
     display: table;
     width: 100%;
     table-layout: fixed;
-    padding: 3px 0;
-    border-top: 1px solid #222;
+    padding: 12px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
   .hoyNameCol {
     display: table-cell;
     vertical-align: middle;
-    padding-right: 8px;
+    padding-right: 12px;
   }
   .hoyName {
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: bold;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
   }
   .hoyMeta {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1px;
+    color: #6B7280;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-top: 4px;
   }
-  .hoyRow.si .hoyMeta { color: #2E6B3E; }
-  .hoyRow.no .hoyMeta { color: #C23B22; }
-  .hoyRow.sin .hoyMeta { color: #C29A22; }
+  .hoyRow.si .hoyMeta { color: #15803D; font-weight: 700; }
+  .hoyRow.no .hoyMeta { color: #DC2626; font-weight: 700; }
+  .hoyRow.sin .hoyMeta { color: #D97706; font-weight: 700; }
   .hoyBtns {
     display: table-cell;
-    width: 210px;
+    width: 250px;
     vertical-align: middle;
   }
   .hoyBtnsInner {
@@ -1026,53 +1088,102 @@
     width: 100%;
     table-layout: fixed;
     border-collapse: separate;
-    border-spacing: 4px 0;
+    border-spacing: 6px 0;
   }
   .hoyBtn {
     display: table-cell;
-    height: 44px;
+    height: 48px;
     text-align: center;
     vertical-align: middle;
-    color: #EDE9DF;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 12px;
-    letter-spacing: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
-    background: #2A2A26;
+    border-radius: 8px;
+    cursor: pointer;
   }
-  .hoyBtn.si.on { background: #2E6B3E; }
-  .hoyBtn.no.on { background: #C23B22; }
-  .hoyBtn.limpiar { color: #7A7568; letter-spacing: 0; font-size: 11px; }
-  .hoyRow.ro .hoyName { color: #7A7568; }
+  .hoyBtn.si {
+    background: #F0FDF4;
+    color: #166534;
+    border: 1.5px solid #BBF7D0;
+  }
+  .hoyBtn.si.on {
+    background: #16A34A;
+    color: #FFFFFF;
+    border: 1.5px solid #15803D;
+    box-shadow: 0 2px 4px rgba(22,163,74,0.3);
+  }
+  .hoyBtn.no {
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1.5px solid #FECACA;
+  }
+  .hoyBtn.no.on {
+    background: #DC2626;
+    color: #FFFFFF;
+    border: 1.5px solid #B91C1C;
+    box-shadow: 0 2px 4px rgba(220,38,38,0.3);
+  }
+  .hoyBtn.limpiar {
+    background: #F3F4F6;
+    color: #4B5563;
+    border: 1.5px solid #E5E7EB;
+    font-size: 12px;
+  }
+  .hoyRow.ro .hoyName { color: #6B7280; }
   .hoyRow.ro .hoyBtns { width: 1px; }
+  #hoyStatus {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 16px;
+    background: #FFFFFF;
+    border-top: 1px solid #E5E7EB;
+    color: #4B5563;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  #hoyStatus.hoyError {
+    color: #DC2626;
+    font-weight: 700;
+  }
   #hoyLogin {
     display: none;
     position: absolute;
-    top: 32px;
+    top: 44px;
     left: 0;
     right: 0;
     bottom: 0;
     padding: 50px 24px;
+    background: #FFFFFF;
   }
   #hoyLoginTitle {
-    color: #7A7568;
-    font-family: Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 2px;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 1px;
     margin-bottom: 16px;
     text-align: center;
   }
   #hoyPassword {
     display: block;
     width: 100%;
+    box-sizing: border-box;
     height: 52px;
-    background: #141412;
-    color: #EDE9DF;
-    border: 1px solid #2A2A26;
+    background: #F9FAFB;
+    color: #111827;
+    border: 2px solid #D1D5DB;
+    border-radius: 8px;
     font-size: 22px;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     padding: 0 14px;
     text-align: center;
     letter-spacing: 4px;
@@ -1082,20 +1193,23 @@
     width: 100%;
     height: 52px;
     line-height: 52px;
-    margin-top: 12px;
+    margin-top: 14px;
     background: #C23B22;
-    color: #EDE9DF;
-    font-weight: bold;
-    font-size: 16px;
-    letter-spacing: 2px;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: 1px;
     text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
   }
   #hoyLoginError {
     margin-top: 14px;
     text-align: center;
-    color: #C23B22;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    color: #DC2626;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
     min-height: 16px;
   }
 
@@ -1837,6 +1951,7 @@
 <div id="views">
   <!-- 1. DASHBOARD / RESUMEN -->
   <div id="dashboardView" style="display:none;">
+    <div style="font-size:22px; font-weight:800; color:#111827; letter-spacing:-0.5px; margin:4px 0 16px 0;">PANEL DE CONTROL · IRONCROSS</div>
     <div id="gymKpis">
       <div class="gymKpiCard kpiIngresos">
         <div class="gymKpiLabel">INGRESOS ESTE MES</div>
@@ -1866,7 +1981,7 @@
     </div>
 
     <!-- Catálogo de Planes VirtualPOS -->
-    <div style="padding:10px 16px 4px 16px; font-size:12px; font-weight:bold; color:#C23B22; letter-spacing:2px; font-family:Helvetica,Arial,sans-serif;">
+    <div style="padding:16px 0 6px 0; font-size:14px; font-weight:800; color:#374151; letter-spacing:0.5px; text-transform:uppercase;">
       PLANES Y ENLACES DE PAGO VIRTUALPOS
     </div>
     <div id="gymPlanes"></div>
@@ -1874,6 +1989,7 @@
 
   <!-- 2. ALUMNOS -->
   <div id="alumnosView" style="display:none;">
+    <div style="font-size:22px; font-weight:800; color:#111827; letter-spacing:-0.5px; margin:4px 0 16px 0;">DIRECTORIO DE ALUMNOS</div>
     <div id="gymToolbar">
       <div id="gymFilters">
         <div id="gymFilterTodos" class="gymFilterBtn active">TODOS</div>
@@ -1893,9 +2009,7 @@
 
   <!-- 3. PAGOS -->
   <div id="pagosView" style="display:none;">
-    <div style="padding:4px 0 10px 0; font-size:12px; font-weight:bold; color:#3CD070; letter-spacing:2px; font-family:Helvetica,Arial,sans-serif;">
-      ÚLTIMAS TRANSACCIONES Y PAGOS REGISTRADOS
-    </div>
+    <div style="font-size:22px; font-weight:800; color:#111827; letter-spacing:-0.5px; margin:4px 0 16px 0;">HISTORIAL DE PAGOS</div>
     <div id="pagosList"></div>
     <div id="pagosStatus">&nbsp;</div>
   </div>
