@@ -177,6 +177,14 @@ class HoyProxyTest(unittest.TestCase):
         last = MockPanel.store['last_get']
         self.assertEqual(last['qs'].get('horario'), ['AM'])
 
+    def test_hoy_get_reenvia_fecha(self):
+        cookie = self._login()
+        status, body, _ = self._req('GET', '/api/hoy?horario=PM&fecha=2026-11-06', cookie=cookie)
+        self.assertEqual(status, 200)
+        last = MockPanel.store['last_get']
+        self.assertEqual(last['qs'].get('horario'), ['PM'])
+        self.assertEqual(last['qs'].get('fecha'), ['2026-11-06'])
+
     def test_hoy_get_normaliza_horario_pm_minuscula(self):
         cookie = self._login()
         status, _, _ = self._req('GET', '/api/hoy?horario=pm', cookie=cookie)
@@ -211,6 +219,17 @@ class HoyProxyTest(unittest.TestCase):
         self.assertEqual(body, 'OK')
         last = MockPanel.store['last_post']
         self.assertEqual(last['data'].get('horario'), ['PM'])
+
+    def test_hoy_post_reenvia_fecha(self):
+        cookie = self._login()
+        status, body, _ = self._req(
+            'POST', '/api/hoy', 'alumno_id=12&accion=si&horario=PM&fecha=2026-11-06', cookie=cookie
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(body, 'OK')
+        last = MockPanel.store['last_post']
+        self.assertEqual(last['data'].get('horario'), ['PM'])
+        self.assertEqual(last['data'].get('fecha'), ['2026-11-06'])
 
     def test_hoy_post_normaliza_horario_am_minuscula(self):
         cookie = self._login()

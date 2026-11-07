@@ -492,23 +492,40 @@ def horario_chile_ahora(ahora=None):
     return 'AM' if ahora.hour < 12 else 'PM'
 
 
-def leer_hoy(horario=None):
-    """Texto para la pestaña HOY del iPad (asistencia de un horario, vía panel)."""
+def normalizar_fecha(fecha_str):
+    if not fecha_str or not isinstance(fecha_str, str):
+        return None
+    fecha_str = fecha_str.strip()
+    if re.match(r'^\d{4}-\d{2}-\d{2}$', fecha_str):
+        return fecha_str
+    return None
+
+
+def leer_hoy(horario=None, fecha=None):
+    """Texto para la pestaña HOY del iPad (asistencia de un horario y fecha opcional, vía panel)."""
     if not horario:
         horario = horario_chile_ahora()
-    _, body = panel_request('GET', '/api/hoy', params={'horario': horario})
+    params = {'horario': horario}
+    fecha_norm = normalizar_fecha(fecha)
+    if fecha_norm:
+        params['fecha'] = fecha_norm
+    _, body = panel_request('GET', '/api/hoy', params=params)
     return body
 
 
-def escribir_hoy(alumno_id, accion, horario=None):
+def escribir_hoy(alumno_id, accion, horario=None, fecha=None):
     """Marca si/no/limpiar en HOY. El panel responde OK o ERROR|mensaje."""
     if not horario:
         horario = horario_chile_ahora()
-    _, body = panel_request('POST', '/api/hoy', form_body={
+    form_body = {
         'alumno_id': alumno_id,
         'accion': accion,
         'horario': horario,
-    })
+    }
+    fecha_norm = normalizar_fecha(fecha)
+    if fecha_norm:
+        form_body['fecha'] = fecha_norm
+    _, body = panel_request('POST', '/api/hoy', form_body=form_body)
     return body
 
 
@@ -791,12 +808,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 return
             horario_raw = qs.get('horario', [''])[0]
+            fecha_raw = qs.get('fecha', [''])[0]
             horario = normalizar_horario(horario_raw)
             if horario is False:
                 _responder_texto(self, 200, 'ERROR|horario invalido')
                 return
             try:
-                body = leer_hoy(horario).encode('utf-8')
+                body = leer_hoy(horario, fecha=fecha_raw).encode('utf-8')
             except PanelError:
                 self.send_response(502)
                 self.end_headers()
@@ -986,6 +1004,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             alumno_id = data.get('alumno_id', [''])[0]
             accion = data.get('accion', [''])[0]
             horario_raw = data.get('horario', [''])[0]
+            fecha_raw = data.get('fecha', [''])[0]
             horario = normalizar_horario(horario_raw)
             invalido = _hoy_post_invalido(alumno_id, accion)
             if invalido:
@@ -995,7 +1014,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 _responder_texto(self, 200, 'ERROR|horario invalido')
                 return
             try:
-                body = escribir_hoy(alumno_id, accion, horario)
+                body = escribir_hoy(alumno_id, accion, horario, fecha=fecha_raw)
             except PanelError as e:
                 if e.detail.startswith('ERROR|'):
                     _responder_texto(self, 200, e.detail)

@@ -896,10 +896,10 @@
   }
   #hoyAmPmBar {
     position: absolute;
-    top: 10px;
+    top: 8px;
     left: 16px;
     right: 16px;
-    height: 42px;
+    height: 40px;
     background: #E5E7EB;
     border-radius: 10px;
     padding: 3px;
@@ -908,7 +908,7 @@
   #hoyAmPm {
     display: table;
     width: 100%;
-    height: 36px;
+    height: 34px;
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 2px 0;
@@ -917,7 +917,7 @@
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    height: 36px;
+    height: 34px;
     background: transparent;
     color: #4B5563;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -935,12 +935,101 @@
     font-weight: 800;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
   }
-  #hoySearch {
+  #hoyDateBar {
     position: absolute;
-    top: 60px;
+    top: 54px;
     left: 16px;
     right: 16px;
-    height: 44px;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .hoyDateNavBtn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    line-height: 38px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: #374151;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    background: #F9FAFB;
+    transition: background 0.15s ease;
+  }
+  #hoyDatePrev { left: 0; border-right: 1px solid #E5E7EB; }
+  #hoyDateNext { right: 0; border-left: 1px solid #E5E7EB; }
+  .hoyDateNavBtn.disabled {
+    color: #D1D5DB;
+    background: #F3F4F6;
+    cursor: default;
+    pointer-events: none;
+  }
+  .hoyDateCenter {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 44px;
+    right: 44px;
+    line-height: 38px;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .hoyDateCalIcon {
+    margin-right: 6px;
+    font-size: 15px;
+    vertical-align: middle;
+  }
+  .hoyDateNativeInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    background: transparent;
+  }
+  .hoyDateTodayBtn {
+    position: absolute;
+    right: 48px;
+    top: 6px;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 10px;
+    background: #111827;
+    color: #FFFFFF;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  #hoySearch {
+    position: absolute;
+    top: 100px;
+    left: 16px;
+    right: 16px;
+    height: 42px;
     box-sizing: border-box;
     background: #FFFFFF;
     color: #111827;
@@ -956,7 +1045,7 @@
   }
   #hoyCounts {
     position: absolute;
-    top: 112px;
+    top: 148px;
     left: 16px;
     right: 16px;
     height: 38px;
@@ -995,7 +1084,7 @@
   .hoyCount.sin b { color: #D97706; }
   #hoyMain {
     position: absolute;
-    top: 156px;
+    top: 192px;
     left: 0;
     right: 0;
     bottom: 30px;
@@ -2147,6 +2236,16 @@
           <div id="hoyBtnPm" class="hoyAmPmBtn">PM</div>
         </div>
       </div>
+      <div id="hoyDateBar">
+        <div id="hoyDatePrev" class="hoyDateNavBtn" title="Día anterior">‹</div>
+        <div id="hoyDateCenter" class="hoyDateCenter">
+          <span class="hoyDateCalIcon">📅</span>
+          <span id="hoyDateText">HOY · Sábado 7 Nov</span>
+          <input type="date" id="hoyDatePicker" class="hoyDateNativeInput" aria-label="Elegir fecha">
+        </div>
+        <div id="hoyDateNext" class="hoyDateNavBtn disabled" title="Día siguiente">›</div>
+        <div id="hoyDateTodayBtn" class="hoyDateTodayBtn" style="display:none;">HOY</div>
+      </div>
       <input type="text" id="hoySearch" placeholder="🔍 Buscar alumno para agregar a la clase..." autocomplete="off">
       <div id="hoyCounts"></div>
       <div id="hoyMain">
@@ -3011,6 +3110,7 @@
   renderPlanes();
 
   /* ---------- hoy / asistencia ---------- */
+  var hoyTitle = document.getElementById('hoyTitle');
   var hoyCounts = document.getElementById('hoyCounts');
   var hoyList = document.getElementById('hoyList');
   var hoyListWrap = document.getElementById('hoyListWrap');
@@ -3024,15 +3124,131 @@
   var hoyBtnAm = document.getElementById('hoyBtnAm');
   var hoyBtnPm = document.getElementById('hoyBtnPm');
   var hoySearch = document.getElementById('hoySearch');
+  var hoyDateBar = document.getElementById('hoyDateBar');
+  var hoyDatePrev = document.getElementById('hoyDatePrev');
+  var hoyDateNext = document.getElementById('hoyDateNext');
+  var hoyDateText = document.getElementById('hoyDateText');
+  var hoyDatePicker = document.getElementById('hoyDatePicker');
+  var hoyDateTodayBtn = document.getElementById('hoyDateTodayBtn');
   var hoyBusy = false;
   var hoyFilas = [];
   var hoyCountsData = { si: '0', no: '0', sin: '0' };
   var hoyConfirmados = 0;
+  var hoyNoVan = 0;
   var hoySinIdentidad = 0;
   var hoyHayRespuesta = false;
   var HOY_HORARIO_COOKIE = 'hoy_horario';
   var HOY_LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var hoyHorario = 'AM';
+
+  function hoyFechaLocalISO() {
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = d.getMonth() + 1;
+    var day = d.getDate();
+    return y + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+  }
+
+  var hoyFechaHoy = hoyFechaLocalISO();
+  var hoyFecha = hoyFechaHoy;
+
+  function hoyEsFechaHoy(iso) {
+    return iso === hoyFechaHoy;
+  }
+
+  function hoyFormatearFechaTexto(iso) {
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) { return 'HOY'; }
+    var parts = iso.split('-');
+    var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    var hoyDate = new Date();
+    hoyDate.setHours(0, 0, 0, 0);
+    d.setHours(0, 0, 0, 0);
+    var diffDias = Math.round((d.getTime() - hoyDate.getTime()) / 86400000);
+
+    var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    var nombreDia = diasSemana[d.getDay()];
+    var nombreMes = meses[d.getMonth()];
+    var diaNum = d.getDate();
+
+    if (diffDias === 0) {
+      return 'HOY · ' + nombreDia + ' ' + diaNum + ' ' + nombreMes;
+    }
+    if (diffDias === -1) {
+      return 'AYER · ' + nombreDia + ' ' + diaNum + ' ' + nombreMes;
+    }
+    if (diffDias === -2) {
+      return 'Anteayer · ' + nombreDia + ' ' + diaNum + ' ' + nombreMes;
+    }
+    return nombreDia + ' ' + diaNum + ' ' + nombreMes + (d.getFullYear() !== hoyDate.getFullYear() ? ' ' + d.getFullYear() : '');
+  }
+
+  function hoyFormatearFechaCorta(iso) {
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) { return ''; }
+    var parts = iso.split('-');
+    var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    var meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+    return d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function hoyActualizarBarraFecha() {
+    hoyFechaHoy = hoyFechaLocalISO();
+    var esHoy = hoyEsFechaHoy(hoyFecha);
+    if (hoyDateText) {
+      hoyDateText.innerHTML = hoyFormatearFechaTexto(hoyFecha);
+    }
+    if (hoyDatePicker) {
+      hoyDatePicker.value = hoyFecha;
+    }
+    if (hoyDateNext) {
+      hoyDateNext.className = 'hoyDateNavBtn' + (esHoy ? ' disabled' : '');
+    }
+    if (hoyDateTodayBtn) {
+      hoyDateTodayBtn.style.display = esHoy ? 'none' : 'block';
+    }
+    if (hoyTitle) {
+      hoyTitle.innerHTML = esHoy ? 'ASISTENCIA · HOY' : ('ASISTENCIA · ' + hoyFormatearFechaCorta(hoyFecha));
+    }
+  }
+
+  function hoyMoverDia(delta) {
+    var parts = hoyFecha.split('-');
+    var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    d.setDate(d.getDate() + delta);
+    var y = d.getFullYear();
+    var m = d.getMonth() + 1;
+    var day = d.getDate();
+    var nuevoISO = y + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+    if (nuevoISO > hoyFechaHoy) { return; }
+    hoyFecha = nuevoISO;
+    hoyActualizarBarraFecha();
+    cargarHoy();
+  }
+
+  if (hoyDatePrev) {
+    hoyDatePrev.addEventListener('click', function () { hoyMoverDia(-1); }, false);
+  }
+  if (hoyDateNext) {
+    hoyDateNext.addEventListener('click', function () { hoyMoverDia(1); }, false);
+  }
+  if (hoyDateTodayBtn) {
+    hoyDateTodayBtn.addEventListener('click', function () {
+      hoyFecha = hoyFechaHoy;
+      hoyActualizarBarraFecha();
+      cargarHoy();
+    }, false);
+  }
+  if (hoyDatePicker) {
+    hoyDatePicker.addEventListener('change', function () {
+      var val = this.value;
+      if (val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        if (val > hoyFechaHoy) { val = hoyFechaHoy; }
+        hoyFecha = val;
+        hoyActualizarBarraFecha();
+        cargarHoy();
+      }
+    }, false);
+  }
 
   function hoyHorarioChile() {
     var h = new Date().getHours();
@@ -3094,6 +3310,7 @@
 
   hoyHorario = hoyLeerGuardado();
   hoyPintarToggle();
+  hoyActualizarBarraFecha();
 
   hoyBtnAm.addEventListener('click', function () { hoyElegirHorario('AM'); }, false);
   hoyBtnPm.addEventListener('click', function () { hoyElegirHorario('PM'); }, false);
@@ -3219,7 +3436,7 @@
       }
       hoySetStatus('No se pudo guardar', true);
     };
-    xhr.send('alumno_id=' + encodeURIComponent(alumnoId) + '&accion=' + encodeURIComponent(accion) + '&horario=' + encodeURIComponent(hoyHorario));
+    xhr.send('alumno_id=' + encodeURIComponent(alumnoId) + '&accion=' + encodeURIComponent(accion) + '&horario=' + encodeURIComponent(hoyHorario) + '&fecha=' + encodeURIComponent(hoyFecha));
   }
 
   function hoyBoton(label, cls, on, alumnoId, accion) {
@@ -3407,6 +3624,7 @@
       hoyCounts.appendChild(d);
     }
     var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
+    var esHoy = hoyEsFechaHoy(hoyFecha);
     if (q) {
       var matches = 0;
       for (var i = 0; i < hoyFilas.length; i++) {
@@ -3416,8 +3634,8 @@
       }
       countBox('si', 'ENCONTRADOS', matches);
     } else {
-      countBox('si', 'VIENEN HOY', hoyConfirmados);
-      countBox('no', 'NO VAN', hoyNoVan || 0);
+      countBox('si', esHoy ? 'VIENEN HOY' : 'ASISTIERON', hoyConfirmados);
+      countBox('no', esHoy ? 'NO VAN' : 'AUSENTES', hoyNoVan || 0);
     }
   }
 
@@ -3425,6 +3643,7 @@
     var q = hoyDoblar(hoySearch.value || '').replace(/^\s+|\s+$/g, '');
     hoyPintarCounts();
     hoyList.innerHTML = '';
+    var esHoy = hoyEsFechaHoy(hoyFecha);
 
     if (!q) {
       // Vista limpia por defecto: Quién se anotó para venir y quién puso no voy
@@ -3439,20 +3658,24 @@
         }
       }
 
-      // 1. Sección de los que se anotaron hoy para venir
-      hoyList.appendChild(hoyCrearHeaderSeccion('🟢 SE ANOTARON PARA VENIR HOY', 'si', vienen.length));
+      // 1. Sección de los que se anotaron hoy para venir o asistieron este día
+      var tituloVienen = esHoy ? '🟢 SE ANOTARON PARA VENIR HOY' : '🟢 ASISTIERON ESTE DÍA';
+      var emptyVienen = esHoy ? ('No hay alumnos confirmados para asistir en la jornada ' + hoyHorario + '.') : ('No se registraron asistencias en la jornada ' + hoyHorario + ' para esta fecha.');
+      hoyList.appendChild(hoyCrearHeaderSeccion(tituloVienen, 'si', vienen.length));
       if (vienen.length === 0) {
-        hoyList.appendChild(hoyCrearTarjetaVacia('No hay alumnos confirmados para asistir en la jornada ' + hoyHorario + '.'));
+        hoyList.appendChild(hoyCrearTarjetaVacia(emptyVienen));
       } else {
         for (var j = 0; j < vienen.length; j++) {
           hoyList.appendChild(hoyPintarTarjeta(vienen[j]));
         }
       }
 
-      // 2. Sección de los que pusieron NO VOY
-      hoyList.appendChild(hoyCrearHeaderSeccion('🔴 PUSIERON "NO VOY"', 'no', noVan.length));
+      // 2. Sección de los que pusieron NO VOY o estuvieron ausentes
+      var tituloNoVan = esHoy ? '🔴 PUSIERON "NO VOY"' : '🔴 ESTUVIERON AUSENTES';
+      var emptyNoVan = esHoy ? ('Ningún alumno ha reportado inasistencia para la jornada ' + hoyHorario + '.') : ('No hay registros de ausencias reportadas en la jornada ' + hoyHorario + ' para esta fecha.');
+      hoyList.appendChild(hoyCrearHeaderSeccion(tituloNoVan, 'no', noVan.length));
       if (noVan.length === 0) {
-        hoyList.appendChild(hoyCrearTarjetaVacia('Ningún alumno ha reportado inasistencia para la jornada ' + hoyHorario + '.'));
+        hoyList.appendChild(hoyCrearTarjetaVacia(emptyNoVan));
       } else {
         for (var k = 0; k < noVan.length; k++) {
           hoyList.appendChild(hoyPintarTarjeta(noVan[k]));
@@ -3460,9 +3683,10 @@
       }
 
       if (vienen.length === 0 && noVan.length === 0) {
-        hoySetStatus('No hay registros en la encuesta para ' + hoyHorario + '. Usa el buscador para agregar a un alumno.');
+        hoySetStatus('No hay registros para la jornada ' + hoyHorario + ' en esta fecha. Usa el buscador para agregar a un alumno.');
       } else {
-        hoySetStatus((vienen.length ? vienen.length + ' anotados para venir' : 'Sin confirmados') + ' · Toca PRESENTE para marcar asistencia.');
+        var resumen = esHoy ? (vienen.length ? vienen.length + ' anotados para venir' : 'Sin confirmados') : (vienen.length ? vienen.length + ' alumnos registrados' : 'Sin registros');
+        hoySetStatus(resumen + ' · Toca PRESENTE para marcar asistencia.');
       }
     } else {
       // Modo búsqueda de alumnos
@@ -3503,13 +3727,14 @@
     ocultarLoginHoy();
     hoyBusy = false;
     hoyPintarToggle();
+    hoyActualizarBarraFecha();
     hoySetStatus('Cargando...');
     hoyCounts.innerHTML = '';
     hoyList.innerHTML = '';
     hoyLetters.innerHTML = '';
     hoyFilas = [];
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/hoy?horario=' + encodeURIComponent(hoyHorario), true);
+    xhr.open('GET', '/api/hoy?horario=' + encodeURIComponent(hoyHorario) + '&fecha=' + encodeURIComponent(hoyFecha), true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== 4) { return; }
       if (xhr.status === 401) {
